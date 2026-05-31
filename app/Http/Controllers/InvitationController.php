@@ -227,4 +227,23 @@ class InvitationController extends Controller
     {
         return view('undangan');
     }
+
+    /**
+     * Tampilkan halaman daftar hadir (mengambil data dari DB)
+     */
+    public function daftarHadir()
+    {
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'nama_ortu as instansi', 'status as statusKehadiran', 'created_at')->get();
+        // Map presence data
+        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'nama_ortu as instansi', 'created_at')->get()->map(function($p){
+            $p->checkIn = $p->created_at->format('H:i').' WIB';
+            return $p;
+        });
+
+        // counts
+        $totalInvitations = Invitation::count();
+        $totalPresences = Presence::count();
+
+        return view('auth.dashboard.daftarHadir', compact('invitations', 'presences', 'totalInvitations', 'totalPresences'));
+    }
 }
