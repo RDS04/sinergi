@@ -14,5 +14,6 @@ class Invitation extends Model
         'nama_ortu',
         'alamat_ortu',
         'wa_ortu',
+        'status',
     ];
 }

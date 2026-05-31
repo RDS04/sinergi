@@ -230,27 +230,27 @@
 
         <!-- Barcode Section -->
         <div class="barcode-section">
-            <h2>QR Code Absensi & Kontak</h2>
+            <h2>QR Code Checkin Mahasiswa</h2>
             <div class="barcode-container">
-                <img src="{{ $qrCodeUrl }}" alt="QR Code Absensi" style="max-width: 100%; height: auto;">
+                <img src="{{ $qrCodeUrl }}" alt="QR Code Checkin" style="max-width: 100%; height: auto;">
             </div>
             <p style="font-size: 12px; color: #666; margin-top: 10px;">
-                <strong>Nomor WhatsApp Orang Tua:</strong> {{ $invitation->wa_ortu }}<br>
-                <small style="color: #999;">Scan untuk mencatat kehadiran & menghubungi WhatsApp</small>
+                <strong>Nomor WhatsApp Mahasiswa:</strong> {{ $invitation->wa_mhs }}<br>
+                <small style="color: #999;">Scan untuk checkin di event</small>
             </p>
         </div>
 
         <!-- Attendance QR Code Section -->
         <div class="barcode-section">
-            <h2>Alternatif: Scan Manual</h2>
+            <h2>Alternatif: Input Manual</h2>
             <p style="font-size: 13px; color: #333; margin-bottom: 15px;">
-                Jika QR Code tidak terbaca, buka <strong>/sinergi/scan-qr</strong> dan pilih <strong>"Input Manual"</strong>
+                Jika QR Code tidak terbaca, buka <strong>/sinergi/scan-qr</strong> dan input nomor WhatsApp Anda
             </p>
-            <input type="text" id="manualWaInput" value="{{ $invitation->wa_ortu }}" readonly 
+            <input type="text" id="manualWaInput" value="{{ $invitation->wa_mhs }}" readonly 
                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-weight: bold;">
-            <button type="button" onclick="copyToClipboard('{{ $invitation->wa_ortu }}')" 
+            <button type="button" onclick="copyToClipboard('{{ $invitation->wa_mhs }}')" 
                     style="width: 100%; margin-top: 10px; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                Salin Nomor
+                Salin Nomor WhatsApp
             </button>
         </div>
 
@@ -263,8 +263,8 @@
                     <div class="data-value">{{ $invitation->nama_mhs }}</div>
                 </div>
                 <div class="data-item">
-                    <div class="data-label">NIM</div>
-                    <div class="data-value">{{ $invitation->nim }}</div>
+                    <div class="data-label">Status</div>
+                    <div class="data-value" style="text-transform: capitalize;">{{ $invitation->status }}</div>
                 </div>
                 <div class="data-item">
                     <div class="data-label">Program Studi</div>

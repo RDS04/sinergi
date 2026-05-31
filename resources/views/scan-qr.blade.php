@@ -413,25 +413,19 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="nama_ortu">Nama Orang Tua</label>
-                        <input type="text" id="nama_ortu" name="nama_ortu" readonly>
+                        <label for="status">Status</label>
+                        <input type="text" id="status" name="status" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label for="prodi">Program Studi</label>
-                        <input type="text" id="prodi" name="prodi" readonly>
+                        <label for="nama_ortu">Nama Orang Tua</label>
+                        <input type="text" id="nama_ortu" name="nama_ortu" readonly>
                     </div>
 
                     <div class="form-group">
                         <label for="wa_mhs">No. WhatsApp Mahasiswa</label>
                         <input type="text" id="wa_mhs" name="wa_mhs" readonly>
                     </div>
-
-                    <div class="form-group">
-                        <label for="wa_ortu">No. WhatsApp Orang Tua</label>
-                        <input type="text" id="wa_ortu" name="wa_ortu" readonly>
-                    </div>
-
                     <input type="hidden" id="invitation_id" name="invitation_id">
 
                     <div class="form-actions">
@@ -551,10 +545,10 @@
                 const code = jsQR(imageData.data, imageData.width, imageData.height);
 
                 if (code) {
-                    const waOrtu = code.data.trim();
+                    const waMhs = code.data.trim();
                     
                     // Check if already scanned today - PREVENT DUPLICATE IMMEDIATELY
-                    if (scannedToday[waOrtu]) {
+                    if (scannedToday[waMhs]) {
                         console.log('Already scanned today, showing alert');
                         scanning = false;
                         showToast('Sudah Mengisi Kehadiran ⚠', `Anda sudah mengisi form kehadiran. Tidak dapat scan dua kali!`, 'warning', 4000);
@@ -565,20 +559,20 @@
                     
                     // Prevent duplicate rapid scanning
                     const currentTime = Date.now();
-                    if (lastScannedWa === waOrtu && currentTime - lastScanTime < 3000) {
+                    if (lastScannedWa === waMhs && currentTime - lastScanTime < 3000) {
                         console.log('Duplicate scan detected, ignoring');
                         requestAnimationFrame(scanQR);
                         return;
                     }
                     
-                    lastScannedWa = waOrtu;
+                    lastScannedWa = waMhs;
                     lastScanTime = currentTime;
                     
                     // MARK AS SCANNED IMMEDIATELY before any async operation
-                    scannedToday[waOrtu] = true;
+                    scannedToday[waMhs] = true;
                     
-                    console.log('QR Code detected:', waOrtu);
-                    fetchInvitationData(waOrtu);
+                    console.log('QR Code detected:', waMhs);
+                    fetchInvitationData(waMhs);
                     scanning = false;
                     return;
                 }
@@ -587,7 +581,7 @@
             requestAnimationFrame(scanQR);
         }
 
-        function fetchInvitationData(waOrtu) {
+        function fetchInvitationData(waMhs) {
             showLoading(true);
             updateStatus('Mengambil data...');
 
@@ -597,7 +591,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify({ wa_ortu: waOrtu })
+                body: JSON.stringify({ wa_mhs: waMhs })
             })
             .then(response => response.json())
             .then(result => {
@@ -623,27 +617,25 @@
                 showLoading(false);
                 // Error - keep scannedToday[waOrtu] = true to prevent retry
                 isSubmitting = false; // Unlock if error
-                updateStatus('Gagal mengambil data: ' + err.message, 'error');
-                showToast('Gagal Mengambil Data', err.message, 'error', 3000);
+                updateStatus('Gagal mengambil data', 'error');
+                showToast('Gagal Mengambil Data', 'Silahkan coba lagi atau hubungi admin', 'error', 3000);
             });
         }
 
         function populateForm(data) {
             document.getElementById('nama_mhs').value = data.nama_mhs || '';
+            document.getElementById('status').value = data.status || '';
             document.getElementById('nama_ortu').value = data.nama_ortu || '';
-            document.getElementById('prodi').value = data.prodi || '';
             document.getElementById('wa_mhs').value = data.wa_mhs || '';
-            document.getElementById('wa_ortu').value = data.wa_ortu || '';
             document.getElementById('invitation_id').value = data.id || '';
         }
 
         function resetForm() {
             // Clear semua input fields
             document.getElementById('nama_mhs').value = '';
+            document.getElementById('status').value = '';
             document.getElementById('nama_ortu').value = '';
-            document.getElementById('prodi').value = '';
             document.getElementById('wa_mhs').value = '';
-            document.getElementById('wa_ortu').value = '';
             document.getElementById('invitation_id').value = '';
             
             // Reset form state
@@ -685,10 +677,10 @@
             isSubmitting = true;
 
             const formData = new FormData(this);
-            const waOrtu = formData.get('wa_ortu');
+            const waMhs = formData.get('wa_mhs');
             const namaMhs = document.getElementById('nama_mhs').value;
 
-            console.log('Submitting presence with waOrtu:', waOrtu);
+            console.log('Submitting presence with waMhs:', waMhs);
 
             fetch('{{ route("record-presence") }}', {
                 method: 'POST',
@@ -697,7 +689,7 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
                 body: JSON.stringify({
-                    wa_ortu: waOrtu,
+                    wa_mhs: waMhs,
                     invitation_id: formData.get('invitation_id')
                 })
             })
@@ -713,7 +705,7 @@
                 if (!result.success && result.data) {
                     // Already scanned - don't save again
                     updateStatus('Sudah tercatat kehadiran hari ini', 'error');
-                    // KEEP scannedToday[waOrtu] = true to block further scans
+                    // KEEP scannedToday[waMhs] = true to block further scans
                     const scanTime = new Date(result.data.present_at).toLocaleTimeString('id-ID');
                     showToast('Sudah Mengisi Kehadiran ⚠', `Anda sudah mengisi form kehadiran. Tidak dapat scan dua kali!`, 'warning', 5000);
                     
@@ -732,7 +724,7 @@
                 } else if (result.success) {
                     console.log('Success! Data saved to database');
                     updateStatus('Kehadiran berhasil dicatat!', 'success');
-                    // KEEP scannedToday[waOrtu] = true to block further scans
+                    // KEEP scannedToday[waMhs] = true to block further scans
                     showToast('Hadir ✓', `${namaMhs} - Status: HADIR`, 'success', 3000);
                     
                     // Countdown before reset (2 seconds)
@@ -748,18 +740,18 @@
                         }
                     }, 1000);
                 } else {
-                    updateStatus(result.message || 'Gagal mencatat kehadiran', 'error');
-                    showToast('Gagal', result.message || 'Gagal mencatat kehadiran', 'error', 3000);
-                    // KEEP scannedToday[waOrtu] = true to block further scans
+                    updateStatus('Gagal mencatat kehadiran', 'error');
+                    showToast('Gagal', 'Gagal mencatat kehadiran. Silahkan coba lagi.', 'error', 3000);
+                    // KEEP scannedToday[waMhs] = true to block further scans
                     isSubmitting = false; // Unlock
                 }
             })
             .catch(err => {
                 console.error('Fetch error:', err);
                 showLoading(false);
-                updateStatus('Error: ' + err.message, 'error');
-                showToast('Terjadi Kesalahan', err.message, 'error', 3000);
-                // KEEP scannedToday[waOrtu] = true to block further scans
+                updateStatus('Gagal menyimpan kehadiran', 'error');
+                showToast('Terjadi Kesalahan', 'Gagal menyimpan kehadiran. Silahkan coba lagi.', 'error', 3000);
+                // KEEP scannedToday[waMhs] = true to block further scans
                 isSubmitting = false; // Unlock
             });
         });

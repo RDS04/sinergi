@@ -14,12 +14,9 @@ return new class extends Migration
         Schema::create('invitation', function (Blueprint $table) {
             $table->id();
             $table->string('nama_mhs');
-            $table->string('prodi');
-            $table->string('wa_mhs');
+            $table->enum('status', ['mahasiswa', 'alumni'])->default('mahasiswa');
             $table->string('nama_ortu');
-            $table->text('alamat_ortu');
-            $table->string('wa_ortu');
-
+            $table->string('wa_mhs');
             $table->timestamps();
         });
     }

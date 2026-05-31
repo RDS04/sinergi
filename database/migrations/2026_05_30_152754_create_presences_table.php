@@ -15,12 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('invitation_id')->constrained('invitation')->onDelete('cascade');
             $table->string('nama_mhs');
-            $table->string('prodi');
-            $table->string('wa_mhs');
+            $table->enum('status', ['mahasiswa', 'alumni'])->default('mahasiswa');
             $table->string('nama_ortu');
-            $table->text('alamat_ortu');
-            $table->string('wa_ortu');
-            $table->timestamp('present_at')->useCurrent();
+            $table->string('wa_mhs');
             $table->timestamps();
         });
     }

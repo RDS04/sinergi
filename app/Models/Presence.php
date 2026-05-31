@@ -9,12 +9,9 @@ class Presence extends Model
     protected $fillable = [
         'invitation_id',
         'nama_mhs',
-        'prodi',
-        'wa_mhs',
+        'status',
         'nama_ortu',
-        'alamat_ortu',
-        'wa_ortu',
-        'present_at',
+        'wa_mhs',
     ];
 
     public function invitation()
