@@ -118,7 +118,7 @@
 <body>
     <div class="page">
         <div class="card">
-            <img class="bg" src="{{ asset('img/kartu undangan.png') }}" alt="Kartu Undangan">
+            <img class="bg" src="{{ asset('img/kartu undangan.png') }}" alt="Kartu Undangan" onerror="console.error('Gambar kartu gagal dimuat dari: ' + this.src)">
             <div class="qr-overlay">
                 <img id="qrCodeImage" crossorigin="anonymous" src="" alt="QR Code" />
             </div>
@@ -150,21 +150,41 @@
                 alert('QR Code belum tersedia. Silakan kembali ke halaman undangan dan buat QR Code terlebih dahulu.');
                 return;
             }
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Memproses...';
+            
             const cardElement = document.querySelector('.card');
             html2canvas(cardElement, {
                 backgroundColor: null,
                 scale: window.devicePixelRatio || 2,
                 useCORS: true,
-                allowTaint: false
+                allowTaint: true,
+                logging: false,
+                proxy: null,
+                ignoreElements: (element) => {
+                    return false;
+                }
             }).then(canvas => {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = 'kartu-undangan.png';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }).catch(() => {
+                try {
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/png');
+                    link.download = 'kartu-undangan.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    downloadBtn.disabled = false;
+                    downloadBtn.textContent = 'Download Kartu';
+                } catch (error) {
+                    console.error('Download error:', error);
+                    alert('Gagal mengunduh kartu. Silakan coba lagi.');
+                    downloadBtn.disabled = false;
+                    downloadBtn.textContent = 'Download Kartu';
+                }
+            }).catch(error => {
+                console.error('Canvas error:', error);
                 alert('Gagal membuat unduhan kartu. Silakan coba lagi.');
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Download Kartu';
             });
         });
     </script>
