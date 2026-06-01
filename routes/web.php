@@ -48,8 +48,8 @@ Route::middleware('auth')->group(function () {
 });
 
 // Invitation Routes
-Route::controller(InvitationController::class)->group(function () {
-    Route::get('/sinergi', 'index')->name('invitation.index');
+Route::controller(InvitationController::class)->prefix('sinergi')->group(function () {
+    Route::get('/', 'index')->name('invitation.index');
     Route::post('/invitation/store', 'store')->name('invitation.store');
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
     Route::get('/scan-qr', 'scanQR')->name('scan-qr');

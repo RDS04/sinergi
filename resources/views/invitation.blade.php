@@ -272,7 +272,7 @@
         <div id="invitationContent" class="hidden opacity-0 transition-opacity duration-700">
             <!-- Hero Section dengan tema #018FD7 dan blink gold -->
             <div class="relative min-h-[85vh] flex flex-col justify-center items-center text-center px-5 pt-12 pb-16 overflow-hidden"
-                style="background: linear-gradient(rgba(0,0,0,0.45), rgba(1,79,159,0.6)), url('/img/metamedia.jpg') center/cover no-repeat;">
+                style="background: linear-gradient(rgba(0,0,0,0.45), rgba(1,79,159,0.6)), url('{{ asset("img/metamedia.jpg") }}') center/cover no-repeat;">
                 <!-- Animated Stars Background -->
                 <div id="heroStars" class="absolute inset-0"></div>
                 <div class="absolute inset-0 bg-black/5"></div>
@@ -280,13 +280,13 @@
                 <!-- Logo Top Left -->
                 <div
                     class="absolute top-6 left-5 z-20 bg-white/20 backdrop-blur-sm rounded-lg p-2 border border-white/30">
-                    <img src="/img/logo.png" alt="Metamedia" class="h-12 w-12 object-contain">
+                    <img src="{{ asset('img/logo.png') }}" alt="Metamedia" class="h-12 w-12 object-contain">
                 </div>
 
                 <!-- Logo Top Right -->
                 <div
                     class="absolute top-6 right-5 z-20 bg-white/20 backdrop-blur-sm rounded-lg p-2 border border-white/30">
-                    <img src="/img/enbi.webp" alt="ENBI" class="h-12 w-12 object-contain">
+                    <img src="{{ asset('img/enbi.webp') }}" alt="ENBI" class="h-12 w-12 object-contain">
                 </div>
 
                 <div class="relative z-2 w-full">
@@ -701,7 +701,7 @@
                                 </div>
 
                                 <div class="relative z-5 flex flex-col items-center h-full">
-                                    <img src="/img/17 pro.webp" alt="iPhone 17 Pro"
+                                    <img src="{{ asset('img/17 pro.webp') }}" alt="iPhone 17 Pro"
                                         class="w-28 sm:w-32 h-40 sm:h-48 object-contain mb-4 drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
                                     <div class="text-center w-full">
                                         <h3 class="text-white font-bold text-lg sm:text-xl mb-2">iPhone 17 Pro</h3>
@@ -724,7 +724,7 @@
                                 </div>
 
                                 <div class="relative z-5 flex flex-col items-center h-full">
-                                    <img src="/img/macbook.jpg" alt="MacBook Pro"
+                                    <img src="{{ asset('img/macbook.jpg') }}" alt="MacBook Pro"
                                         class="w-full h-40 object-contain mb-4 drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
                                     <div class="text-center w-full">
                                         <h3 class="text-white font-bold text-lg sm:text-xl mb-2">MacBook Pro</h3>
@@ -784,7 +784,7 @@
                         <div class="flex flex-col items-center group">
                             <div
                                 class="bg-white p-4 rounded-2xl border-2 border-[#018FD7]/20 hover:border-[#018FD7]/60 transition-all shadow-md hover:shadow-lg group-hover:scale-105 mb-3">
-                                <img src="/img/logo.png" alt="Universitas Metamedia" class="w-24 h-24 object-contain">
+                                <img src="{{ asset('img/logo.png') }}" alt="Universitas Metamedia" class="w-24 h-24 object-contain">
                             </div>
                             <p class="text-[#016aa3] text-xs sm:text-sm font-bold text-center">Universitas<br>Metamedia
                             </p>
@@ -801,7 +801,7 @@
                         <div class="flex flex-col items-center group">
                             <div
                                 class="bg-white p-4 rounded-2xl border-2 border-[#018FD7]/20 hover:border-[#018FD7]/60 transition-all shadow-md hover:shadow-lg group-hover:scale-105 mb-3">
-                                <img src="/img/enbi.webp" alt="ENBI Group" class="w-24 h-24 object-contain">
+                                <img src="{{ asset('img/enbi.webp') }}" alt="ENBI Group" class="w-24 h-24 object-contain">
                             </div>
                             <p class="text-[#016aa3] text-xs sm:text-sm font-bold text-center">ENBI<br>Group</p>
                         </div>
