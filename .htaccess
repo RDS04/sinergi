@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /sinergi/
+
+    # If the request is not a file or directory, rewrite it
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Redirect to public folder
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
