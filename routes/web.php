@@ -60,6 +60,11 @@ Route::controller(InvitationController::class)->group(function () {
     Route::get('/undangan', 'undangan')->name('undangan');
 });
 
+// Manual Mark Attendance Route (Protected)
+Route::middleware('auth')->controller(InvitationController::class)->group(function () {
+    Route::post('/invitation/{id}/mark-attendance', 'markAttendanceManual')->name('mark-attendance');
+});
+
 // API Routes
 Route::controller(InvitationController::class)->prefix('api')->group(function () {
     Route::get('/invitation/{invitation}', 'getInvitationData');

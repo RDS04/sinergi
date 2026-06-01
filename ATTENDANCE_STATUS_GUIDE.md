@@ -71,6 +71,72 @@ public function recordPresence(Request $request)
 }
 ```
 
+### 3. Tandai Hadir Manual (ADMIN DASHBOARD - BARU!)
+```
+Admin klik tombol "Tandai Hadir" di dashboard (daftarHadir.blade.php)
+                    ↓
+         JavaScript AJAX POST
+                    ↓
+         Controller: markAttendanceManual()
+                    ↓
+      Cari data invitation berdasarkan ID
+                    ↓
+      Buat record di tabel Presence (kehadiran)
+                    ↓
+      UPDATE status di tabel Invitation
+      attendance_status = 'hadir' ← OTOMATIS UPDATE
+                    ↓
+         Response JSON dengan status baru
+                    ↓
+      UI update: Badge berubah dari Belum Hadir → Hadir
+                    ↓
+      Toast notification: "✅ Berhasil ditandai hadir"
+```
+
+**Kode di Controller:**
+```php
+public function markAttendanceManual($id)
+{
+    // ... cek invitation ...
+    
+    try {
+        // Buat presence record
+        Presence::create([...]);
+        
+        // UPDATE status kehadiran
+        $invitation->update([
+            'attendance_status' => 'hadir'
+        ]);
+        
+        // ... return response ...
+    } catch (\Exception $e) { ... }
+}
+```
+
+**Kode di View (daftarHadir.blade.php):**
+```javascript
+window.markHadir = function(id) {
+    // AJAX POST ke /invitation/{id}/mark-attendance
+    fetch(`/invitation/${id}/mark-attendance`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update UI dengan status baru
+            guest.statusKehadiran = data.data.statusKehadiran;
+            renderTable();
+            showToast(`✅ ${guest.nama} telah ditandai hadir`, false);
+        }
+    });
+};
+```
+
 ## Database Schema
 
 ### Tabel: invitation
@@ -145,7 +211,19 @@ protected $fillable = [
 4. Check database: `SELECT * FROM invitation WHERE id = ?`
 5. Verifikasi: `attendance_status` berubah menjadi `hadir`
 
-### Test 3: Dashboard
+### Test 3: Tandai Hadir Manual (BARU)
+1. Login ke admin dashboard
+2. Klik "Daftar Hadir"
+3. Di tab "Daftar dari Undangan", cari undangan dengan status "Belum Hadir"
+4. Klik tombol "Tandai Hadir"
+5. Tunggu loading spinner selesai
+6. Verifikasi:
+   - Badge status berubah menjadi "✓ Hadir" (hijau)
+   - Toast notification: "✅ [Nama] telah ditandai hadir"
+   - Database: `SELECT * FROM invitation WHERE id = ?` → attendance_status = 'hadir'
+   - Database: `SELECT * FROM presences WHERE invitation_id = ?` → presence record dibuat
+
+### Test 4: Dashboard
 1. Login ke admin dashboard
 2. Klik "Daftar Hadir"
 3. Lihat kolom "Status Kehadiran"

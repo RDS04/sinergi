@@ -376,22 +376,54 @@
             updateStats();
         }
 
-        // Fungsi Tandai Hadir (update status di data undangan SAJA)
-        // PENTING: Jangan sinkronisasi dengan daftarKehadiran untuk mencegah status berubah
+        // Fungsi Tandai Hadir - AJAX ke server untuk update database
         window.markHadir = function(id) {
             const guest = undanganData.find(g => g.id === id);
-            if (guest && guest.statusKehadiran !== "Hadir") {
-                guest.statusKehadiran = "Hadir";
-                guest.waktuHadir = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + " WIB";
-                // REMOVED: Sync logic yang mengubah daftarKehadiran
-                // Hanya update undanganData lokal tanpa mempengaruhi tab "Daftar Kehadiran"
-                renderTable(); // refresh
-                showToast(`✅ ${guest.nama} telah ditandai hadir`, false);
-            } else if (guest && guest.statusKehadiran === "Hadir") {
-                showToast(`⚠️ ${guest.nama} sudah tercatat hadir sebelumnya`, true);
-            } else {
+            if (!guest) {
                 showToast("Data tidak ditemukan", true);
+                return;
             }
+
+            if (guest.statusKehadiran === "Hadir") {
+                showToast(`⚠️ ${guest.nama} sudah tercatat hadir sebelumnya`, true);
+                return;
+            }
+
+            // Disable button saat loading
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+            // AJAX request ke server untuk update database
+            fetch(`/invitation/${id}/mark-attendance`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update data lokal
+                    guest.statusKehadiran = data.data.statusKehadiran;
+                    guest.waktuHadir = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + " WIB";
+                    renderTable();
+                    showToast(`✅ ${guest.nama} telah ditandai hadir`, false);
+                } else {
+                    showToast(`❌ ${data.message}`, true);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Terjadi kesalahan koneksi', true);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
         };
 
         // Export CSV berdasarkan filtered data

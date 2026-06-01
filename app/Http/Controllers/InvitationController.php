@@ -357,4 +357,72 @@ class InvitationController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Mark attendance manually dari admin dashboard
+     * Ketika admin klik "Tandai Hadir", update status di database
+     */
+    public function markAttendanceManual($id)
+    {
+        try {
+            $invitation = Invitation::find($id);
+            
+            if (!$invitation) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data undangan tidak ditemukan'
+                ], 404);
+            }
+
+            // Gunakan transaction untuk consistency
+            \DB::beginTransaction();
+            
+            try {
+                // Cek apakah sudah tercatat kehadiran hari ini
+                $existingPresence = Presence::where('invitation_id', $invitation->id)
+                    ->whereDate('created_at', now()->toDateString())
+                    ->first();
+
+                if (!$existingPresence) {
+                    // Buat presence record
+                    Presence::create([
+                        'invitation_id' => $invitation->id,
+                        'nama_mhs' => $invitation->nama_mhs,
+                        'status' => $invitation->status,
+                        'nama_ortu' => $invitation->nama_ortu,
+                        'wa_mhs' => $invitation->wa_mhs,
+                    ]);
+                }
+
+                // Update attendance status menjadi "hadir"
+                $invitation->update([
+                    'attendance_status' => 'hadir'
+                ]);
+
+                \DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Status kehadiran berhasil diperbarui',
+                    'data' => [
+                        'id' => $invitation->id,
+                        'nama_mhs' => $invitation->nama_mhs,
+                        'attendance_status' => $invitation->attendance_status,
+                        'statusKehadiran' => 'Hadir'
+                    ]
+                ], 200);
+
+            } catch (\Exception $e) {
+                \DB::rollBack();
+                throw $e;
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Error marking attendance:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
