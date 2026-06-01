@@ -8,14 +8,14 @@ use App\Models\Presence;
 
 
 // Auth Routes
-Route::middleware('guest')->group(function () {
+Route::middleware('guest')->prefix('auth')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 });
 
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Dashboard Route (Protected)
 Route::middleware('auth')->group(function () {
@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
 
 // Invitation Routes
 Route::controller(InvitationController::class)->group(function () {
-    Route::get('/', 'index')->name('invitation.index');
+    Route::get('/sinergi', 'index')->name('invitation.index');
     Route::post('/invitation/store', 'store')->name('invitation.store');
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
     Route::get('/scan-qr', 'scanQR')->name('scan-qr');
