@@ -29,6 +29,9 @@ class InvitationController extends Controller
                 'status' => 'required|in:mahasiswa,alumni',
             ]);
 
+            // Tambah status kehadiran default "belum_hadir"
+            $validated['attendance_status'] = 'belum_hadir';
+
             $invitation = Invitation::create($validated);
 
             // Generate QR code URL
@@ -45,6 +48,7 @@ class InvitationController extends Controller
                     'nama_ortu' => $invitation->nama_ortu,
                     'wa_mhs' => $invitation->wa_mhs,
                     'status' => $invitation->status,
+                    'attendance_status' => $invitation->attendance_status,
                     'data' => $invitation
                 ], 200);
             }
@@ -205,6 +209,11 @@ class InvitationController extends Controller
                 'wa_mhs' => $invitation->wa_mhs,
             ]);
 
+            // Update status kehadiran menjadi "hadir" di tabel invitation
+            $invitation->update([
+                'attendance_status' => 'hadir'
+            ]);
+
             \Log::info('Presence created successfully:', ['presence_id' => $presence->id]);
             \DB::commit();
 
@@ -212,7 +221,8 @@ class InvitationController extends Controller
                 'success' => true,
                 'message' => 'Kehadiran berhasil dicatat!',
                 'data' => $presence,
-                'status' => 'Hadir'
+                'status' => 'Hadir',
+                'attendance_status' => 'hadir'
             ]);
         } catch (\Exception $e) {
             \Log::error('Error recording presence:', ['error' => $e->getMessage()]);
@@ -233,9 +243,14 @@ class InvitationController extends Controller
      */
     public function daftarHadir()
     {
-        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'nama_ortu as instansi', 'status as statusKehadiran', 'created_at')->get();
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'nama_ortu as instansi', 'status', 'attendance_status', 'created_at')->get()
+            ->map(function($item) {
+                $item->statusKehadiran = $item->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir';
+                return $item;
+            });
+        
         // Map presence data
-        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'nama_ortu as instansi', 'created_at')->get()->map(function($p){
+        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'nama_ortu as instansi', 'status', 'created_at')->get()->map(function($p){
             $p->checkIn = $p->created_at->format('H:i').' WIB';
             return $p;
         });
@@ -245,5 +260,101 @@ class InvitationController extends Controller
         $totalPresences = Presence::count();
 
         return view('auth.dashboard.daftarHadir', compact('invitations', 'presences', 'totalInvitations', 'totalPresences'));
+    }
+
+    /**
+     * Export data undangan ke Excel format CSV
+     */
+    public function exportExcel()
+    {
+        $invitations = Invitation::all();
+
+        // Prepare headers
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename=undangan_' . date('Y-m-d_His') . '.csv',
+        ];
+
+        // Create callback for CSV generation
+        $callback = function () use ($invitations) {
+            $file = fopen('php://output', 'w');
+            
+            // Set UTF-8 BOM untuk Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Write header row
+            fputcsv($file, [
+                'No',
+                'Nama Lengkap',
+                'No. Telepon',
+                'Nama Orang Tua/Wali',
+                'Status',
+                'Tanggal Daftar'
+            ], ';');
+
+            // Write data rows
+            foreach ($invitations as $index => $invitation) {
+                fputcsv($file, [
+                    $index + 1,
+                    $invitation->nama_mhs,
+                    $invitation->wa_mhs,
+                    $invitation->nama_ortu,
+                    ucfirst($invitation->status),
+                    $invitation->created_at->format('d-m-Y H:i:s')
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export data kehadiran ke Excel format CSV
+     */
+    public function exportPresenceExcel()
+    {
+        $presences = Presence::all();
+
+        // Prepare headers
+        $headers = [
+            'Content-Type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename=kehadiran_' . date('Y-m-d_His') . '.csv',
+        ];
+
+        // Create callback for CSV generation
+        $callback = function () use ($presences) {
+            $file = fopen('php://output', 'w');
+            
+            // Set UTF-8 BOM untuk Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Write header row
+            fputcsv($file, [
+                'No',
+                'Nama Lengkap',
+                'No. Telepon',
+                'Nama Orang Tua/Wali',
+                'Status',
+                'Waktu Check-in'
+            ], ';');
+
+            // Write data rows
+            foreach ($presences as $index => $presence) {
+                fputcsv($file, [
+                    $index + 1,
+                    $presence->nama_mhs,
+                    $presence->wa_mhs,
+                    $presence->nama_ortu,
+                    ucfirst($presence->status),
+                    $presence->created_at->format('d-m-Y H:i:s')
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Invitation;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +17,48 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create test user with safe method
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => bcrypt('password'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Generate 1000 dummy invitation data
+        $this->seedInvitations();
+    }
+
+    /**
+     * Seed 1000 dummy invitation records for performance testing
+     */
+    private function seedInvitations(): void
+    {
+        $faker = Faker::create('id_ID');
+        $statuses = ['mahasiswa', 'alumni'];
+        
+        $batch = [];
+        $batchSize = 100;
+        
+        for ($i = 1; $i <= 1000; $i++) {
+            $batch[] = [
+                'nama_mhs' => $faker->name(),
+                'status' => $faker->randomElement($statuses),
+                'nama_ortu' => $faker->name(),
+                'wa_mhs' => '62' . $faker->numerify('##########'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            
+            // Insert batch every 100 records
+            if (count($batch) === $batchSize || $i === 1000) {
+                Invitation::insert($batch);
+                $this->command->info("Inserted {$i} records...");
+                $batch = [];
+            }
+        }
+
+        $this->command->info('✅ Successfully created 1000 dummy invitation records!');
     }
 }

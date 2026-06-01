@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     // Daftar Kehadiran (scan / attendance list)
     Route::get('/daftar-hadir', [InvitationController::class, 'daftarHadir'])->name('daftar-hadir');
+    
+    // Export routes
+    Route::get('/export-undangan', [InvitationController::class, 'exportExcel'])->name('export-undangan');
+    Route::get('/export-kehadiran', [InvitationController::class, 'exportPresenceExcel'])->name('export-kehadiran');
 });
 
 // Invitation Routes

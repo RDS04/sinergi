@@ -15,5 +15,6 @@ class Invitation extends Model
         'alamat_ortu',
         'wa_ortu',
         'status',
+        'attendance_status',
     ];
 }

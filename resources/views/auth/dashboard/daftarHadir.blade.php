@@ -226,7 +226,8 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Lengkap</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">No. Telepon</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Orang Tua/Wali</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kehadiran</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -331,6 +332,12 @@
             paginatedData.forEach((item, idx) => {
                 const nomor = start + idx + 1;
                 if (activeTab === "undangan") {
+                    // Status kategori badge (Mahasiswa/Alumni)
+                    const statusKategori = item.status === 'mahasiswa'
+                        ? '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold"><i class="fas fa-graduation-cap"></i> Mahasiswa</span>'
+                        : '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold"><i class="fas fa-award"></i> Alumni</span>';
+                    
+                    // Status kehadiran badge
                     const statusBadge = item.statusKehadiran === "Hadir" 
                         ? '<span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> Hadir</span>' 
                         : '<span class="badge-belum"><i class="fas fa-clock mr-1"></i> Belum Hadir</span>';
@@ -343,6 +350,7 @@
                         <td class="px-6 py-4 text-sm font-medium text-gray-800">${escapeHtml(item.nama)}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.email)}<br><span class="text-xs">${escapeHtml(item.kontak || '-')}</span></td>
                         <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.instansi)}</td>
+                        <td class="px-6 py-4">${statusKategori}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
                         <td class="px-6 py-4 text-center">${actionBtn}</td>
                     </tr>`;
@@ -368,27 +376,15 @@
             updateStats();
         }
 
-        // Fungsi Tandai Hadir (update status di data undangan)
+        // Fungsi Tandai Hadir (update status di data undangan SAJA)
+        // PENTING: Jangan sinkronisasi dengan daftarKehadiran untuk mencegah status berubah
         window.markHadir = function(id) {
             const guest = undanganData.find(g => g.id === id);
             if (guest && guest.statusKehadiran !== "Hadir") {
                 guest.statusKehadiran = "Hadir";
                 guest.waktuHadir = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + " WIB";
-                // juga tambahkan ke daftar kehadiran (untuk sinkronisasi tampilan)
-                const existsInAttendance = daftarKehadiran.some(k => k.id === id);
-                if (!existsInAttendance) {
-                    daftarKehadiran.push({
-                        id: guest.id,
-                        nama: guest.nama,
-                        email: guest.email,
-                        instansi: guest.instansi,
-                        checkIn: guest.waktuHadir,
-                        metode: "Manual (Admin)"
-                    });
-                } else {
-                    const attendance = daftarKehadiran.find(k => k.id === id);
-                    if (attendance) attendance.checkIn = guest.waktuHadir;
-                }
+                // REMOVED: Sync logic yang mengubah daftarKehadiran
+                // Hanya update undanganData lokal tanpa mempengaruhi tab "Daftar Kehadiran"
                 renderTable(); // refresh
                 showToast(`✅ ${guest.nama} telah ditandai hadir`, false);
             } else if (guest && guest.statusKehadiran === "Hadir") {

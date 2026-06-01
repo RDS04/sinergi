@@ -17,6 +17,7 @@ return new class extends Migration
             $table->enum('status', ['mahasiswa', 'alumni'])->default('mahasiswa');
             $table->string('nama_ortu');
             $table->string('wa_mhs');
+            $table->enum('attendance_status', ['belum_hadir', 'hadir'])->default('belum_hadir');
             $table->timestamps();
         });
     }

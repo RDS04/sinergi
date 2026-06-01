@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Status Kategori - Daftar Undangan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .badge-hadir {
+            background: #10b981;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-belum {
+            background: #f59e0b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-6">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-[#018FD7] mb-2">Demo Status Kategori - Daftar Undangan</h1>
+        <p class="text-gray-600 mb-6">Menampilkan bagaimana status Mahasiswa/Alumni ditampilkan di tabel</p>
+
+        <!-- Deskripsi -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded">
+            <p class="text-blue-800"><strong>Fitur Baru:</strong> Kolom "Status Kategori" sekarang menampilkan apakah peserta adalah Mahasiswa atau Alumni dengan badge berwarna.</p>
+        </div>
+
+        <!-- Tabel Demo -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gradient-to-r from-[#018FD7]/5 to-[#C9A03D]/5">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">No</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Lengkap</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">No. Telepon</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Orang Tua/Wali</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kehadiran</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        <!-- Data 1: Mahasiswa -->
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 text-sm text-gray-600">1</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-800">Reyhan Dzanuar</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">081234567890<br><span class="text-xs">081234567890</span></td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Ibu Reyhan</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold">
+                                    <i class="fas fa-graduation-cap"></i> Mahasiswa
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="badge-belum"><i class="fas fa-clock mr-1"></i> Belum Hadir</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="text-[#018FD7] hover:text-[#C9A03D] transition text-xs font-medium px-2 py-1 rounded-full border border-[#018FD7]/30">
+                                    <i class="fas fa-check-circle mr-1"></i> Tandai Hadir
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Data 2: Alumni -->
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 text-sm text-gray-600">2</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-800">Budi Santoso</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">082345678901<br><span class="text-xs">082345678901</span></td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Bp. Budi</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold">
+                                    <i class="fas fa-award"></i> Alumni
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="badge-belum"><i class="fas fa-clock mr-1"></i> Belum Hadir</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="text-[#018FD7] hover:text-[#C9A03D] transition text-xs font-medium px-2 py-1 rounded-full border border-[#018FD7]/30">
+                                    <i class="fas fa-check-circle mr-1"></i> Tandai Hadir
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Data 3: Mahasiswa (Hadir) -->
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 text-sm text-gray-600">3</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-800">Ani Wijaya</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">083456789012<br><span class="text-xs">083456789012</span></td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Ibu Ani</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold">
+                                    <i class="fas fa-graduation-cap"></i> Mahasiswa
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> Hadir</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="text-gray-400 text-xs cursor-default" disabled>
+                                    <i class="fas fa-check-double"></i> Hadir
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Data 4: Alumni (Hadir) -->
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 text-sm text-gray-600">4</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-800">Citra Dewi</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">084567890123<br><span class="text-xs">084567890123</span></td>
+                            <td class="px-6 py-4 text-sm text-gray-500">Ibu Citra</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold">
+                                    <i class="fas fa-award"></i> Alumni
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> Hadir</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="text-gray-400 text-xs cursor-default" disabled>
+                                    <i class="fas fa-check-double"></i> Hadir
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Penjelasan Fitur -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <!-- Status Kategori -->
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                <h3 class="text-lg font-bold text-[#018FD7] mb-4"><i class="fas fa-tags mr-2"></i>Status Kategori</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-2"><strong>Mahasiswa</strong></p>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold">
+                            <i class="fas fa-graduation-cap"></i> Mahasiswa
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm mb-2"><strong>Alumni</strong></p>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold">
+                            <i class="fas fa-award"></i> Alumni
+                        </span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-4">Status Kategori menunjukkan posisi peserta saat mendaftar. Status ini bersifat tetap dan tidak bisa diubah.</p>
+            </div>
+
+            <!-- Status Kehadiran -->
+            <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                <h3 class="text-lg font-bold text-green-600 mb-4"><i class="fas fa-check-circle mr-2"></i>Status Kehadiran</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-2"><strong>Belum Hadir</strong></p>
+                        <span class="badge-belum"><i class="fas fa-clock mr-1"></i> Belum Hadir</span>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm mb-2"><strong>Hadir</strong></p>
+                        <span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> Hadir</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-4">Status Kehadiran bisa diubah dengan tombol "Tandai Hadir" ketika peserta check-in.</p>
+            </div>
+        </div>
+
+        <!-- Informasi Teknis -->
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mt-8">
+            <h3 class="text-lg font-bold text-green-800 mb-4"><i class="fas fa-code mr-2"></i>Informasi Teknis</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-2">File yang Dimodifikasi:</h4>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        <li>✅ InvitationController.php (Method: daftarHadir)</li>
+                        <li>✅ daftarHadir.blade.php (Table header & rendering)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-2">Kolom Baru:</h4>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        <li>📊 Status Kategori (sebelumnya: Status)</li>
+                        <li>📊 Status Kehadiran (sebelumnya di kolom yang sama)</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mt-4">Kedua status ditampilkan secara terpisah untuk kejelasan yang lebih baik saat admin mengelola data.</p>
+        </div>
+    </div>
+</body>
+</html>
