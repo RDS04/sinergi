@@ -225,7 +225,6 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Lengkap</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">No. Telepon</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Orang Tua/Wali</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kategori</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kehadiran</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Aksi</th>
@@ -349,7 +348,6 @@
                         <td class="px-6 py-4 text-sm text-gray-600">${nomor}</td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-800">${escapeHtml(item.nama)}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.email)}<br><span class="text-xs">${escapeHtml(item.kontak || '-')}</span></td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.instansi)}</td>
                         <td class="px-6 py-4">${statusKategori}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
                         <td class="px-6 py-4 text-center">${actionBtn}</td>
@@ -360,7 +358,6 @@
                         <td class="px-6 py-4 text-sm text-gray-600">${nomor}</td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-800">${escapeHtml(item.nama)}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.email)}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.instansi)}</td>
                         <td class="px-6 py-4"><span class="badge-undangan"><i class="fas fa-fingerprint mr-1"></i> Check-in ${escapeHtml(item.checkIn)}</span><div class="text-xs text-gray-400">${escapeHtml(item.metode)}</div></td>
                         <td class="px-6 py-4 text-center">
                             <button class="text-[#C9A03D] hover:text-[#018FD7] transition"><i class="fas fa-receipt"></i></button>
@@ -435,14 +432,14 @@
             }
             let csvRows = [];
             if (activeTab === "undangan") {
-                csvRows.push(["No", "Nama Lengkap", "Email", "Kontak", "Instansi", "Status Kehadiran", "Waktu Hadir"]);
+                csvRows.push(["No", "Nama Lengkap", "Email", "Kontak", "Status Kehadiran", "Waktu Hadir"]);
                 data.forEach((item, idx) => {
-                    csvRows.push([idx+1, item.nama, item.email, item.kontak || '-', item.instansi, item.statusKehadiran, item.waktuHadir || '-']);
+                    csvRows.push([idx+1, item.nama, item.email, item.kontak || '-', item.statusKehadiran, item.waktuHadir || '-']);
                 });
             } else {
-                csvRows.push(["No", "Nama Lengkap", "Email", "Instansi", "Check-in Time", "Metode"]);
+                csvRows.push(["No", "Nama Lengkap", "Email", "Check-in Time", "Metode"]);
                 data.forEach((item, idx) => {
-                    csvRows.push([idx+1, item.nama, item.email, item.instansi, item.checkIn, item.metode]);
+                    csvRows.push([idx+1, item.nama, item.email, item.checkIn, item.metode]);
                 });
             }
             const csvContent = csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");

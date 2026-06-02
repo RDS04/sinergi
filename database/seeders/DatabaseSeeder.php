@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
     private function seedInvitations(): void
     {
         $faker = Faker::create('id_ID');
-        $statuses = ['mahasiswa', 'alumni'];
+        $statuses = ['mahasiswa', 'alumni', 'ortu'];
         
         $batch = [];
         $batchSize = 100;
@@ -45,8 +45,8 @@ class DatabaseSeeder extends Seeder
             $batch[] = [
                 'nama_mhs' => $faker->name(),
                 'status' => $faker->randomElement($statuses),
-                'nama_ortu' => $faker->name(),
                 'wa_mhs' => '62' . $faker->numerify('##########'),
+                'attendance_status' => 'belum_hadir',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

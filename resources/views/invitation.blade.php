@@ -784,7 +784,8 @@
                         <div class="flex flex-col items-center group">
                             <div
                                 class="bg-white p-4 rounded-2xl border-2 border-[#018FD7]/20 hover:border-[#018FD7]/60 transition-all shadow-md hover:shadow-lg group-hover:scale-105 mb-3">
-                                <img src="{{ asset('storage/logo.png') }}" alt="Universitas Metamedia" class="w-24 h-24 object-contain">
+                                <img src="{{ asset('storage/logo.png') }}" alt="Universitas Metamedia"
+                                    class="w-24 h-24 object-contain">
                             </div>
                             <p class="text-[#016aa3] text-xs sm:text-sm font-bold text-center">Universitas<br>Metamedia
                             </p>
@@ -801,7 +802,8 @@
                         <div class="flex flex-col items-center group">
                             <div
                                 class="bg-white p-4 rounded-2xl border-2 border-[#018FD7]/20 hover:border-[#018FD7]/60 transition-all shadow-md hover:shadow-lg group-hover:scale-105 mb-3">
-                                <img src="{{ asset('storage/enbi.webp') }}" alt="ENBI Group" class="w-24 h-24 object-contain">
+                                <img src="{{ asset('storage/enbi.webp') }}" alt="ENBI Group"
+                                    class="w-24 h-24 object-contain">
                             </div>
                             <p class="text-[#016aa3] text-xs sm:text-sm font-bold text-center">ENBI<br>Group</p>
                         </div>
@@ -932,8 +934,9 @@
                             <div class="space-y-5">
                                 <!-- Nama Mahasiswa -->
                                 <div class="group">
-                                    <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nama
-                                        Mahasiswa <span class="text-red-400">*</span></label>
+                                    <label
+                                        class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nama<span
+                                            class="text-red-400">*</span></label>
                                     <div class="relative">
                                         <i
                                             class="fas fa-user absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
@@ -956,28 +959,13 @@
                                             style="background-image: url('data:image/svg+xml;utf8,<svg fill=\'rgba(255,255,255,0.6)\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 24px; padding-right: 40px;">
                                             <option value="" disabled selected style="background-color: #016aa3;">Pilih
                                                 Status</option>
-                                            <option value="mahasiswa" style="background-color: #016aa3;">Mahasiswa
-                                            </option>
+                                            <option value="mahasiswa" style="background-color: #016aa3;">Mahasiswa</option>
                                             <option value="alumni" style="background-color: #016aa3;">Alumni</option>
+                                            <option value="ortu" style="background-color: #016aa3;">Orang Tua/Wali</option>
                                         </select>
                                     </div>
                                     <p class="text-red-300 text-xs mt-2 hidden error-status"></p>
                                 </div>
-
-                                <!-- Nama Orang Tua -->
-                                <div class="group">
-                                    <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nama
-                                        Orang Tua / Wali <span class="text-red-400">*</span></label>
-                                    <div class="relative">
-                                        <i
-                                            class="fas fa-user-tie absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
-                                        <input type="text" name="nama_ortu" required
-                                            class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 group-focus-within:border-[#FFD966]"
-                                            placeholder="Masukkan nama orang tua atau wali">
-                                    </div>
-                                    <p class="text-red-300 text-xs mt-2 hidden error-nama_ortu"></p>
-                                </div>
-
                                 <!-- WhatsApp Mahasiswa -->
                                 <div class="group">
                                     <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nomor
@@ -1098,236 +1086,226 @@
         </div>
     </div>
     <script>
-        // // Auto clear cache saat halaman dimuat
-        // if (performance.navigation.type === 2) {
-        //     // Jika reload dari cache
-        //     localStorage.removeItem('invitationQrData');
-        //     window.location.reload();
-        // }
+            // // Auto clear cache saat halaman dimuat
+            // if (performance.navigation.type === 2) {
+            //     // Jika reload dari cache
+            //     localStorage.removeItem('invitationQrData');
+            //     window.location.reload();
+            // }
 
-        (function () {
-            // 1. Generate blink-blink emas background (sparkling stars)
-            const sparkleContainer = document.getElementById('goldSparkleContainer');
-            function createSparkle() {
-                const spark = document.createElement('div');
-                spark.classList.add('gold-sparkle');
-                const size = Math.random() * 8 + 3; // 3px - 11px
-                spark.style.width = size + 'px';
-                spark.style.height = size + 'px';
-                spark.style.left = Math.random() * 100 + '%';
-                spark.style.top = Math.random() * 100 + '%';
-                const duration = Math.random() * 1.2 + 0.8; // 0.8s - 2s
-                spark.style.animationDuration = duration + 's';
-                spark.style.animationDelay = Math.random() * 1.5 + 's';
-                sparkContainer.appendChild(spark);
-                setTimeout(() => {
-                    if (spark && spark.remove) spark.remove();
-                }, duration * 1000 + 500);
-            }
-            // generate many sparkles
-            setInterval(() => {
-                if (document.getElementById('invitationContent') && !document.getElementById('invitationContent').classList.contains('hidden')) {
-                    for (let i = 0; i < 3; i++) createSparkle();
-                } else {
-                    for (let i = 0; i < 2; i++) createSparkle();
-                }
-            }, 600);
-            for (let i = 0; i < 12; i++) setTimeout(() => createSparkle(), i * 200);
-
-            // Splash logic
-            const splash = document.getElementById('splashScreen');
-            const invitation = document.getElementById('invitationContent');
-            const openBtn = document.getElementById('openInvitationBtn');
-
-            function openInvitation() {
-                if (!splash || !invitation) return;
-                splash.style.opacity = '0';
-                splash.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    invitation.classList.remove('hidden');
+            (function () {
+                // 1. Generate blink-blink emas background (sparkling stars)
+                const sparkleContainer = document.getElementById('goldSparkleContainer');
+                function createSparkle() {
+                    const spark = document.createElement('div');
+                    spark.classList.add('gold-sparkle');
+                    const size = Math.random() * 8 + 3; // 3px - 11px
+                    spark.style.width = size + 'px';
+                    spark.style.height = size + 'px';
+                    spark.style.left = Math.random() * 100 + '%';
+                    spark.style.top = Math.random() * 100 + '%';
+                    const duration = Math.random() * 1.2 + 0.8; // 0.8s - 2s
+                    spark.style.animationDuration = duration + 's';
+                    spark.style.animationDelay = Math.random() * 1.5 + 's';
+                    sparkContainer.appendChild(spark);
                     setTimeout(() => {
-                        invitation.classList.add('opacity-100');
-                        invitation.classList.remove('opacity-0');
-                        // smooth scroll sedikit kebawah (mobile)
-                        setTimeout(() => {
-                            window.scrollTo({ top: 80, behavior: 'smooth' });
-                        }, 300);
-                    }, 30);
-                }, 600);
-            }
-            if (openBtn) openBtn.addEventListener('click', openInvitation);
-
-            // RSVP AJAX handler
-            const invitationForm = document.getElementById('invitationForm');
-            const formContainer = document.getElementById('formContainer');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const successContainer = document.getElementById('successContainer');
-            const errorAlert = document.getElementById('errorAlert');
-            const submitBtn = document.getElementById('submitBtn');
-
-            if (invitationForm) {
-                invitationForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-
-                    // Clear previous errors
-                    document.querySelectorAll('[class*="error-"]').forEach(el => {
-                        el.classList.add('hidden');
-                        el.textContent = '';
-                    });
-                    errorAlert.classList.add('hidden');
-
-                    // Get form data
-                    const formData = new FormData(invitationForm);
-
-                    // Validate phone number (just check if not empty)
-                    const wa_mhs = formData.get('wa_mhs');
-                    if (!wa_mhs || wa_mhs.trim() === '') {
-                        showFieldError('wa_mhs', 'Nomor WhatsApp tidak boleh kosong');
-                        return;
+                        if (spark && spark.remove) spark.remove();
+                    }, duration * 1000 + 500);
+                }
+                // generate many sparkles
+                setInterval(() => {
+                    if (document.getElementById('invitationContent') && !document.getElementById('invitationContent').classList.contains('hidden')) {
+                        for (let i = 0; i < 3; i++) createSparkle();
+                    } else {
+                        for (let i = 0; i < 2; i++) createSparkle();
                     }
+                }, 600);
+                for (let i = 0; i < 12; i++) setTimeout(() => createSparkle(), i * 200);
 
-                    // Show loading state
-                    submitBtn.disabled = true;
-                    formContainer.classList.add('hidden');
-                    loadingSpinner.classList.remove('hidden');
-                    successContainer.classList.add('hidden');
+                // Splash logic
+                const splash = document.getElementById('splashScreen');
+                const invitation = document.getElementById('invitationContent');
+                const openBtn = document.getElementById('openInvitationBtn');
 
-                    try {
-                        // Send AJAX request with FormData (proper way)
-                        const response = await fetch('{{ route("invitation.store") }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json'
-                            },
-                            body: formData
-                        });
-
-                        // Check if response is ok first
-                        if (!response.ok) {
-                            throw new Error(`HTTP Error: ${response.status}`);
-                        }
-
-                        // Try to parse as JSON
-                        let data;
-                        try {
-                            data = await response.json();
-                        } catch (parseError) {
-                            console.error('JSON Parse Error:', parseError);
-                            const textContent = await response.text();
-                            console.error('Response text:', textContent);
-                            throw new Error('Response tidak valid (bukan JSON)');
-                        }
-
-                        if (data.success) {
-                            // Success - show QR code and guest info
-                            const qrImg = document.getElementById('qrCodeImage');
-                            const nameEl = document.getElementById('infoNama');
-                            const statusEl = document.getElementById('infoStatus');
-                            const ortuEl = document.getElementById('infoOrtu');
-                            const waEl = document.getElementById('infoWa');
-
-                            // Safely set content with null checks
-                            if (qrImg) qrImg.src = data.qr_code_url;
-                            if (nameEl) nameEl.textContent = data.nama_mhs || '-';
-                            if (statusEl) statusEl.textContent = (data.status === 'mahasiswa' ? 'Mahasiswa' : 'Alumni') || '-';
-                            if (ortuEl) ortuEl.textContent = data.nama_ortu || '-';
-                            if (waEl) waEl.textContent = data.wa_mhs || '-';
-
-                            // Store QR code data for download
-                            window.currentName = data.nama_mhs;
-                            window.currentQRData = data.qr_code_url;
-                            localStorage.setItem('invitationQrData', data.qr_code_url);
-                            cacheQrData(data.qr_code_url);
-
-                            // Transition to success view
-                            loadingSpinner.classList.add('hidden');
-                            successContainer.classList.remove('hidden');
-
-                            // Scroll to success section
+                function openInvitation() {
+                    if (!splash || !invitation) return;
+                    splash.style.opacity = '0';
+                    splash.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                        invitation.classList.remove('hidden');
+                        setTimeout(() => {
+                            invitation.classList.add('opacity-100');
+                            invitation.classList.remove('opacity-0');
+                            // smooth scroll sedikit kebawah (mobile)
                             setTimeout(() => {
-                                successContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                window.scrollTo({ top: 80, behavior: 'smooth' });
                             }, 300);
-                        } else {
-                            // Handle validation errors
-                            if (data.errors) {
-                                Object.keys(data.errors).forEach(field => {
-                                    showFieldError(field, data.errors[field][0]);
-                                });
-                            } else {
-                                showAlert('Terjadi kesalahan: ' + (data.message || 'Silakan coba lagi'));
+                        }, 30);
+                    }, 600);
+                }
+                if (openBtn) openBtn.addEventListener('click', openInvitation);
+
+                // RSVP AJAX handler
+                const invitationForm = document.getElementById('invitationForm');
+                const formContainer = document.getElementById('formContainer');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                const successContainer = document.getElementById('successContainer');
+                const errorAlert = document.getElementById('errorAlert');
+                const submitBtn = document.getElementById('submitBtn');
+
+                if (invitationForm) {
+                    invitationForm.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+
+                        // Clear previous errors
+                        document.querySelectorAll('[class*="error-"]').forEach(el => {
+                            el.classList.add('hidden');
+                            el.textContent = '';
+                        });
+                        errorAlert.classList.add('hidden');
+
+                        // Get form data
+                        const formData = new FormData(invitationForm);
+
+                        // Validate phone number (just check if not empty)
+                        const wa_mhs = formData.get('wa_mhs');
+                        if (!wa_mhs || wa_mhs.trim() === '') {
+                            showFieldError('wa_mhs', 'Nomor WhatsApp tidak boleh kosong');
+                            return;
+                        }
+
+                        // Show loading state
+                        submitBtn.disabled = true;
+                        formContainer.classList.add('hidden');
+                        loadingSpinner.classList.remove('hidden');
+                        successContainer.classList.add('hidden');
+
+                        try {
+                            // Send AJAX request with FormData (proper way)
+                            const response = await fetch('{{ route("invitation.store") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'Accept': 'application/json'
+                                },
+                                body: formData
+                            });
+
+                            // Check if response is ok first
+                            if (!response.ok) {
+                                throw new Error(`HTTP Error: ${response.status}`);
                             }
 
-                            // Reset form view
+                            // Try to parse as JSON
+                            let data;
+                            try {
+                                data = await response.json();
+                            } catch (parseError) {
+                                console.error('JSON Parse Error:', parseError);
+                                const textContent = await response.text();
+                                console.error('Response text:', textContent);
+                                throw new Error('Response tidak valid (bukan JSON)');
+                            }
+
+                            if (data.success) {
+                                // Success - show QR code
+                                const qrImg = document.getElementById('qrCodeImage');
+                                if (qrImg) qrImg.src = data.qr_code_url;
+
+                                // Store QR code data for download
+                                window.currentName = data.nama_mhs;
+                                window.currentQRData = data.qr_code_url;
+                                localStorage.setItem('invitationQrData', data.qr_code_url);
+                                cacheQrData(data.qr_code_url);
+
+                                // Transition to success view
+                                loadingSpinner.classList.add('hidden');
+                                successContainer.classList.remove('hidden');
+
+                                // Scroll to success section
+                                setTimeout(() => {
+                                    successContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }, 300);
+                            } else {
+                                // Handle validation errors
+                                if (data.errors) {
+                                    Object.keys(data.errors).forEach(field => {
+                                        showFieldError(field, data.errors[field][0]);
+                                    });
+                                } else {
+                                    showAlert('Terjadi kesalahan: ' + (data.message || 'Silakan coba lagi'));
+                                }
+
+                                // Reset form view
+                                loadingSpinner.classList.add('hidden');
+                                formContainer.classList.remove('hidden');
+                            }
+                        } catch (error) {
+                            console.error('Error detail:', error);
+                            console.error('Error message:', error.message);
+
+                            // Determine error message based on error type
+                            let errorMsg = 'Gagal mengirim data. ';
+                            if (error.message.includes('Failed to fetch')) {
+                                errorMsg += 'Periksa koneksi internet Anda.';
+                            } else if (error.message.includes('HTTP Error')) {
+                                errorMsg += 'Server error, silakan coba lagi nanti.';
+                            } else if (error.message.includes('JSON')) {
+                                errorMsg += 'Response server tidak valid.';
+                            } else {
+                                errorMsg += error.message || 'Silakan coba lagi.';
+                            }
+
+                            showAlert(errorMsg);
                             loadingSpinner.classList.add('hidden');
                             formContainer.classList.remove('hidden');
+                        } finally {
+                            submitBtn.disabled = false;
                         }
-                    } catch (error) {
-                        console.error('Error detail:', error);
-                        console.error('Error message:', error.message);
-
-                        // Determine error message based on error type
-                        let errorMsg = 'Gagal mengirim data. ';
-                        if (error.message.includes('Failed to fetch')) {
-                            errorMsg += 'Periksa koneksi internet Anda.';
-                        } else if (error.message.includes('HTTP Error')) {
-                            errorMsg += 'Server error, silakan coba lagi nanti.';
-                        } else if (error.message.includes('JSON')) {
-                            errorMsg += 'Response server tidak valid.';
-                        } else {
-                            errorMsg += error.message || 'Silakan coba lagi.';
-                        }
-
-                        showAlert(errorMsg);
-                        loadingSpinner.classList.add('hidden');
-                        formContainer.classList.remove('hidden');
-                    } finally {
-                        submitBtn.disabled = false;
-                    }
-                });
-            }
-
-            // Helper function to show field error
-            function showFieldError(field, message) {
-                const errorEl = document.querySelector(`.error-${field}`);
-                if (errorEl) {
-                    errorEl.textContent = message;
-                    errorEl.classList.remove('hidden');
-                }
-            }
-
-            // Helper function to show alert
-            function showAlert(message) {
-                const errorMsg = document.getElementById('errorMessage');
-                errorMsg.textContent = message;
-                errorAlert.classList.remove('hidden');
-                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
-            async function cacheQrData(url) {
-                try {
-                    const response = await fetch(url, { mode: 'cors' });
-                    const blob = await response.blob();
-                    const reader = new FileReader();
-
-                    const dataUrl = await new Promise((resolve, reject) => {
-                        reader.onloadend = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(blob);
                     });
-
-                    localStorage.setItem('invitationQrData', dataUrl);
-                    window.currentQRData = dataUrl;
-                } catch (err) {
-                    console.warn('Gagal menyimpan QR dalam localStorage:', err);
-                    localStorage.setItem('invitationQrData', url);
                 }
-            }
 
-            // tambahan efek blink pada elemen dengan class blink-gold-text bisa dijalankan
-            // sudah tercover CSS
-        })();
+                // Helper function to show field error
+                function showFieldError(field, message) {
+                    const errorEl = document.querySelector(`.error-${field}`);
+                    if (errorEl) {
+                        errorEl.textContent = message;
+                        errorEl.classList.remove('hidden');
+                    }
+                }
+
+                // Helper function to show alert
+                function showAlert(message) {
+                    const errorMsg = document.getElementById('errorMessage');
+                    errorMsg.textContent = message;
+                    errorAlert.classList.remove('hidden');
+                    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
+                async function cacheQrData(url) {
+                    try {
+                        const response = await fetch(url, { mode: 'cors' });
+                        const blob = await response.blob();
+                        const reader = new FileReader();
+
+                        const dataUrl = await new Promise((resolve, reject) => {
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        });
+
+                        localStorage.setItem('invitationQrData', dataUrl);
+                        window.currentQRData = dataUrl;
+                    } catch (err) {
+                        console.warn('Gagal menyimpan QR dalam localStorage:', err);
+                        localStorage.setItem('invitationQrData', url);
+                    }
+                }
+
+                // tambahan efek blink pada elemen dengan class blink-gold-text bisa dijalankan
+                // sudah tercover CSS
+            })();
 
         // Function to download QR code
         function downloadQRCode() {

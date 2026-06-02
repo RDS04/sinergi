@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="small-box" style="background: white; border-top: 3px solid #C9A03D;">
+                    <div class="small-box" style="background: white; border-top: 3px solid #018FD7;">
                         <div class="inner"><h3>{{ $mahasiswaCount }}</h3><p>Mahasiswa</p></div>
                         <div class="icon"><i class="fas fa-user-graduate"></i></div>
                     </div>
@@ -62,6 +62,12 @@
                     <div class="small-box" style="background: white; border-top: 3px solid #C9A03D;">
                         <div class="inner"><h3>{{ $alumniCount }}</h3><p>Alumni</p></div>
                         <div class="icon"><i class="fas fa-handshake"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="small-box" style="background: white; border-top: 3px solid #FF6B6B;">
+                        <div class="inner"><h3>{{ $ortuCount }}</h3><p>Orang Tua/Wali</p></div>
+                        <div class="icon"><i class="fas fa-heart"></i></div>
                     </div>
                 </div>
             </div>
@@ -99,7 +105,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>Nama Mahasiswa</th>
-                                <th>Nama Ortu</th>
                                 <th>Status</th>
                                 <th>WhatsApp</th>
                                 <th>Terdaftar</th>
@@ -110,13 +115,12 @@
                                 <tr>
                                     <td><strong>#{{ $invitation->id }}</strong></td>
                                     <td>{{ $invitation->nama_mhs }}</td>
-                                    <td>{{ $invitation->nama_ortu }}</td>
-                                    <td><span class="badge" style="background: {{ $invitation->status === 'mahasiswa' ? '#018FD7' : '#C9A03D' }}; color: white;">{{ ucfirst($invitation->status) }}</span></td>
+                                    <td><span class="badge" style="background: {{ $invitation->status === 'mahasiswa' ? '#018FD7' : ($invitation->status === 'alumni' ? '#C9A03D' : '#FF6B6B') }}; color: white;">{{ ucfirst($invitation->status) === 'Ortu' ? 'Orang Tua' : ucfirst($invitation->status) }}</span></td>
                                     <td>{{ $invitation->wa_mhs }}</td>
                                     <td><small class="text-muted">{{ $invitation->created_at->diffForHumans() }}</small></td>
                                 </tr>
                             @empty
-                                <tr><td colspan="6" class="text-center py-4 text-muted"><i class="fas fa-inbox"></i> Belum ada peserta terdaftar</td></tr>
+                                <tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-inbox"></i> Belum ada peserta terdaftar</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -132,15 +136,16 @@
         if (ctx) {
             const mahasiswa = {{ $mahasiswaCount }};
             const alumni = {{ $alumniCount }};
+            const ortu = {{ $ortuCount }};
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Mahasiswa', 'Alumni'],
+                    labels: ['Mahasiswa', 'Alumni', 'Orang Tua/Wali'],
                     datasets: [{
                         label: 'Jumlah Peserta',
-                        data: [mahasiswa, alumni],
-                        backgroundColor: ['#018FD7', '#C9A03D'],
-                        borderColor: ['#016aa3', '#A0823D'],
+                        data: [mahasiswa, alumni, ortu],
+                        backgroundColor: ['#018FD7', '#C9A03D', '#FF6B6B'],
+                        borderColor: ['#016aa3', '#A0823D', '#E55555'],
                         borderWidth: 2,
                         borderRadius: 8
                     }]

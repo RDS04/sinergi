@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
         $presencesCount = Presence::count();
         $mahasiswaCount = Invitation::where('status', 'mahasiswa')->count();
         $alumniCount = Invitation::where('status', 'alumni')->count();
+        $ortuCount = Invitation::where('status', 'ortu')->count();
         $todayInvitations = Invitation::whereDate('created_at', today())->count();
         $todayPresences = Presence::whereDate('created_at', today())->count();
         $latestInvitations = Invitation::latest()->limit(15)->get();
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
             'presencesCount',
             'mahasiswaCount',
             'alumniCount',
+            'ortuCount',
             'todayInvitations',
             'todayPresences',
             'latestInvitations'

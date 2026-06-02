@@ -9,11 +9,7 @@ class Invitation extends Model
     protected $table = 'invitation';
     protected $fillable = [
         'nama_mhs',
-        'prodi',
         'wa_mhs',
-        'nama_ortu',
-        'alamat_ortu',
-        'wa_ortu',
         'status',
         'attendance_status',
     ];

@@ -10,7 +10,6 @@ class Presence extends Model
         'invitation_id',
         'nama_mhs',
         'status',
-        'nama_ortu',
         'wa_mhs',
     ];
 

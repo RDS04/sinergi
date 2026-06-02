@@ -24,9 +24,8 @@ class InvitationController extends Controller
         try {
             $validated = $request->validate([
                 'nama_mhs' => 'required|string|max:255',
-                'nama_ortu' => 'required|string|max:255',
                 'wa_mhs' => 'required|string',
-                'status' => 'required|in:mahasiswa,alumni',
+                'status' => 'required|in:mahasiswa,alumni,ortu',
             ]);
 
             // Tambah status kehadiran default "belum_hadir"
@@ -45,7 +44,6 @@ class InvitationController extends Controller
                     'invitation_id' => $invitation->id,
                     'qr_code_url' => $qrCodeUrl,
                     'nama_mhs' => $invitation->nama_mhs,
-                    'nama_ortu' => $invitation->nama_ortu,
                     'wa_mhs' => $invitation->wa_mhs,
                     'status' => $invitation->status,
                     'attendance_status' => $invitation->attendance_status,
@@ -205,7 +203,6 @@ class InvitationController extends Controller
                 'invitation_id' => $invitation->id,
                 'nama_mhs' => $invitation->nama_mhs,
                 'status' => $invitation->status,
-                'nama_ortu' => $invitation->nama_ortu,
                 'wa_mhs' => $invitation->wa_mhs,
             ]);
 
@@ -243,14 +240,14 @@ class InvitationController extends Controller
      */
     public function daftarHadir()
     {
-        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'nama_ortu as instansi', 'status', 'attendance_status', 'created_at')->get()
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'created_at')->get()
             ->map(function($item) {
                 $item->statusKehadiran = $item->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir';
                 return $item;
             });
         
         // Map presence data
-        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'nama_ortu as instansi', 'status', 'created_at')->get()->map(function($p){
+        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'status', 'created_at')->get()->map(function($p){
             $p->checkIn = $p->created_at->format('H:i').' WIB';
             return $p;
         });
@@ -287,7 +284,6 @@ class InvitationController extends Controller
                 'No',
                 'Nama Lengkap',
                 'No. Telepon',
-                'Nama Orang Tua/Wali',
                 'Status',
                 'Tanggal Daftar'
             ], ';');
@@ -298,7 +294,6 @@ class InvitationController extends Controller
                     $index + 1,
                     $invitation->nama_mhs,
                     $invitation->wa_mhs,
-                    $invitation->nama_ortu,
                     ucfirst($invitation->status),
                     $invitation->created_at->format('d-m-Y H:i:s')
                 ], ';');
@@ -389,7 +384,6 @@ class InvitationController extends Controller
                         'invitation_id' => $invitation->id,
                         'nama_mhs' => $invitation->nama_mhs,
                         'status' => $invitation->status,
-                        'nama_ortu' => $invitation->nama_ortu,
                         'wa_mhs' => $invitation->wa_mhs,
                     ]);
                 }

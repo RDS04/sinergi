@@ -416,12 +416,6 @@
                         <label for="status">Status</label>
                         <input type="text" id="status" name="status" readonly>
                     </div>
-
-                    <div class="form-group">
-                        <label for="nama_ortu">Nama Orang Tua</label>
-                        <input type="text" id="nama_ortu" name="nama_ortu" readonly>
-                    </div>
-
                     <div class="form-group">
                         <label for="wa_mhs">No. WhatsApp Mahasiswa</label>
                         <input type="text" id="wa_mhs" name="wa_mhs" readonly>
@@ -625,7 +619,6 @@
         function populateForm(data) {
             document.getElementById('nama_mhs').value = data.nama_mhs || '';
             document.getElementById('status').value = data.status || '';
-            document.getElementById('nama_ortu').value = data.nama_ortu || '';
             document.getElementById('wa_mhs').value = data.wa_mhs || '';
             document.getElementById('invitation_id').value = data.id || '';
         }
@@ -634,7 +627,6 @@
             // Clear semua input fields
             document.getElementById('nama_mhs').value = '';
             document.getElementById('status').value = '';
-            document.getElementById('nama_ortu').value = '';
             document.getElementById('wa_mhs').value = '';
             document.getElementById('invitation_id').value = '';
             
