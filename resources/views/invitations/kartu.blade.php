@@ -118,7 +118,7 @@
 <body>
     <div class="page">
         <div class="card">
-            <img class="bg" src="{{ asset('img/kartu undangan.png') }}" alt="Kartu Undangan" onerror="console.error('Gambar kartu gagal dimuat dari: ' + this.src)">
+            <img class="bg" src="{{ asset('storage/kartu undangan.png') }}" alt="Kartu Undangan" onerror="console.error('Gambar kartu gagal dimuat dari: ' + this.src)">
             <div class="qr-overlay">
                 <img id="qrCodeImage" crossorigin="anonymous" src="" alt="QR Code" />
             </div>

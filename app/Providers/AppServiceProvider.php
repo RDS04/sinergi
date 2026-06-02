@@ -23,5 +23,11 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             $this->app['url']->forceScheme('https');
         }
+
+        // Set asset URL to include subfolder path for cPanel hosting
+        if (config('app.env') === 'production') {
+            $this->app['url']->forceRootUrl(config('app.url'));
+            $this->app['url']->forceScheme('https');
+        }
     }
 }
