@@ -115,7 +115,7 @@ class InvitationController extends Controller
     /**
      * Cari invitation berdasarkan nomor WhatsApp mahasiswa
      */
-    public function findByWaOrtu(Request $request)
+    public function findByWaMhs(Request $request)
     {
         $waMhs = $request->input('wa_mhs');
 
@@ -139,6 +139,11 @@ class InvitationController extends Controller
             'success' => true,
             'data' => $invitation
         ]);
+    }
+
+    public function findByWaOrtu(Request $request)
+    {
+        return $this->findByWaMhs($request);
     }
     
     /**

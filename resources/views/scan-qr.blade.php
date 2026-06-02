@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Scan QR Code</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -404,7 +404,7 @@
             <!-- Form Section -->
             <div class="form-section" id="formSection">
                 <h2>Data Kehadiran</h2>
-                <form id="attendanceForm" method="POST" action="{{ route('record-presence') }}">
+                <form id="attendanceForm" method="POST" action="/record-presence">
                     @csrf
 
                     <div class="form-group">
@@ -461,6 +461,12 @@
         let lastScanTime = 0;
         let scannedToday = {}; // Track who has been scanned today
         let isSubmitting = false; // Prevent multiple form submissions
+        let scanFrameId = null;
+
+        const basePath = window.location.pathname.startsWith('/sinergi') ? '/sinergi' : '';
+        const findInvitationUrl = `${basePath}/api/find-by-wa-ortu`;
+        const findInvitationFallbackUrl = `${basePath}/api/find-by-wa-mhs`;
+        const recordPresenceUrl = `${basePath}/record-presence`;
 
         // Toast notification function
         function showToast(title, message, type = 'success', duration = 4000) {
@@ -505,16 +511,47 @@
         function startScanning() {
             if (scanning) return;
 
+            // Check HTTPS requirement
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                const errorMsg = 'Website harus menggunakan HTTPS untuk akses kamera. Hubungi administrator.';
+                updateStatus('⚠ ' + errorMsg, 'error');
+                showToast('Keamanan Browser', errorMsg, 'error', 6000);
+                console.warn('Camera requires HTTPS - current protocol:', location.protocol);
+                return;
+            }
+
+            // Check if getUserMedia is supported
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                const errorMsg = 'Browser Anda tidak mendukung akses kamera. Gunakan Chrome, Firefox, atau Safari terbaru.';
+                updateStatus('❌ ' + errorMsg, 'error');
+                showToast('Browser Tidak Didukung', errorMsg, 'error');
+                return;
+            }
+
             navigator.mediaDevices.getUserMedia({
                 video: { facingMode: 'environment' }
             }).then(stream => {
                 video.srcObject = stream;
                 scanning = true;
-                updateStatus('Scanning... Arahkan kamera ke QR Code', 'success');
+                updateStatus('✓ Kamera aktif - Arahkan ke QR Code', 'success');
                 scanQR();
             }).catch(err => {
-                updateStatus('Tidak dapat mengakses kamera: ' + err.message, 'error');
-                showToast('Error Kamera', err.message, 'error');
+                console.error('Camera Error:', err.name, err.message);
+                let errorMsg = err.message;
+                
+                // Provide user-friendly error messages
+                if (err.name === 'NotAllowedError') {
+                    errorMsg = 'Izin kamera ditolak. Silakan beri izin di pengaturan browser.';
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorMsg = 'Kamera tidak ditemukan di perangkat ini.';
+                } else if (err.name === 'NotSecureError') {
+                    errorMsg = 'Koneksi tidak aman. Gunakan HTTPS untuk akses kamera.';
+                } else if (err.name === 'TypeError') {
+                    errorMsg = 'Error mengakses kamera. Periksa koneksi internet Anda.';
+                }
+                
+                updateStatus('❌ ' + errorMsg, 'error');
+                showToast('Error Kamera', errorMsg, 'error', 6000);
             });
         }
 
@@ -575,20 +612,55 @@
             requestAnimationFrame(scanQR);
         }
 
-        function fetchInvitationData(waMhs) {
-            showLoading(true);
-            updateStatus('Mengambil data...');
-
-            fetch('/api/find-by-wa-ortu', {
+        async function requestInvitationData(url, waMhs) {
+            const response = await fetch(url, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
                 body: JSON.stringify({ wa_mhs: waMhs })
-            })
-            .then(response => response.json())
-            .then(result => {
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            const payload = contentType.includes('application/json')
+                ? await response.json()
+                : { success: false, message: await response.text() };
+
+            if (!response.ok) {
+                const message = response.status === 419
+                    ? 'Sesi halaman scan kedaluwarsa. Refresh halaman lalu coba scan lagi.'
+                    : (payload.message || `Server error (${response.status})`);
+
+                const error = new Error(message);
+                error.status = response.status;
+                throw error;
+            }
+
+            return payload;
+        }
+
+        async function fetchInvitationData(waMhs) {
+            showLoading(true);
+            updateStatus('Mengambil data...');
+
+            try {
+                let result;
+
+                try {
+                    result = await requestInvitationData(findInvitationUrl, waMhs);
+                } catch (err) {
+                    if (err.status !== 404) {
+                        throw err;
+                    }
+
+                    console.warn('Endpoint utama tidak ditemukan, mencoba endpoint lama:', findInvitationFallbackUrl);
+                    result = await requestInvitationData(findInvitationFallbackUrl, waMhs);
+                }
+
                 showLoading(false);
                 if (result.success) {
                     populateForm(result.data);
@@ -602,18 +674,20 @@
                     }, 2000);
                 } else {
                     // Data not found - keep scannedToday[waOrtu] = true to prevent retry
+                    delete scannedToday[waMhs];
                     isSubmitting = false; // Unlock if failed
                     updateStatus(result.message || 'Data tidak ditemukan', 'error');
                     showToast('Data Tidak Ditemukan', result.message || 'Silahkan daftarkan diri terlebih dahulu', 'error', 3000);
                 }
-            })
-            .catch(err => {
+            } catch (err) {
+                console.error('Find invitation error:', err);
                 showLoading(false);
                 // Error - keep scannedToday[waOrtu] = true to prevent retry
+                delete scannedToday[waMhs];
                 isSubmitting = false; // Unlock if error
-                updateStatus('Gagal mengambil data', 'error');
-                showToast('Gagal Mengambil Data', 'Silahkan coba lagi atau hubungi admin', 'error', 3000);
-            });
+                updateStatus(err.message || 'Gagal mengambil data', 'error');
+                showToast('Gagal Mengambil Data', err.message || 'Silahkan coba lagi atau hubungi admin', 'error', 5000);
+            }
         }
 
         function populateForm(data) {
@@ -649,6 +723,149 @@
             }
         }
 
+        startScanning = async function() {
+            if (scanning) return;
+
+            if (typeof jsQR !== 'function') {
+                const errorMsg = 'Library scanner gagal dimuat. Periksa koneksi internet atau CDN.';
+                updateStatus(errorMsg, 'error');
+                showToast('Scanner Error', errorMsg, 'error', 6000);
+                return;
+            }
+
+            if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                const errorMsg = 'SSL/HTTPS belum valid, sehingga browser menolak akses kamera.';
+                updateStatus(errorMsg, 'error');
+                showToast('Keamanan Browser', errorMsg, 'error', 6000);
+                console.warn('Camera requires a secure context:', {
+                    protocol: location.protocol,
+                    isSecureContext: window.isSecureContext
+                });
+                return;
+            }
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                const errorMsg = 'Browser Anda tidak mendukung akses kamera. Gunakan Chrome, Firefox, atau Safari terbaru.';
+                updateStatus(errorMsg, 'error');
+                showToast('Browser Tidak Didukung', errorMsg, 'error');
+                return;
+            }
+
+            updateStatus('Meminta izin kamera...');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+
+                video.srcObject = stream;
+                video.setAttribute('playsinline', true);
+                await video.play();
+
+                scanning = true;
+                updateStatus('Kamera aktif - Arahkan ke QR Code', 'success');
+
+                if (scanFrameId) {
+                    cancelAnimationFrame(scanFrameId);
+                }
+                scanFrameId = requestAnimationFrame(scanQR);
+            } catch (err) {
+                console.error('Camera Error:', err.name, err.message);
+                let errorMsg = err.message || 'Kamera tidak bisa diakses.';
+
+                if (err.name === 'NotAllowedError') {
+                    errorMsg = 'Izin kamera ditolak. Klik ikon di address bar browser lalu pilih Camera: Allow.';
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorMsg = 'Kamera tidak ditemukan di perangkat ini.';
+                } else if (err.name === 'NotReadableError') {
+                    errorMsg = 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi kamera lalu coba lagi.';
+                } else if (err.name === 'NotSecureError') {
+                    errorMsg = 'Koneksi tidak aman. Pastikan SSL/HTTPS domain sudah valid.';
+                }
+
+                updateStatus(errorMsg, 'error');
+                showToast('Error Kamera', errorMsg, 'error', 6000);
+            }
+        };
+
+        stopScanning = function() {
+            scanning = false;
+
+            if (scanFrameId) {
+                cancelAnimationFrame(scanFrameId);
+                scanFrameId = null;
+            }
+
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+
+            updateStatus('Scan dihentikan');
+        };
+
+        scanQR = function() {
+            if (!scanning) return;
+
+            if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || !video.videoWidth || !video.videoHeight) {
+                scanFrameId = requestAnimationFrame(scanQR);
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: 'attemptBoth'
+            });
+
+            if (!code) {
+                scanFrameId = requestAnimationFrame(scanQR);
+                return;
+            }
+
+            const waMhs = code.data.trim();
+
+            if (!waMhs) {
+                scanFrameId = requestAnimationFrame(scanQR);
+                return;
+            }
+
+            if (scannedToday[waMhs]) {
+                scanning = false;
+                showToast('Sudah Mengisi Kehadiran', 'Anda sudah mengisi form kehadiran. Tidak dapat scan dua kali!', 'warning', 4000);
+                setTimeout(() => startScanning(), 500);
+                return;
+            }
+
+            const currentTime = Date.now();
+            if (lastScannedWa === waMhs && currentTime - lastScanTime < 3000) {
+                scanFrameId = requestAnimationFrame(scanQR);
+                return;
+            }
+
+            lastScannedWa = waMhs;
+            lastScanTime = currentTime;
+            scannedToday[waMhs] = true;
+            scanning = false;
+
+            if (scanFrameId) {
+                cancelAnimationFrame(scanFrameId);
+                scanFrameId = null;
+            }
+
+            console.log('QR Code detected:', waMhs);
+            fetchInvitationData(waMhs);
+        };
+
         // Auto-start scanning on page load
         window.addEventListener('load', function() {
             setTimeout(startScanning, 500);
@@ -674,7 +891,7 @@
 
             console.log('Submitting presence with waMhs:', waMhs);
 
-            fetch('{{ route("record-presence") }}', {
+            fetch(recordPresenceUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

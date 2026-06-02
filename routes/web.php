@@ -10,7 +10,7 @@ use App\Models\Presence;
 // Auth Routes
 
 
-Route::controller(AuthController::class)->prefix('auth')->group(function () {
+Route::controller(AuthController::class)->prefix('sinergi')->group(function () {
     Route::get('/login', 'showLogin')->name('login');
     Route::get('/register', 'showRegister')->name('register');
     Route::post('/login', 'login');
@@ -28,13 +28,17 @@ Route::middleware('auth')->group(function () {
 });
 
 // Invitation Routes
-Route::controller(InvitationController::class)->prefix('sinergi')->group(function () {
-    Route::get('/', 'index')->name('invitation.index');
+Route::controller(InvitationController::class)->group(function () {
+    Route::get('/sinergi', 'index')->name('invitation.index');
     Route::post('/invitation/store', 'store')->name('invitation.store');
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
-    Route::get('/scan-qr', 'scanQR')->name('scan-qr');
+    Route::get('/sinergi/scan-qr', 'scanQR')->name('scan-qr');
+    Route::get('/scan-qr', 'scanQR');
     Route::get('/kartu', 'kartu')->name('kartu');
     Route::post('/record-presence', 'recordPresence')->name('record-presence');
+    Route::post('/sinergi/record-presence', 'recordPresence');
+    Route::post('/sinergi/api/find-by-wa-mhs', 'findByWaOrtu');
+    Route::post('/sinergi/api/find-by-wa-ortu', 'findByWaOrtu');
     Route::delete('/invitation/{id}', 'destroy')->name('invitation.destroy');
 
     Route::get('/undangan', 'undangan')->name('undangan');
@@ -70,5 +74,11 @@ Route::controller(InvitationController::class)->prefix('sinergi')->group(functio
 // API Routes
 Route::controller(InvitationController::class)->prefix('api')->group(function () {
     Route::get('/invitation/{invitation}', 'getInvitationData');
+    Route::post('/find-by-wa-mhs', 'findByWaOrtu')->name('scan.find-by-wa-mhs');
+    Route::post('/find-by-wa-ortu', 'findByWaOrtu')->name('scan.find-by-wa-ortu');
+});
+
+Route::controller(InvitationController::class)->prefix('sinergi/api')->group(function () {
+    Route::post('/find-by-wa-mhs', 'findByWaOrtu');
     Route::post('/find-by-wa-ortu', 'findByWaOrtu');
 });
