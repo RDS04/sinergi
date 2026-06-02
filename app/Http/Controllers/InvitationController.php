@@ -24,8 +24,11 @@ class InvitationController extends Controller
         try {
             $validated = $request->validate([
                 'nama_mhs' => 'required|string|max:255',
-                'wa_mhs' => 'required|string',
+                'wa_mhs' => 'required|string|unique:invitations,wa_mhs',
                 'status' => 'required|in:mahasiswa,alumni,ortu',
+            ], [
+                'wa_mhs.unique' => 'Nomor WhatsApp ini sudah terdaftar sebelumnya.',
+                'status.in' => 'Status tidak valid. Pilih: mahasiswa, alumni, atau ortu.'
             ]);
 
             // Tambah status kehadiran default "belum_hadir"
@@ -36,8 +39,8 @@ class InvitationController extends Controller
             // Generate QR code URL
             $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($invitation->wa_mhs);
 
-            // Return JSON untuk AJAX requests (dengan Accept: application/json header)
-            if ($request->wantsJson() || $request->expectsJson()) {
+            // Return JSON untuk AJAX requests
+            if ($request->wantsJson() || $request->expectsJson() || $request->header('Accept') === 'application/json') {
                 return response()->json([
                     'success' => true,
                     'message' => 'Data berhasil ditambahkan',
@@ -54,7 +57,7 @@ class InvitationController extends Controller
             return redirect()->route('invitation.show', $invitation->id)
                 ->with('success', 'Data berhasil ditambahkan');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->wantsJson() || $request->expectsJson()) {
+            if ($request->wantsJson() || $request->expectsJson() || $request->header('Accept') === 'application/json') {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasi gagal',
@@ -63,10 +66,11 @@ class InvitationController extends Controller
             }
             throw $e;
         } catch (\Exception $e) {
-            if ($request->wantsJson() || $request->expectsJson()) {
+            if ($request->wantsJson() || $request->expectsJson() || $request->header('Accept') === 'application/json') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                    'message' => 'Terjadi kesalahan server: ' . $e->getMessage(),
+                    'error_type' => class_basename($e)
                 ], 500);
             }
             throw $e;

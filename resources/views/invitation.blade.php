@@ -1183,22 +1183,26 @@
                         successContainer.classList.add('hidden');
 
                         try {
-                            // Send AJAX request with FormData (proper way)
+                            // Convert FormData to plain object for JSON serialization
+                            const jsonData = {
+                                nama_mhs: formData.get('nama_mhs'),
+                                wa_mhs: formData.get('wa_mhs'),
+                                status: formData.get('status'),
+                                _token: formData.get('_token')
+                            };
+
+                            // Send AJAX request as JSON
                             const response = await fetch('{{ route("invitation.store") }}', {
                                 method: 'POST',
                                 headers: {
+                                    'Content-Type': 'application/json',
                                     'X-Requested-With': 'XMLHttpRequest',
                                     'Accept': 'application/json'
                                 },
-                                body: formData
+                                body: JSON.stringify(jsonData)
                             });
 
-                            // Check if response is ok first
-                            if (!response.ok) {
-                                throw new Error(`HTTP Error: ${response.status}`);
-                            }
-
-                            // Try to parse as JSON
+                            // Try to parse as JSON first
                             let data;
                             try {
                                 data = await response.json();
@@ -1206,10 +1210,10 @@
                                 console.error('JSON Parse Error:', parseError);
                                 const textContent = await response.text();
                                 console.error('Response text:', textContent);
-                                throw new Error('Response tidak valid (bukan JSON)');
+                                throw new Error('Response tidak valid (bukan JSON). Status: ' + response.status);
                             }
 
-                            if (data.success) {
+                            if (response.ok && data.success) {
                                 // Success - show QR code
                                 const qrImg = document.getElementById('qrCodeImage');
                                 if (qrImg) qrImg.src = data.qr_code_url;
@@ -1229,14 +1233,20 @@
                                     successContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 }, 300);
                             } else {
-                                // Handle validation errors
+                                // Handle validation errors or other failures
+                                let errorMsg = 'Gagal mengirim data';
+                                
                                 if (data.errors) {
+                                    // Validation errors
                                     Object.keys(data.errors).forEach(field => {
                                         showFieldError(field, data.errors[field][0]);
                                     });
-                                } else {
-                                    showAlert('Terjadi kesalahan: ' + (data.message || 'Silakan coba lagi'));
+                                    errorMsg = 'Periksa kembali data Anda';
+                                } else if (data.message) {
+                                    errorMsg = data.message;
                                 }
+                                
+                                showAlert(errorMsg);
 
                                 // Reset form view
                                 loadingSpinner.classList.add('hidden');
