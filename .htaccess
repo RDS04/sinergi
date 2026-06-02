@@ -1,6 +1,5 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /sinergi/
 
     # Jangan rewrite jika file atau folder sudah ada
     RewriteCond %{REQUEST_FILENAME} !-f
