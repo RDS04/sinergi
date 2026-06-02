@@ -28,17 +28,18 @@ Route::middleware('auth')->group(function () {
 });
 
 // Invitation Routes
-Route::controller(InvitationController::class)->group(function () {
+Route::controller(InvitationController::class)->prefix('sinergi')->group(function () {
     // Sinergi Invitation Routes (dengan prefix /sinergi)
-        Route::get('/', 'index')->name('invitation.index');
-        Route::post('/store', 'store')->name('invitation.store');
-        Route::get('/scan-qr', 'scanQR')->name('scan-qr');
-        Route::post('/record-presence', 'recordPresence')->name('record-presence');
-        Route::post('/api/find-by-wa-mhs', 'findByWaOrtu')->name('find-by-wa-mhs');
-        Route::post('/api/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
-    });
+    Route::get('/', 'index')->name('invitation.index');
+    Route::post('/store', 'store')->name('invitation.store');
+    Route::get('/scan-qr', 'scanQR')->name('scan-qr');
+    Route::post('/record-presence', 'recordPresence')->name('record-presence');
+    Route::post('/api/find-by-wa-mhs', 'findByWaOrtu')->name('find-by-wa-mhs');
+    Route::post('/api/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
+});
 
-    // Other routes
+// Other invitation routes (tanpa prefix)
+Route::controller(InvitationController::class)->group(function () {
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
     Route::get('/scan-qr', 'scanQR');
     Route::get('/kartu', 'kartu')->name('kartu');
@@ -71,6 +72,7 @@ Route::controller(InvitationController::class)->group(function () {
         ));
     })->name('dashboard');
     Route::post('/invitation/{id}/mark-attendance', 'markAttendanceManual')->name('mark-attendance');
+});
 
 
 // API Routes
