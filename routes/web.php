@@ -29,20 +29,23 @@ Route::middleware('auth')->group(function () {
 
 // Invitation Routes
 Route::controller(InvitationController::class)->group(function () {
-    Route::get('/sinergi', 'index')->name('invitation.index');
-    Route::post('/invitation/store', 'store')->name('invitation.store');
+    // Sinergi Invitation Routes (dengan prefix /sinergi)
+    Route::prefix('sinergi')->group(function () {
+        Route::get('/', 'index')->name('invitation.index');
+        Route::post('/store', 'store')->name('invitation.store');
+        Route::get('/scan-qr', 'scanQR')->name('scan-qr');
+        Route::post('/record-presence', 'recordPresence')->name('record-presence');
+        Route::post('/api/find-by-wa-mhs', 'findByWaOrtu')->name('find-by-wa-mhs');
+        Route::post('/api/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
+    });
+
+    // Other routes
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
-    Route::get('/sinergi/scan-qr', 'scanQR')->name('scan-qr');
     Route::get('/scan-qr', 'scanQR');
     Route::get('/kartu', 'kartu')->name('kartu');
-    Route::post('/record-presence', 'recordPresence')->name('record-presence');
-    Route::post('/sinergi/record-presence', 'recordPresence');
-    Route::post('/sinergi/api/find-by-wa-mhs', 'findByWaOrtu');
-    Route::post('/sinergi/api/find-by-wa-ortu', 'findByWaOrtu');
+    Route::post('/record-presence', 'recordPresence');
     Route::delete('/invitation/{id}', 'destroy')->name('invitation.destroy');
-
     Route::get('/undangan', 'undangan')->name('undangan');
-
     Route::get('/export-undangan', 'exportExcel')->name('export-undangan');
     Route::get('/export-kehadiran', 'exportPresenceExcel')->name('export-kehadiran');
 
