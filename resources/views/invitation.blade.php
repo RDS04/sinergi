@@ -1202,15 +1202,18 @@
                                 body: JSON.stringify(jsonData)
                             });
 
-                            // Try to parse as JSON first
+                            // Read response body as text first (can only read once)
+                            const responseText = await response.text();
+                            console.log('Response text:', responseText);
+
+                            // Try to parse as JSON
                             let data;
                             try {
-                                data = await response.json();
+                                data = JSON.parse(responseText);
                             } catch (parseError) {
                                 console.error('JSON Parse Error:', parseError);
-                                const textContent = await response.text();
-                                console.error('Response text:', textContent);
-                                throw new Error('Response tidak valid (bukan JSON). Status: ' + response.status);
+                                console.error('Response body:', responseText);
+                                throw new Error(`Response tidak valid (bukan JSON). Status: ${response.status}`);
                             }
 
                             if (response.ok && data.success) {
@@ -1253,14 +1256,15 @@
                                 formContainer.classList.remove('hidden');
                             }
                         } catch (error) {
-                            console.error('Error detail:', error);
+                            console.error('Submit error:', error);
                             console.error('Error message:', error.message);
+                            console.error('Error stack:', error.stack);
 
                             // Determine error message based on error type
                             let errorMsg = 'Gagal mengirim data. ';
                             if (error.message.includes('Failed to fetch')) {
                                 errorMsg += 'Periksa koneksi internet Anda.';
-                            } else if (error.message.includes('HTTP Error')) {
+                            } else if (error.message.includes('HTTP Error') || error.message.includes('Response tidak valid')) {
                                 errorMsg += 'Server error, silakan coba lagi nanti.';
                             } else if (error.message.includes('JSON')) {
                                 errorMsg += 'Response server tidak valid.';
