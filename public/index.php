@@ -17,4 +17,9 @@ require __DIR__.'/../vendor/autoload.php';
 /** @var Application $app */
 $app = require_once __DIR__.'/../bootstrap/app.php';
 
+// Handle subdirectory routing for cPanel
+if (strpos($_SERVER['REQUEST_URI'] ?? '', '/sinergi/') === 0) {
+    $_SERVER['REQUEST_URI'] = str_replace('/sinergi/public/', '/sinergi/', $_SERVER['REQUEST_URI']);
+}
+
 $app->handleRequest(Request::capture());
