@@ -24,7 +24,7 @@ class InvitationController extends Controller
         try {
             $validated = $request->validate([
                 'nama_mhs' => 'required|string|max:255',
-                'wa_mhs' => 'required|string|unique:invitations,wa_mhs',
+                'wa_mhs' => 'required|string|unique:invitation,wa_mhs',
                 'status' => 'required|in:mahasiswa,alumni,ortu',
             ], [
                 'wa_mhs.unique' => 'Nomor WhatsApp ini sudah terdaftar sebelumnya.',

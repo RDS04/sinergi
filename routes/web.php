@@ -30,7 +30,6 @@ Route::middleware('auth')->group(function () {
 // Invitation Routes
 Route::controller(InvitationController::class)->group(function () {
     // Sinergi Invitation Routes (dengan prefix /sinergi)
-    Route::prefix('sinergi')->group(function () {
         Route::get('/', 'index')->name('invitation.index');
         Route::post('/store', 'store')->name('invitation.store');
         Route::get('/scan-qr', 'scanQR')->name('scan-qr');
@@ -72,7 +71,7 @@ Route::controller(InvitationController::class)->group(function () {
         ));
     })->name('dashboard');
     Route::post('/invitation/{id}/mark-attendance', 'markAttendanceManual')->name('mark-attendance');
-});
+
 
 // API Routes
 Route::controller(InvitationController::class)->prefix('api')->group(function () {
