@@ -2,10 +2,10 @@
     RewriteEngine On
     RewriteBase /sinergi/
 
-    # If the request is not a file or directory, rewrite it
+    # Jangan rewrite jika file atau folder sudah ada
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
-    # Redirect to public folder
+    # Redirect ke public folder
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>

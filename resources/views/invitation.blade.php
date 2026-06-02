@@ -229,6 +229,7 @@
                         <i class="fas fa-envelope-open-text"></i> BUKA UNDANGAN
                     </button>
                     <p class="text-[#018FD7]/50 text-[10px] mt-4">✨ Tap untuk melanjutkan ✨</p>
+                    <a href="{{ route('login') }}">login di sini</a>
                 </div>
             </div>
 
