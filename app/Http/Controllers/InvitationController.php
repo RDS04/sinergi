@@ -100,9 +100,15 @@ class InvitationController extends Controller
     /**
      * Tampilkan halaman kartu undangan dengan background dan QR
      */
-    public function kartu()
+    public function kartu(Request $request)
     {
-        return view('invitations.kartu');
+        $qrUrl = $request->query('qr');
+        $namaUser = $request->query('nama', '');
+        
+        return view('invitations.kartu', [
+            'qrUrl' => $qrUrl,
+            'namaUser' => $namaUser
+        ]);
     }
 
     /**

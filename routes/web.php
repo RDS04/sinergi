@@ -3,29 +3,20 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\AuthController;
-use App\Models\Invitation;
-use App\Models\Presence;
 
 
 // Auth Routes
-
-
 Route::controller(AuthController::class)->prefix('sinergi')->group(function () {
     Route::get('/login', 'showLogin')->name('login');
     Route::get('/register', 'showRegister')->name('register');
-    Route::post('/login', 'login');
-    Route::post('/register', 'register');
+    Route::post('/login', 'login')->name('login.store');
+    Route::post('/register', 'register')->name('register.store');
     Route::post('/logout', 'logout')->name('logout');
-
-
+    Route::get('/daftar-hadir', 'daftarHadir')->name('daftar-hadir');
+    Route::get('/dashboard', 'dashboard')->name('dashboard');
+    Route::post('/invitation/{id}/mark-attendance', 'markAttendanceManual')->name('mark-attendance');
 });
 
-// Dashboard Route (Protected)
-Route::middleware('auth')->group(function () {
-    
-    // Daftar Kehadiran (scan / attendance list)
-    Route::get('/daftar-hadir', [InvitationController::class, 'daftarHadir'])->name('daftar-hadir');
-});
 
 // Invitation Routes
 Route::controller(InvitationController::class)->prefix('sinergi')->group(function () {
@@ -36,42 +27,20 @@ Route::controller(InvitationController::class)->prefix('sinergi')->group(functio
     Route::post('/record-presence', 'recordPresence')->name('record-presence');
     Route::post('/api/find-by-wa-mhs', 'findByWaOrtu')->name('find-by-wa-mhs');
     Route::post('/api/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
+    Route::get('/kartu', 'kartu')->name('kartu');
 });
 
 // Other invitation routes (tanpa prefix)
 Route::controller(InvitationController::class)->group(function () {
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
     Route::get('/scan-qr', 'scanQR');
-    Route::get('/kartu', 'kartu')->name('kartu');
     Route::post('/record-presence', 'recordPresence');
     Route::delete('/invitation/{id}', 'destroy')->name('invitation.destroy');
     Route::get('/undangan', 'undangan')->name('undangan');
     Route::get('/export-undangan', 'exportExcel')->name('export-undangan');
     Route::get('/export-kehadiran', 'exportPresenceExcel')->name('export-kehadiran');
 
-    Route::get('/dashboard', function () {
-
-        $totalInvitations = Invitation::count();
-        $presencesCount = Presence::count();
-        $mahasiswaCount = Invitation::where('status', 'mahasiswa')->count();
-        $alumniCount = Invitation::where('status', 'alumni')->count();
-        $ortuCount = Invitation::where('status', 'ortu')->count();
-        $todayInvitations = Invitation::whereDate('created_at', today())->count();
-        $todayPresences = Presence::whereDate('created_at', today())->count();
-        $latestInvitations = Invitation::latest()->limit(15)->get();
-
-        return view('auth.dashboard.dashboard', compact(
-            'totalInvitations',
-            'presencesCount',
-            'mahasiswaCount',
-            'alumniCount',
-            'ortuCount',
-            'todayInvitations',
-            'todayPresences',
-            'latestInvitations'
-        ));
-    })->name('dashboard');
-    Route::post('/invitation/{id}/mark-attendance', 'markAttendanceManual')->name('mark-attendance');
+    
 });
 
 

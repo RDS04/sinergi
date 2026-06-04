@@ -4,188 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Kartu Undangan</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            min-height: 100vh;
-            background: #0f172a;
-            color: #111827;
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .page {
-            width: 100%;
-            max-width: 520px;
-            position: relative;
-        }
-
-        .card {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            border-radius: 24px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-            background: #fff;
-        }
-
-        .card img.bg {
-            width: 100%;
-            display: block;
-            object-fit: cover;
-            height: auto;
-        }
-
-        .qr-overlay {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: min(180px, 60%);
-            aspect-ratio: 1;
-            transform: translate(-50%, -50%);
-            border-radius: 20px;
-            background: rgba(255,255,255,0.95);
-            border: 2px solid rgba(255,255,255,0.85);
-            display: grid;
-            place-items: center;
-            padding: 12px;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-        }
-
-        .qr-overlay img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 16px;
-        }
-
-        .message {
-            margin-top: 18px;
-            text-align: center;
-            color: #f8fafc;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .actions {
-            margin-top: 18px;
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .actions a,
-        .actions button {
-            padding: 12px 18px;
-            border-radius: 999px;
-            border: none;
-            background: #facc15;
-            color: #0f172a;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .actions a:hover,
-        .actions button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 18px 30px rgba(250,204,21,0.25);
-        }
-
-        .note {
-            margin-top: 10px;
-            color: rgba(255,255,255,0.75);
-            font-size: 12px;
-            text-align: center;
-        }
-
-        @media (max-width: 520px) {
-            .qr-overlay {
-                width: 70%;
-            }
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
-<body>
-    <div class="page">
-        <div class="card">
-            <img class="bg" src="{{ asset('storage/kartu undangan.png') }}" alt="Kartu Undangan" onerror="console.error('Gambar kartu gagal dimuat dari: ' + this.src)">
-            <div class="qr-overlay">
-                <img id="qrCodeImage" crossorigin="anonymous" src="" alt="QR Code" />
+<body class="min-h-screen bg-slate-900 text-gray-900 font-poppins flex items-center justify-center p-5">
+    <div class="w-full max-w-md">
+        <!-- Card Container -->
+        <div class="card-wrapper bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <!-- Card Image with lazy loading -->
+            <div class="relative w-full overflow-hidden rounded-3xl bg-gray-200">
+                <img 
+                    class="bg-image w-full h-auto block object-cover"
+                    src="{{ asset('storage/kartu_undangan.png') }}" 
+                    alt="Kartu Undangan" 
+                    loading="lazy"
+                    onerror="console.error('Gambar kartu gagal dimuat')"
+                >
+                
+                <!-- QR Code Overlay -->
+                <div class="qr-overlay absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                            w-[min(180px,60%)] aspect-square rounded-2xl bg-white/95 border-2 border-white/85
+                            flex items-center justify-center p-3 shadow-lg">
+                    <img 
+                        id="qrCodeImage" 
+                        class="qr-img w-full h-full object-contain rounded-xl"
+                        src="" 
+                        alt="QR Code"
+                        crossorigin="anonymous"
+                    />
+                </div>
             </div>
         </div>
-        <p class="message">QR Code akan otomatis muncul di tengah kartu undangan ketika halaman dibuka melalui tombol "Buka Kartu Undangan".</p>
-        <div class="actions">
-            <a id="backButton" href="javascript:history.back()">Kembali</a>
-            <button id="downloadCard">Download Kartu</button>
+
+        <!-- Message -->
+        <p class="mt-4 text-center text-slate-200 text-sm leading-relaxed">
+            QR Code akan otomatis muncul di tengah kartu undangan ketika halaman dibuka melalui tombol "Buka Kartu Undangan".
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 flex gap-3 justify-center">
+            <a 
+                id="backButton" 
+                href="javascript:history.back()" 
+                class="px-5 py-3 rounded-full font-bold bg-yellow-400 text-slate-900 
+                       hover:shadow-lg hover:shadow-yellow-400/25 transition-all duration-200 cursor-pointer"
+            >
+                Kembali
+            </a>
+            <button 
+                id="downloadCard" 
+                class="px-5 py-3 rounded-full font-bold bg-yellow-400 text-slate-900 
+                       hover:shadow-lg hover:shadow-yellow-400/25 transition-all duration-200 cursor-pointer
+                       disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                Download Kartu
+            </button>
         </div>
-        <p class="note">Jika QR Code tidak tampil, buka kembali dari halaman undangan setelah membuat QR Code.</p>
+
+        <!-- Note -->
+        <p class="mt-3 text-center text-slate-400 text-xs">
+            Jika QR Code tidak tampil, buka kembali dari halaman undangan setelah membuat QR Code.
+        </p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         const qrImage = document.getElementById('qrCodeImage');
         const downloadBtn = document.getElementById('downloadCard');
 
-        const storedQr = localStorage.getItem('invitationQrData');
-
-        if (storedQr) {
-            qrImage.src = storedQr;
+        // Parse QR data dari URL parameter atau localStorage
+        let qrData = null;
+        
+        // Coba ambil dari URL parameter terlebih dahulu
+        const urlParams = new URLSearchParams(window.location.search);
+        const qrParam = urlParams.get('qr');
+        
+        if (qrParam) {
+            try {
+                qrData = decodeURIComponent(qrParam);
+                console.log('QR data loaded from URL parameter');
+            } catch (e) {
+                console.error('Error decoding QR parameter:', e);
+            }
+        }
+        
+        // Fallback ke localStorage
+        if (!qrData) {
+            qrData = localStorage.getItem('invitationQrData');
+            console.log('QR data loaded from localStorage');
+        }
+        
+        // Tampilkan QR code
+        if (qrData) {
+            qrImage.src = qrData;
+            qrImage.onerror = () => {
+                console.error('QR image failed to load');
+                qrImage.alt = 'QR code gagal dimuat';
+            };
+            qrImage.onload = () => {
+                console.log('QR image loaded successfully');
+            };
         } else {
             qrImage.alt = 'Tidak ada QR code';
-            qrImage.style.opacity = '0.3';
+            qrImage.classList.add('opacity-30');
         }
 
-        downloadBtn.addEventListener('click', () => {
-            if (!storedQr) {
+        downloadBtn.addEventListener('click', async () => {
+            if (!qrData) {
                 alert('QR Code belum tersedia. Silakan kembali ke halaman undangan dan buat QR Code terlebih dahulu.');
                 return;
             }
+            
             downloadBtn.disabled = true;
             downloadBtn.textContent = 'Memproses...';
             
-            const cardElement = document.querySelector('.card');
-            html2canvas(cardElement, {
-                backgroundColor: null,
-                scale: window.devicePixelRatio || 2,
-                useCORS: true,
-                allowTaint: true,
-                logging: false,
-                proxy: null,
-                ignoreElements: (element) => {
-                    return false;
+            try {
+                const cardElement = document.querySelector('.card-wrapper');
+                const cardImage = cardElement.querySelector('.bg-image');
+                
+                // Wait for image to load
+                if (!cardImage.complete) {
+                    await new Promise((resolve, reject) => {
+                        cardImage.onload = resolve;
+                        cardImage.onerror = () => reject(new Error('Card image failed to load'));
+                        setTimeout(() => reject(new Error('Image load timeout')), 10000);
+                    });
                 }
-            }).then(canvas => {
-                try {
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL('image/png');
-                    link.download = 'kartu-undangan.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    downloadBtn.disabled = false;
-                    downloadBtn.textContent = 'Download Kartu';
-                } catch (error) {
-                    console.error('Download error:', error);
-                    alert('Gagal mengunduh kartu. Silakan coba lagi.');
-                    downloadBtn.disabled = false;
-                    downloadBtn.textContent = 'Download Kartu';
-                }
-            }).catch(error => {
-                console.error('Canvas error:', error);
-                alert('Gagal membuat unduhan kartu. Silakan coba lagi.');
+
+                // Render card to canvas
+                const canvas = await html2canvas(cardElement, {
+                    backgroundColor: null,
+                    scale: window.devicePixelRatio || 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    logging: false,
+                    onclone: (clonedDocument) => {
+                        const clonedQr = clonedDocument.getElementById('qrCodeImage');
+                        if (clonedQr && qrData) {
+                            clonedQr.src = qrData;
+                        }
+                    }
+                });
+
+                // Download
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'kartu-undangan.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Gagal mengunduh kartu. Silakan coba lagi.');
+            } finally {
                 downloadBtn.disabled = false;
                 downloadBtn.textContent = 'Download Kartu';
-            });
+            }
         });
     </script>
 </body>

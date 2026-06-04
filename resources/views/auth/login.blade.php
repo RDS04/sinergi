@@ -241,7 +241,7 @@
             @endif
 
             <!-- Form Login (hanya username & password) -->
-            <form id="loginForm" action="{{ route('login') }}" method="POST">
+            <form id="loginForm" action="{{ route('login.store') }}" method="POST">
                 @csrf
                 <div class="input-group">
                     <i class="fas fa-user-circle"></i>

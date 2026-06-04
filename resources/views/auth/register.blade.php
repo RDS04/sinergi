@@ -242,7 +242,7 @@
             @endif
 
             <!-- Form Register (hanya nama & password + konfirmasi) -->
-            <form id="registerForm" action="{{ route('register') }}" method="POST">
+            <form id="registerForm" action="{{ route('register.store') }}" method="POST">
                 @csrf
                 <div class="input-group">
                     <i class="fas fa-user"></i>

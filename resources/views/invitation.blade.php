@@ -273,7 +273,7 @@
         <div id="invitationContent" class="hidden opacity-0 transition-opacity duration-700">
             <!-- Hero Section dengan tema #018FD7 dan blink gold -->
             <div class="relative min-h-[85vh] flex flex-col justify-center items-center text-center px-5 pt-12 pb-16 overflow-hidden"
-                style="background: linear-gradient(rgba(0,0,0,0.45), rgba(1,79,159,0.6)), url('{{ asset("img/metamedia.jpg") }}') center/cover no-repeat;">
+                style="background: linear-gradient(rgba(0,0,0,0.45), rgba(1,79,159,0.6)), url('{{ asset("storage/metamedia.jpg") }}') center/cover no-repeat;">
                 <!-- Animated Stars Background -->
                 <div id="heroStars" class="absolute inset-0"></div>
                 <div class="absolute inset-0 bg-black/5"></div>
@@ -930,7 +930,6 @@
                         id="formContainer">
                         <form id="invitationForm" class="space-y-5 sm:space-y-6">
                             @csrf
-
                             <!-- Form Fields Section -->
                             <div class="space-y-5">
                                 <!-- Nama Mahasiswa -->
@@ -1187,16 +1186,20 @@
                             const jsonData = {
                                 nama_mhs: formData.get('nama_mhs'),
                                 wa_mhs: formData.get('wa_mhs'),
-                                status: formData.get('status'),
-                                _token: formData.get('_token')
+                                status: formData.get('status')
                             };
 
+                            // Get CSRF token
+                            const csrfToken = formData.get('_token');
+
                             // Send AJAX request as JSON
-                            const response = await fetch('{{ route("invitation.store") }}', {
+                            const storeUrl = window.location.origin + '/sinergi/store';
+                            const response = await fetch(storeUrl, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': csrfToken,
                                     'Accept': 'application/json'
                                 },
                                 body: JSON.stringify(jsonData)
@@ -1225,7 +1228,16 @@
                                 window.currentName = data.nama_mhs;
                                 window.currentQRData = data.qr_code_url;
                                 localStorage.setItem('invitationQrData', data.qr_code_url);
-                                cacheQrData(data.qr_code_url);
+                                
+                                // Convert QR image to dataURL for CORS-free download
+                                cacheQrData(data.qr_code_url).then(dataUrl => {
+                                    if (dataUrl) {
+                                        window.currentQRData = dataUrl;
+                                        localStorage.setItem('invitationQrData', dataUrl);
+                                    }
+                                }).catch(err => {
+                                    console.warn('QR data URL conversion failed, using API URL:', err);
+                                });
 
                                 // Transition to success view
                                 loadingSpinner.classList.add('hidden');
@@ -1312,9 +1324,11 @@
 
                         localStorage.setItem('invitationQrData', dataUrl);
                         window.currentQRData = dataUrl;
+                        return dataUrl;
                     } catch (err) {
                         console.warn('Gagal menyimpan QR dalam localStorage:', err);
                         localStorage.setItem('invitationQrData', url);
+                        return null;
                     }
                 }
 
@@ -1333,13 +1347,15 @@
             link.click();
             document.body.removeChild(link);
 
-            const kartuUrl = '{{ route("kartu") }}';
+            // Pass QR data via URL parameter untuk menghindari localStorage issue
+            const kartuUrl = '{{ route("kartu") }}' + '?qr=' + encodeURIComponent(window.currentQRData) + '&nama=' + encodeURIComponent(window.currentName);
             window.open(kartuUrl, '_blank');
         }
 
         function openKartu() {
             if (!window.currentQRData) return;
-            const kartuUrl = '{{ route("kartu") }}';
+            // Pass QR data via URL parameter untuk menghindari localStorage issue
+            const kartuUrl = '{{ route("kartu") }}' + '?qr=' + encodeURIComponent(window.currentQRData) + '&nama=' + encodeURIComponent(window.currentName);
             window.open(kartuUrl, '_blank');
         }
     </script>
