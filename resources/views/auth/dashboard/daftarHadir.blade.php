@@ -226,6 +226,8 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Nama Lengkap</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">No. Telepon</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kategori</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerOrangTua1" style="display:none;">Orang Tua 1</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerOrangTua2" style="display:none;">Orang Tua 2</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kehadiran</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -271,8 +273,10 @@
                     const q = searchQuery.toLowerCase();
                     data = data.filter(item => 
                         item.nama.toLowerCase().includes(q) || 
-                        item.email.toLowerCase().includes(q) || 
-                        item.instansi.toLowerCase().includes(q)
+                        item.kontak.toString().toLowerCase().includes(q) || 
+                        item.status.toLowerCase().includes(q) ||
+                        (item.nama_ortu_1 && item.nama_ortu_1.toLowerCase().includes(q)) ||
+                        (item.nama_ortu_2 && item.nama_ortu_2.toLowerCase().includes(q))
                     );
                 }
             } else {
@@ -282,8 +286,10 @@
                     const q = searchQuery.toLowerCase();
                     data = data.filter(item => 
                         item.nama.toLowerCase().includes(q) || 
-                        item.email.toLowerCase().includes(q) || 
-                        item.instansi.toLowerCase().includes(q)
+                        item.email.toString().toLowerCase().includes(q) || 
+                        item.status.toLowerCase().includes(q) ||
+                        (item.nama_ortu_1 && item.nama_ortu_1.toLowerCase().includes(q)) ||
+                        (item.nama_ortu_2 && item.nama_ortu_2.toLowerCase().includes(q))
                     );
                 }
             }
@@ -314,6 +320,9 @@
             const paginatedData = filteredData.slice(start, end);
             const tbody = document.getElementById("tableBody");
             const emptyStateDiv = document.getElementById("emptyState");
+            
+            document.getElementById("headerOrangTua1").style.display = "table-cell";
+            document.getElementById("headerOrangTua2").style.display = "table-cell";
 
             if (paginatedData.length === 0) {
                 tbody.innerHTML = '';
@@ -332,35 +341,61 @@
                 const nomor = start + idx + 1;
                 if (activeTab === "undangan") {
                     // Status kategori badge (Mahasiswa/Alumni)
-                    const statusKategori = item.status === 'mahasiswa'
-                        ? '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold"><i class="fas fa-graduation-cap"></i> Mahasiswa</span>'
-                        : '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold"><i class="fas fa-award"></i> Alumni</span>';
+                    let statusKategori = '';
+                    if (item.status === 'mahasiswa') {
+                        statusKategori = '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold"><i class="fas fa-graduation-cap"></i> Mahasiswa</span>';
+                    } else if (item.status === 'alumni') {
+                        statusKategori = '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold"><i class="fas fa-award"></i> Alumni</span>';
+                    } else if (item.status === 'ortu') {
+                        statusKategori = '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-100 text-pink-800 text-xs font-semibold"><i class="fas fa-heart"></i> Orang Tua</span>';
+                    }
+                    
+                    // Format nama orang tua 1 dan 2 terpisah
+                    const namaOrangTua1 = item.nama_ortu_1 ? escapeHtml(item.nama_ortu_1) : '<span class="text-gray-400">-</span>';
+                    const namaOrangTua2 = item.nama_ortu_2 ? escapeHtml(item.nama_ortu_2) : '<span class="text-gray-400">-</span>';
                     
                     // Status kehadiran badge
                     const statusBadge = item.statusKehadiran === "Hadir" 
                         ? '<span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> Hadir</span>' 
                         : '<span class="badge-belum"><i class="fas fa-clock mr-1"></i> Belum Hadir</span>';
                     const actionBtn = item.statusKehadiran === "Hadir" 
-                        ? `<button class="text-gray-400 text-xs cursor-default" disabled><i class="fas fa-check-double"></i> Hadir</button>`
-                        : `<button onclick="markHadir(${item.id})" class="text-[#018FD7] hover:text-[#C9A03D] transition text-xs font-medium px-2 py-1 rounded-full border border-[#018FD7]/30"><i class="fas fa-check-circle mr-1"></i> Tandai Hadir</button>`;
+                        ? `<button class="text-gray-400 text-xs cursor-default" disabled title="Sudah Hadir"><i class="fas fa-check-double"></i> Hadir</button>`
+                        : `<button onclick="markHadir(${item.id})" class="text-[#018FD7] hover:text-[#C9A03D] transition text-xs font-medium px-2 py-1 rounded-full border border-[#018FD7]/30" title="Tandai Hadir"><i class="fas fa-check-circle mr-1"></i> Tandai Hadir</button>`;
                     
                     html += `<tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4 text-sm text-gray-600">${nomor}</td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-800">${escapeHtml(item.nama)}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.email)}<br><span class="text-xs">${escapeHtml(item.kontak || '-')}</span></td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.kontak.toString())}</td>
                         <td class="px-6 py-4">${statusKategori}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua1}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua2}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
                         <td class="px-6 py-4 text-center">${actionBtn}</td>
                     </tr>`;
                 } else {
-                    // Daftar Kehadiran view
+                    // Daftar Kehadiran view - Display scanned data
+                    let statusKategori = '';
+                    if (item.status === 'mahasiswa') {
+                        statusKategori = '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold"><i class="fas fa-graduation-cap"></i> Mahasiswa</span>';
+                    } else if (item.status === 'alumni') {
+                        statusKategori = '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-semibold"><i class="fas fa-award"></i> Alumni</span>';
+                    } else if (item.status === 'ortu') {
+                        statusKategori = '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-100 text-pink-800 text-xs font-semibold"><i class="fas fa-heart"></i> Orang Tua</span>';
+                    }
+
+                    const namaOrangTua1 = item.nama_ortu_1 ? escapeHtml(item.nama_ortu_1) : '<span class="text-gray-400">-</span>';
+                    const namaOrangTua2 = item.nama_ortu_2 ? escapeHtml(item.nama_ortu_2) : '<span class="text-gray-400">-</span>';
+                    
                     html += `<tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4 text-sm text-gray-600">${nomor}</td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-800">${escapeHtml(item.nama)}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.email)}</td>
-                        <td class="px-6 py-4"><span class="badge-undangan"><i class="fas fa-fingerprint mr-1"></i> Check-in ${escapeHtml(item.checkIn)}</span><div class="text-xs text-gray-400">${escapeHtml(item.metode)}</div></td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${escapeHtml(item.email.toString())}</td>
+                        <td class="px-6 py-4">${statusKategori}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua1}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua2}</td>
+                        <td class="px-6 py-4"><span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> ${escapeHtml(item.checkIn)}</span></td>
                         <td class="px-6 py-4 text-center">
-                            <button class="text-[#C9A03D] hover:text-[#018FD7] transition"><i class="fas fa-receipt"></i></button>
+                            <button class="text-[#C9A03D] hover:text-[#018FD7] transition" title="Detail"><i class="fas fa-receipt"></i></button>
                         </td>
                     </tr>`;
                 }
@@ -393,7 +428,7 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
 
             // AJAX request ke server untuk update database
-            fetch(`/invitation/${id}/mark-attendance`, {
+            fetch(`/sinergi/invitation/${id}/mark-attendance`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -406,7 +441,6 @@
                 if (data.success) {
                     // Update data lokal
                     guest.statusKehadiran = data.data.statusKehadiran;
-                    guest.waktuHadir = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + " WIB";
                     renderTable();
                     showToast(`✅ ${guest.nama} telah ditandai hadir`, false);
                 } else {
@@ -432,14 +466,21 @@
             }
             let csvRows = [];
             if (activeTab === "undangan") {
-                csvRows.push(["No", "Nama Lengkap", "Email", "Kontak", "Status Kehadiran", "Waktu Hadir"]);
+                csvRows.push(["No", "Nama Lengkap", "No. Telepon", "Status", "Orang Tua", "Status Kehadiran"]);
                 data.forEach((item, idx) => {
-                    csvRows.push([idx+1, item.nama, item.email, item.kontak || '-', item.statusKehadiran, item.waktuHadir || '-']);
+                    let namaOrtu = '';
+                    if (item.nama_ortu_1 || item.nama_ortu_2) {
+                        let ortu = [];
+                        if (item.nama_ortu_1) ortu.push(item.nama_ortu_1);
+                        if (item.nama_ortu_2) ortu.push(item.nama_ortu_2);
+                        namaOrtu = ortu.join(', ');
+                    }
+                    csvRows.push([idx+1, item.nama, item.kontak, item.status, namaOrtu, item.statusKehadiran]);
                 });
             } else {
-                csvRows.push(["No", "Nama Lengkap", "Email", "Check-in Time", "Metode"]);
+                csvRows.push(["No", "Nama Lengkap", "No. Telepon", "Status", "Orang Tua 1", "Orang Tua 2", "Check-in Time"]);
                 data.forEach((item, idx) => {
-                    csvRows.push([idx+1, item.nama, item.email, item.checkIn, item.metode]);
+                    csvRows.push([idx+1, item.nama, item.email, item.status, item.nama_ortu_1 || '', item.nama_ortu_2 || '', item.checkIn]);
                 });
             }
             const csvContent = csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");

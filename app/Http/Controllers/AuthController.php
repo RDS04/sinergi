@@ -40,11 +40,17 @@ class AuthController extends Controller
      */
     public function dashboard()
     {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
         $totalInvitations = Invitation::count();
         $presencesCount = Presence::count();
         $mahasiswaCount = Invitation::where('status', 'mahasiswa')->count();
         $alumniCount = Invitation::where('status', 'alumni')->count();
-        $ortuCount = Invitation::where('status', 'ortu')->count();
+        $ortuCount = Invitation::where('status', 'ortu')->count()
+            + Invitation::whereNotNull('nama_ortu_1')->where('nama_ortu_1', '!=', '')->count()
+            + Invitation::whereNotNull('nama_ortu_2')->where('nama_ortu_2', '!=', '')->count();
         $todayInvitations = Invitation::whereDate('created_at', today())->count();
         $todayPresences = Presence::whereDate('created_at', today())->count();
         $latestInvitations = Invitation::latest()->limit(15)->get();
@@ -66,16 +72,25 @@ class AuthController extends Controller
      */
     public function daftarHadir()
     {
-        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'created_at')->get()
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'nama_ortu_1', 'nama_ortu_2', 'created_at')->get()
             ->map(function ($item) {
                 $item->statusKehadiran = $item->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir';
 
                 return $item;
             });
 
-        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'status', 'created_at')->get()
+        $presences = Presence::with('invitation')
+            ->select('id', 'invitation_id', 'nama_mhs as nama', 'wa_mhs as email', 'status', 'nama_ortu_1', 'nama_ortu_2', 'created_at')
+            ->get()
             ->map(function ($presence) {
+                $presence->nama_ortu_1 = $presence->nama_ortu_1 ?: $presence->invitation?->nama_ortu_1;
+                $presence->nama_ortu_2 = $presence->nama_ortu_2 ?: $presence->invitation?->nama_ortu_2;
                 $presence->checkIn = $presence->created_at->format('H:i') . ' WIB';
+                unset($presence->invitation);
 
                 return $presence;
             });
@@ -190,6 +205,8 @@ class AuthController extends Controller
                         'nama_mhs' => $invitation->nama_mhs,
                         'status' => $invitation->status,
                         'wa_mhs' => $invitation->wa_mhs,
+                        'nama_ortu_1' => $invitation->nama_ortu_1,
+                        'nama_ortu_2' => $invitation->nama_ortu_2,
                     ]);
                 }
 

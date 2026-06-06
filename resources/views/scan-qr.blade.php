@@ -420,6 +420,17 @@
                         <label for="wa_mhs">No. WhatsApp Mahasiswa</label>
                         <input type="text" id="wa_mhs" name="wa_mhs" readonly>
                     </div>
+
+                    <div class="form-group" id="parentSection" style="display: none;">
+                        <label for="nama_ortu_1">Nama Orang Tua/Wali</label>
+                        <input type="text" id="nama_ortu_1" name="nama_ortu_1" readonly>
+                    </div>
+
+                    <div class="form-group" id="parentSection2" style="display: none;">
+                        <label for="nama_ortu_2">Nama Orang Tua/Wali Kedua (Opsional)</label>
+                        <input type="text" id="nama_ortu_2" name="nama_ortu_2" readonly>
+                    </div>
+
                     <input type="hidden" id="invitation_id" name="invitation_id">
 
                     <div class="form-actions">
@@ -432,7 +443,7 @@
             <!-- Camera Section -->
             <div class="camera-section">
                 <div class="camera-container">
-                    <video id="video" autoplay playsinline></video>
+                    <video id="video" playsinline muted></video>
                     <canvas id="canvas"></canvas>
                     <div class="scanner-overlay"></div>
                 </div>
@@ -532,9 +543,35 @@
                 video: { facingMode: 'environment' }
             }).then(stream => {
                 video.srcObject = stream;
-                scanning = true;
-                updateStatus('✓ Kamera aktif - Arahkan ke QR Code', 'success');
-                scanQR();
+                
+                // Wait for video to be ready, then play
+                const playVideo = () => {
+                    video.play().catch(err => {
+                        console.error('Video play error:', err.name, err.message);
+                        // Retry playing after a short delay
+                        setTimeout(playVideo, 100);
+                    });
+                };
+                
+                // Video metadata loaded handler
+                const onCanPlay = () => {
+                    video.removeEventListener('canplay', onCanPlay);
+                    playVideo();
+                    scanning = true;
+                    updateStatus('✓ Kamera aktif - Arahkan ke QR Code', 'success');
+                    scanQR();
+                };
+                
+                if (video.readyState >= 2) {
+                    // Video is already ready
+                    playVideo();
+                    scanning = true;
+                    updateStatus('✓ Kamera aktif - Arahkan ke QR Code', 'success');
+                    scanQR();
+                } else {
+                    // Wait for video to be ready
+                    video.addEventListener('canplay', onCanPlay);
+                }
             }).catch(err => {
                 console.error('Camera Error:', err.name, err.message);
                 let errorMsg = err.message;
@@ -557,8 +594,23 @@
 
         function stopScanning() {
             scanning = false;
+            
+            // Cancel animation frame if running
+            if (scanFrameId) {
+                cancelAnimationFrame(scanFrameId);
+                scanFrameId = null;
+            }
+            
             if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
+                // Stop all tracks properly
+                video.srcObject.getTracks().forEach(track => {
+                    track.stop();
+                });
+                video.srcObject = null;
+            }
+            // Pause video element
+            if (!video.paused) {
+                video.pause();
             }
             updateStatus('Scan dihentikan');
         }
@@ -695,6 +747,26 @@
             document.getElementById('status').value = data.status || '';
             document.getElementById('wa_mhs').value = data.wa_mhs || '';
             document.getElementById('invitation_id').value = data.id || '';
+            
+            // Populate parent data jika ada (untuk mahasiswa)
+            if (data.status === 'mahasiswa' && data.nama_ortu_1) {
+                document.getElementById('parentSection').style.display = 'block';
+                document.getElementById('nama_ortu_1').value = data.nama_ortu_1 || '';
+                
+                if (data.nama_ortu_2) {
+                    document.getElementById('parentSection2').style.display = 'block';
+                    document.getElementById('nama_ortu_2').value = data.nama_ortu_2 || '';
+                } else {
+                    document.getElementById('parentSection2').style.display = 'none';
+                    document.getElementById('nama_ortu_2').value = '';
+                }
+            } else {
+                // Hide parent sections untuk non-mahasiswa
+                document.getElementById('parentSection').style.display = 'none';
+                document.getElementById('parentSection2').style.display = 'none';
+                document.getElementById('nama_ortu_1').value = '';
+                document.getElementById('nama_ortu_2').value = '';
+            }
         }
 
         function resetForm() {
@@ -703,6 +775,12 @@
             document.getElementById('status').value = '';
             document.getElementById('wa_mhs').value = '';
             document.getElementById('invitation_id').value = '';
+            document.getElementById('nama_ortu_1').value = '';
+            document.getElementById('nama_ortu_2').value = '';
+            
+            // Hide parent sections
+            document.getElementById('parentSection').style.display = 'none';
+            document.getElementById('parentSection2').style.display = 'none';
             
             // Reset form state
             document.getElementById('attendanceForm').reset();
@@ -963,6 +1041,15 @@
                 // KEEP scannedToday[waMhs] = true to block further scans
                 isSubmitting = false; // Unlock
             });
+        });
+
+        // Cleanup camera when page unloads or user navigates away
+        window.addEventListener('beforeunload', function() {
+            stopScanning();
+        });
+
+        window.addEventListener('pagehide', function() {
+            stopScanning();
         });
     </script>
 </body>

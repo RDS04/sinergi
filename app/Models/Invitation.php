@@ -12,5 +12,7 @@ class Invitation extends Model
         'wa_mhs',
         'status',
         'attendance_status',
+        'nama_ortu_1',
+        'nama_ortu_2',
     ];
 }

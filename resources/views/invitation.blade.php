@@ -12,8 +12,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'sans': ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
-                        'display': ['Playfair Display', 'serif'],
+                        'sans': ['Raleway', 'system-ui', 'sans-serif'],
+                        'display': ['Raleway', 'sans-serif'],
                     },
                     colors: {
                         'metamedia': '#018FD7',
@@ -49,7 +49,7 @@
         }
     </script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -63,7 +63,7 @@
         body {
             background: #018FD7;
             overflow-x: hidden;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Raleway', sans-serif;
         }
 
         /* Blink emas background effect: shimmer & floating gold dust */
@@ -210,7 +210,7 @@
                     </div>
                     <i class="fas fa-diamond text-[#C9A03D] text-lg mb-2 inline-block"></i>
                     <p class="text-[11px] text-[#C9A03D] font-light mb-2 tracking-wide">Mengundang Anda Hadir di</p>
-                    <h1 class="font-display text-4xl font-bold text-[#018FD7] leading-tight">Kolaborasi <br>Kampus</h1>
+                    <h1 class="font-display text-4xl font-bold text-[#018FD7] leading-tight">SINERGI</h1>
                     <p class="text-xs text-[#C9A03D] italic font-light mt-1">Universitas Metamedia & ENBI Group</p>
                     <div class="flex items-center justify-center gap-2 my-4">
                         <div class="w-8 h-[1px] bg-[#C9A03D]"></div>
@@ -229,7 +229,6 @@
                         <i class="fas fa-envelope-open-text"></i> BUKA UNDANGAN
                     </button>
                     <p class="text-[#018FD7]/50 text-[10px] mt-4">✨ Tap untuk melanjutkan ✨</p>
-                    <a href="{{ route('login') }}">login di sini</a>
                 </div>
             </div>
 
@@ -273,27 +272,25 @@
         <div id="invitationContent" class="hidden opacity-0 transition-opacity duration-700">
             <!-- Hero Section dengan tema #018FD7 dan blink gold -->
             <div class="relative min-h-[85vh] flex flex-col justify-center items-center text-center px-5 pt-12 pb-16 overflow-hidden"
-                style="background: linear-gradient(rgba(0,0,0,0.45), rgba(1,79,159,0.6)), url('{{ asset("storage/metamedia.jpg") }}') center/cover no-repeat;">
+                style="background: linear-gradient(rgba(0,0,0,0.2), rgba(1,79,159,0.35)), url('{{ asset("storage/metamedia.jpg") }}') center/cover no-repeat;">
                 <!-- Animated Stars Background -->
                 <div id="heroStars" class="absolute inset-0"></div>
                 <div class="absolute inset-0 bg-black/5"></div>
 
                 <!-- Logo Top Left -->
-                <div
-                    class="absolute top-6 left-5 z-20 bg-white/20 backdrop-blur-sm rounded-lg p-2 border border-white/30">
+                <div class="absolute top-6 left-5 z-20">
                     <img src="{{ asset('storage/logo.png') }}" alt="Metamedia" class="h-12 w-12 object-contain">
                 </div>
 
                 <!-- Logo Top Right -->
-                <div
-                    class="absolute top-6 right-5 z-20 bg-white/20 backdrop-blur-sm rounded-lg p-2 border border-white/30">
+                <div class="absolute top-6 right-5 z-20">
                     <img src="{{ asset('storage/enbi.webp') }}" alt="ENBI" class="h-12 w-12 object-contain">
                 </div>
 
                 <div class="relative z-2 w-full">
                     <div
-                        class="inline-block mb-4 px-3 py-1 rounded-full border border-[#C9A03D] bg-[#018FD7]/80 backdrop-blur-sm">
-                        <span class="text-[11px] tracking-wider text-[#FFD966]"><i class="fas fa-calendar-alt mr-1"></i>
+                        class="inline-block mb-4 px-3 py-1 rounded-full border border-[#FFD966] bg-[#018FD7]/60 backdrop-blur-sm">
+                        <span class="text-[11px] tracking-wider text-white font-bold"><i class="fas fa-calendar-alt mr-1"></i>
                             Save the Date</span>
                     </div>
                     <h1 class="font-display text-3xl font-black leading-tight text-white drop-shadow-xl">
@@ -306,16 +303,25 @@
                     </div>
                     <p class="text-white text-base italic font-light max-w-xs mx-auto">"Sinergi Keluarga Besar Metamedia
                         menuju Masa Depan Karir"</p>
-                    <div class="w-24 h-[1px] bg-[#C9A03D] mx-auto my-5"></div>
-                    <div class="space-y-2 text-white/90 text-sm">
-                        <div><i class="fas fa-map-marker-alt text-[#FFD966] mr-2"></i> Metamedia Hall & Convention</div>
-                        <div><i class="far fa-calendar-check text-[#FFD966] mr-2"></i> Sabtu, 14 Juni 2025</div>
-                        <div><i class="far fa-clock text-[#FFD966] mr-2"></i> 08.00 - 17.00 WIB</div>
+                    <div class="w-24 h-[2px] bg-gradient-to-r from-[#FFD966] to-[#C9A03D] mx-auto my-5"></div>
+                    <div class="space-y-3 text-white text-base sm:text-lg font-semibold">
+                        <div class="flex items-center justify-center gap-2">
+                            <i class="fas fa-map-marker-alt text-[#FFD966] text-xl"></i>
+                            <span>Truntum Ballroom</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2">
+                            <i class="far fa-calendar-check text-[#FFD966] text-xl"></i>
+                            <span>Sabtu, 19 Juni 2025</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2">
+                            <i class="far fa-clock text-[#FFD966] text-xl"></i>
+                            <span>07.30 - 17.00 WIB</span>
+                        </div>
                     </div>
 
                     <!-- Countdown Timer Section -->
                     <div
-                        class="mt-8 relative bg-white/15 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-lg overflow-hidden">
+                        class="mt-8 relative bg-white/15 backdrop-blur-md rounded-2xl p-6 border border-white/25 shadow-lg overflow-hidden">
                         <!-- Animated Stars Background -->
                         <div id="countdownStars" class="absolute inset-0 rounded-2xl"></div>
 
@@ -325,25 +331,25 @@
                             <div class="grid grid-cols-4 gap-2">
                                 <!-- Days -->
                                 <div
-                                    class="bg-[#FFD966]/20 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/40 text-center">
+                                    class="bg-[#FFD966]/15 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/30 text-center">
                                     <div class="text-2xl font-black text-[#FFD966]" id="days">00</div>
                                     <p class="text-white/70 text-[10px] mt-1 uppercase tracking-wide">Hari</p>
                                 </div>
                                 <!-- Hours -->
                                 <div
-                                    class="bg-[#FFD966]/20 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/40 text-center">
+                                    class="bg-[#FFD966]/15 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/30 text-center">
                                     <div class="text-2xl font-black text-[#FFD966]" id="hours">00</div>
                                     <p class="text-white/70 text-[10px] mt-1 uppercase tracking-wide">Jam</p>
                                 </div>
                                 <!-- Minutes -->
                                 <div
-                                    class="bg-[#FFD966]/20 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/40 text-center">
+                                    class="bg-[#FFD966]/15 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/30 text-center">
                                     <div class="text-2xl font-black text-[#FFD966]" id="minutes">00</div>
                                     <p class="text-white/70 text-[10px] mt-1 uppercase tracking-wide">Menit</p>
                                 </div>
                                 <!-- Seconds -->
                                 <div
-                                    class="bg-[#FFD966]/20 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/40 text-center">
+                                    class="bg-[#FFD966]/15 backdrop-blur-sm rounded-xl p-3 border border-[#FFD966]/30 text-center">
                                     <div class="text-2xl font-black text-[#FFD966]" id="seconds">00</div>
                                     <p class="text-white/70 text-[10px] mt-1 uppercase tracking-wide">Detik</p>
                                 </div>
@@ -361,6 +367,70 @@
                 </div>
             </div>
 
+            <!-- Partnership & Collaboration Section - New Design -->
+            <div
+                class="relative bg-gradient-to-b from-white via-[#E8F4FB] to-white px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
+                <!-- Soft Decorative Background -->
+                <div class="absolute top-0 left-0 w-40 h-40 bg-[#018FD7]/5 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 w-40 h-40 bg-[#C9A03D]/3 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <!-- Header -->
+                    <div class="text-center mb-10 sm:mb-12">
+                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-[#018FD7] mb-3">
+                            Kolaborasi <span class="text-[#C9A03D]">Strategis</span>
+                        </h2>
+                        <p class="text-[#016aa3]/70 text-sm mb-4">Partnership dalam Inovasi dan Pengembangan Talenta</p>
+                        <div class="flex justify-center">
+                            <div
+                                class="w-20 h-1 bg-gradient-to-r from-[#018FD7] via-[#C9A03D] to-[#018FD7] rounded-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Partnership Layout -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                        <!-- Metamedia Card -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div
+                                class="bg-white rounded-3xl p-6 border-2 border-[#018FD7]/20 shadow-md hover:shadow-lg transition-all hover:border-[#018FD7]/60 group cursor-pointer flex-1 flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px]">
+                                <img src="{{ asset('storage/logo.png') }}" alt="Universitas Metamedia"
+                                    class="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-4 group-hover:scale-110 transition-transform">
+                                <p class="text-[#016aa3] font-bold text-center text-sm sm:text-base">
+                                    Universitas<br>Metamedia</p>
+                            </div>
+                        </div>
+
+                        <!-- Connector -->
+                        <div class="flex flex-col items-center gap-3 justify-center h-20 sm:h-full">
+                            <div class="w-8 h-[2px] bg-gradient-to-r from-[#018FD7] to-[#C9A03D] hidden sm:block"></div>
+                            <div
+                                class="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#C9A03D] shadow-lg flex-shrink-0">
+                                <i class="fas fa-handshake text-white text-lg sm:text-xl"></i>
+                            </div>
+                            <div class="w-8 h-[2px] bg-gradient-to-r from-[#C9A03D] to-[#018FD7] hidden sm:block"></div>
+                        </div>
+
+                        <!-- ENBI Card -->
+                        <div class="flex-1 flex flex-col items-center">
+                            <div
+                                class="bg-white rounded-3xl p-6 border-2 border-[#018FD7]/20 shadow-md hover:shadow-lg transition-all hover:border-[#018FD7]/60 group cursor-pointer flex-1 flex flex-col items-center justify-center min-h-[200px] sm:min-h-[240px]">
+                                <img src="{{ asset('storage/enbi.webp') }}" alt="ENBI Group"
+                                    class="w-20 h-20 sm:w-24 sm:h-24 object-contain mb-4 group-hover:scale-110 transition-transform">
+                                <p class="text-[#016aa3] font-bold text-center text-sm sm:text-base">ENBI<br>Group</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Message -->
+                    <div class="text-center mt-10 sm:mt-12">
+                        <p class="text-[#016aa3]/70 text-sm font-light">
+                            Bersama membangun ekosistem karir yang berkelanjutan dan inovatif
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Invitation Call Section -->
             <div class="relative bg-white px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
                 <!-- Subtle animated background -->
@@ -370,8 +440,9 @@
                     <!-- Main Heading -->
                     <div class="mb-10 sm:mb-12 text-center">
                         <h2
-                            class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-[#018FD7] leading-tight mb-4">
-                            Kami Mengundang Anda
+                            class="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#018FD7] leading-snug mb-4 tracking-tight drop-shadow-lg"
+                            style="text-shadow: 2px 2px 0px rgba(1, 143, 215, 0.3), 4px 4px 8px rgba(0, 0, 0, 0.2);">
+                            Raih Kesempatan Emas Bersama Kami
                         </h2>
                         <div class="flex justify-center mb-6">
                             <div
@@ -398,12 +469,21 @@
                                         </div>
                                     </div>
                                     <div class="flex-1 text-left">
-                                        <h3 class="text-lg sm:text-xl font-bold text-[#016aa3] mb-2">Para Mahasiswa</h3>
-                                        <p class="text-[#016aa3]/75 text-sm sm:text-base leading-relaxed font-light">
-                                            Dapatkan wawasan karir terbaru, networking dengan profesional, dan
-                                            kesempatan emas meraih doorprize eksklusif. Bangun masa depan karir Anda
-                                            bersama kami!
-                                        </p>
+                                        <h3 class="text-lg sm:text-xl font-bold text-[#016aa3] mb-3">Mahasiswa</h3>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-[#018FD7] text-sm"></i>
+                                                <span class="text-[#016aa3]/85 text-xs sm:text-sm font-medium">Jaminan Kerja</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-[#018FD7] text-sm"></i>
+                                                <span class="text-[#016aa3]/85 text-xs sm:text-sm font-medium">Program Exekutif Class</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-[#018FD7] text-sm"></i>
+                                                <span class="text-[#016aa3]/85 text-xs sm:text-sm font-medium">Kesempatan Doorprize Eksklusif</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -424,11 +504,21 @@
                                         </div>
                                     </div>
                                     <div class="flex-1 text-left">
-                                        <h3 class="text-lg sm:text-xl font-bold text-[#016aa3] mb-2">Para Alumni</h3>
-                                        <p class="text-[#016aa3]/75 text-sm sm:text-base leading-relaxed font-light">
-                                            Kembali berkumpul dengan teman-teman lama, berbagi pengalaman sukses, dan
-                                            berkolaborasi dalam membangun ekosistem karir yang berkelanjutan.
-                                        </p>
+                                        <h3 class="text-lg sm:text-xl font-bold text-[#016aa3] mb-3">Alumni</h3>
+                                        <div class="space-y-2">
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-[#018FD7] text-sm"></i>
+                                                <span class="text-[#016aa3]/85 text-xs sm:text-sm font-medium">Menambah Jejaring Kerja</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-[#018FD7] text-sm"></i>
+                                                <span class="text-[#016aa3]/85 text-xs sm:text-sm font-medium">Peluang Karir & Networking</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-[#018FD7] text-sm"></i>
+                                                <span class="text-[#016aa3]/85 text-xs sm:text-sm font-medium">Kesempatan Kerja</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -449,7 +539,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-1 text-left">
-                                        <h3 class="text-lg sm:text-xl font-bold text-[#016aa3] mb-2">Para Orang Tua</h3>
+                                        <h3 class="text-lg sm:text-xl font-bold text-[#016aa3] mb-2">Orang Tua</h3>
                                         <p class="text-[#016aa3]/75 text-sm sm:text-base leading-relaxed font-light">
                                             Saksikan perkembangan anak-anak Anda dan pelajari peluang karir di era
                                             digital. Dukung perjalanan pendidikan dan karir generasi muda Metamedia!
@@ -464,47 +554,18 @@
                     </div>
 
                     <!-- Bottom Call to Action -->
-                    <div
-                        class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#018FD7] via-[#016aa3] to-[#0A5B9F] p-6 sm:p-8 border-2 border-[#C9A03D]/40 shadow-2xl">
-                        <!-- Decorative background elements -->
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-[#FFD966] opacity-5 rounded-full blur-3xl">
-                        </div>
-                        <div class="absolute bottom-0 left-0 w-40 h-40 bg-[#C9A03D] opacity-5 rounded-full blur-3xl">
-                        </div>
 
-                        <!-- Content -->
-                        <div class="relative z-10">
-                            <p
-                                class="text-white/95 text-base sm:text-lg mb-3 font-light flex items-center justify-center">
-                                <i class="fas fa-star text-[#FFD966] mr-2"></i>
-                                <span>Jadilah bagian dari keluarga besar Metamedia</span>
-                            </p>
-                            <p class="text-[#FFD966] font-bold text-lg sm:text-xl mb-6 text-center">
-                                dan rasakan pengalaman yang tak terlupakan
-                            </p>
-                            <p class="text-white text-sm sm:text-base font-semibold text-center mb-6">
-                                Sinergi Keluarga Besar Menuju Masa Depan Karir
-                            </p>
-                            <div class="flex justify-center">
-                                <a href="#rsvpForm"
-                                    class="inline-block bg-[#FFD966] text-[#016aa3] font-extrabold py-3 sm:py-4 px-8 sm:px-10 rounded-full hover:bg-white transition-all shadow-lg hover:shadow-2xl transform hover:scale-105 active:scale-95 text-base sm:text-lg flex items-center gap-2">
-                                    <i class="fas fa-arrow-down text-lg"></i>
-                                    <span>Daftar Sekarang</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Agenda / Timeline mobile friendly -->
+            <!-- Rundown Acara - Image -->
             <div
                 class="relative bg-gradient-to-b from-[#018FD7] to-[#016aa3] px-4 sm:px-6 py-12 sm:py-16 overflow-hidden">
                 <!-- Animated Stars Background -->
                 <div id="agendaStars" class="absolute inset-0"></div>
                 <!-- Content -->
                 <div class="relative z-10">
-                    <div class="text-center mb-8 sm:mb-10">
+                    <div class="text-center mb-10 sm:mb-12">
                         <span class="text-[#FFD966] text-xs tracking-widest uppercase font-bold inline-block mb-3">
                             <i class="far fa-clock mr-2"></i>RUNDOWN ACARA
                         </span>
@@ -512,154 +573,13 @@
                             Alur Sinergi <span class="text-[#FFD966]">Hari Kolaborasi</span>
                         </h2>
                     </div>
-                    <div class="relative max-w-2xl mx-auto">
-                        <!-- Vertical Line for timeline -->
-                        <div
-                            class="absolute left-4 sm:left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[#FFD966] via-[#C9A03D] to-[#FFD966] hidden sm:block">
-                        </div>
 
-                        <div class="space-y-4 sm:space-y-5">
-                            <!-- Timeline item 1 -->
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-2 sm:left-0 top-4 w-5 h-5 bg-[#FFD966] rounded-full border-4 border-[#016aa3] z-20 hidden sm:block">
-                                </div>
-                                <div
-                                    class="bg-white/15 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border-l-4 border-[#FFD966] sm:border-l-0 sm:ml-24 hover:bg-white/20 transition-all duration-300 hover:shadow-lg group cursor-pointer">
-                                    <div class="flex items-start gap-3 sm:gap-0">
-                                        <div
-                                            class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#FFD966]/20 border border-[#FFD966]/50 flex-shrink-0 sm:hidden group-hover:scale-110 transition-transform">
-                                            <span class="text-[#FFD966] font-bold">08:00</span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <div
-                                                class="text-2xl sm:text-3xl font-black text-[#FFD966] mb-2 hidden sm:block">
-                                                08.00</div>
-                                            <h3 class="font-bold text-white text-base sm:text-lg mb-1">Registrasi &
-                                                Coffee Morning</h3>
-                                            <p class="text-white/70 text-sm sm:text-base">Keluarga besar berkumpul,
-                                                ramah tamah dan networking awal</p>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="max-w-4xl mx-auto">
+                        <div class="group relative">
+                            <div class="relative bg-white/15 backdrop-blur-md rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:border-[#FFD966]/60">
+                                <img src="{{ asset('storage/rowndown_acara.png') }}" alt="Rundown Acara Lengkap" 
+                                    class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
                             </div>
-
-                            <!-- Timeline item 2 -->
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-2 sm:left-0 top-4 w-5 h-5 bg-[#FFD966] rounded-full border-4 border-[#016aa3] z-20 hidden sm:block">
-                                </div>
-                                <div
-                                    class="bg-white/15 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border-l-4 border-[#FFD966] sm:border-l-0 sm:ml-24 hover:bg-white/20 transition-all duration-300 hover:shadow-lg group cursor-pointer">
-                                    <div class="flex items-start gap-3 sm:gap-0">
-                                        <div
-                                            class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#FFD966]/20 border border-[#FFD966]/50 flex-shrink-0 sm:hidden group-hover:scale-110 transition-transform">
-                                            <span class="text-[#FFD966] font-bold">09:30</span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <div
-                                                class="text-2xl sm:text-3xl font-black text-[#FFD966] mb-2 hidden sm:block">
-                                                09.30</div>
-                                            <h3 class="font-bold text-white text-base sm:text-lg mb-1">Opening & Keynote
-                                                Speech</h3>
-                                            <p class="text-white/70 text-sm sm:text-base">"Masa Depan Karir di Ekosistem
-                                                Media"</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Timeline item 3 -->
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-2 sm:left-0 top-4 w-5 h-5 bg-[#FFD966] rounded-full border-4 border-[#016aa3] z-20 hidden sm:block">
-                                </div>
-                                <div
-                                    class="bg-white/15 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border-l-4 border-[#FFD966] sm:border-l-0 sm:ml-24 hover:bg-white/20 transition-all duration-300 hover:shadow-lg group cursor-pointer">
-                                    <div class="flex items-start gap-3 sm:gap-0">
-                                        <div
-                                            class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#FFD966]/20 border border-[#FFD966]/50 flex-shrink-0 sm:hidden group-hover:scale-110 transition-transform">
-                                            <span class="text-[#FFD966] font-bold">13:00</span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <div
-                                                class="text-2xl sm:text-3xl font-black text-[#FFD966] mb-2 hidden sm:block">
-                                                13.00</div>
-                                            <h3 class="font-bold text-white text-base sm:text-lg mb-1">Panel Kolaborasi
-                                            </h3>
-                                            <p class="text-white/70 text-sm sm:text-base">Sharing session bersama para
-                                                expert dan industry leader</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Timeline item 4 -->
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-2 sm:left-0 top-4 w-5 h-5 bg-[#FFD966] rounded-full border-4 border-[#016aa3] z-20 hidden sm:block">
-                                </div>
-                                <div
-                                    class="bg-white/15 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border-l-4 border-[#FFD966] sm:border-l-0 sm:ml-24 hover:bg-white/20 transition-all duration-300 hover:shadow-lg group cursor-pointer">
-                                    <div class="flex items-start gap-3 sm:gap-0">
-                                        <div
-                                            class="flex items-center justify-center w-12 h-12 rounded-xl bg-[#FFD966]/20 border border-[#FFD966]/50 flex-shrink-0 sm:hidden group-hover:scale-110 transition-transform">
-                                            <span class="text-[#FFD966] font-bold">15:30</span>
-                                        </div>
-                                        <div class="flex-1">
-                                            <div
-                                                class="text-2xl sm:text-3xl font-black text-[#FFD966] mb-2 hidden sm:block">
-                                                15.30</div>
-                                            <h3 class="font-bold text-white text-base sm:text-lg mb-1">Penutupan &
-                                                Networking</h3>
-                                            <p class="text-white/70 text-sm sm:text-base">Kesepakatan kolaborasi,
-                                                doorprize, dan foto bersama</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quote sinergi dengan background emas blink halus -->
-            <div
-                class="bg-gradient-to-br from-[#E8F4FB] via-white to-[#E8F4FB] px-4 sm:px-6 py-12 sm:py-16 text-center relative overflow-hidden">
-                <!-- Decorative elements -->
-                <div class="absolute top-0 left-0 w-32 h-32 bg-[#018FD7] opacity-3 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 right-0 w-40 h-40 bg-[#C9A03D] opacity-3 rounded-full blur-3xl"></div>
-
-                <div class="relative z-10">
-                    <div class="flex justify-center mb-4">
-                        <i class="fas fa-quote-left text-4xl sm:text-5xl text-[#C9A03D] opacity-50"></i>
-                    </div>
-                    <p
-                        class="text-base sm:text-lg md:text-xl font-light text-[#016aa3] leading-relaxed max-w-3xl mx-auto mb-8 px-2">
-                        "Keluarga besar Metamedia bergerak dalam harmoni, membangun karir masa depan dengan inovasi
-                        tanpa batas."
-                    </p>
-                    <div class="flex flex-wrap justify-center gap-6 sm:gap-8">
-                        <div class="flex flex-col items-center group cursor-pointer">
-                            <div
-                                class="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#018FD7]/10 to-[#016aa3]/10 group-hover:from-[#018FD7]/20 group-hover:to-[#016aa3]/20 border border-[#018FD7]/20 group-hover:border-[#C9A03D]/50 transition-all duration-300 group-hover:scale-110 mb-3">
-                                <i class="fas fa-bullhorn text-2xl sm:text-3xl text-[#018FD7]"></i>
-                            </div>
-                            <span class="text-xs sm:text-sm font-semibold text-[#016aa3]">Media Partner</span>
-                        </div>
-                        <div class="flex flex-col items-center group cursor-pointer">
-                            <div
-                                class="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#018FD7]/10 to-[#016aa3]/10 group-hover:from-[#018FD7]/20 group-hover:to-[#016aa3]/20 border border-[#018FD7]/20 group-hover:border-[#C9A03D]/50 transition-all duration-300 group-hover:scale-110 mb-3">
-                                <i class="fas fa-graduation-cap text-2xl sm:text-3xl text-[#018FD7]"></i>
-                            </div>
-                            <span class="text-xs sm:text-sm font-semibold text-[#016aa3]">Career Center</span>
-                        </div>
-                        <div class="flex flex-col items-center group cursor-pointer">
-                            <div
-                                class="flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#018FD7]/10 to-[#016aa3]/10 group-hover:from-[#018FD7]/20 group-hover:to-[#016aa3]/20 border border-[#018FD7]/20 group-hover:border-[#C9A03D]/50 transition-all duration-300 group-hover:scale-110 mb-3">
-                                <i class="fas fa-chart-line text-2xl sm:text-3xl text-[#018FD7]"></i>
-                            </div>
-                            <span class="text-xs sm:text-sm font-semibold text-[#016aa3]">Future Skills</span>
                         </div>
                     </div>
                 </div>
@@ -678,140 +598,26 @@
                     <!-- Header -->
                     <div class="text-center mb-8 sm:mb-12">
                         <span
-                            class="inline-block px-3 sm:px-4 py-1.5 rounded-full border-2 border-[#C9A03D] bg-[#018FD7]/60 backdrop-blur-sm mb-3">
-                            <span class="text-[#FFD966] text-xs sm:text-sm tracking-widest font-bold">
-                                <i class="fas fa-gift mr-2"></i>DOORPRIZE MENARIK
+                            class="inline-block px-4 sm:px-6 py-2 sm:py-2.5 rounded-full border-2 border-[#C9A03D] bg-gradient-to-r from-[#C9A03D]/30 to-[#FFD966]/20 backdrop-blur-md mb-4">
+                            <span class="font-display text-[#FFD966] text-sm sm:text-lg tracking-widest font-black uppercase drop-shadow-lg">
+                                <i class="fas fa-gift mr-2"></i>Doorprize Menarik
                             </span>
                         </span>
-                        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight mb-4">
-                            Hadiah <span class="text-[#FFD966]">Premium</span> Menanti<br />Peserta Beruntung
+                        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4 tracking-tight drop-shadow-xl">
+                            Hadiah <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD966] to-[#E8B84A]">Premium</span><br />Menanti Peserta Beruntung
                         </h2>
                         <p class="text-white/75 text-sm sm:text-base">Kesempatan emas memenangkan gadget flagship
                             terbaru di acara sinergi kami</p>
                     </div>
 
-                    <!-- Product Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-                        <!-- iPhone 17 Pro -->
-                        <div class="group relative">
-                            <div
-                                class="relative bg-white/15 backdrop-blur-md rounded-3xl p-6 border-2 border-white/20 overflow-hidden transition-all duration-500 hover:bg-white/25 hover:border-[#FFD966] hover:shadow-2xl cursor-pointer">
-                                <!-- Glow effect on hover -->
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-b from-[#FFD966]/0 to-[#C9A03D]/0 group-hover:from-[#FFD966]/10 group-hover:to-[#C9A03D]/10 transition-all duration-500">
-                                </div>
-
-                                <div class="relative z-5 flex flex-col items-center h-full">
-                                    <img src="{{ asset('storage/17 pro.webp') }}" alt="iPhone 17 Pro"
-                                        class="w-28 sm:w-32 h-40 sm:h-48 object-contain mb-4 drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                    <div class="text-center w-full">
-                                        <h3 class="text-white font-bold text-lg sm:text-xl mb-2">iPhone 17 Pro</h3>
-                                        <p
-                                            class="text-[#FFD966] text-xs sm:text-sm font-bold px-3 py-1.5 rounded-full bg-[#FFD966]/20 border border-[#FFD966]/40 inline-block">
-                                            🏆 Hadiah Utama
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MacBook -->
-                        <div class="group relative">
-                            <div
-                                class="relative bg-white/15 backdrop-blur-md rounded-3xl p-6 border-2 border-white/20 overflow-hidden transition-all duration-500 hover:bg-white/25 hover:border-[#FFD966] hover:shadow-2xl cursor-pointer">
-                                <!-- Glow effect on hover -->
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-b from-[#FFD966]/0 to-[#C9A03D]/0 group-hover:from-[#FFD966]/10 group-hover:to-[#C9A03D]/10 transition-all duration-500">
-                                </div>
-
-                                <div class="relative z-5 flex flex-col items-center h-full">
-                                    <img src="{{ asset('storage/macbook.jpg') }}" alt="MacBook Pro"
-                                        class="w-full h-40 object-contain mb-4 drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                    <div class="text-center w-full">
-                                        <h3 class="text-white font-bold text-lg sm:text-xl mb-2">MacBook Pro</h3>
-                                        <p
-                                            class="text-[#FFD966] text-xs sm:text-sm font-bold px-3 py-1.5 rounded-full bg-[#FFD966]/20 border border-[#FFD966]/40 inline-block">
-                                            💎 Hadiah Istimewa
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Hadiah Utama Image -->
+                    <div class="group relative max-w-2xl mx-auto">
+                        <div
+                            class="relative bg-white/15 backdrop-blur-md rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:border-[#FFD966]/60">
+                            <img src="{{ asset('storage/hadiah_utama.png') }}" alt="Hadiah Utama Doorprize"
+                                class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
                         </div>
                     </div>
-
-                    <!-- Prize Highlights -->
-                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
-                        <div
-                            class="bg-white/15 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border-2 border-[#C9A03D]/30 hover:border-[#C9A03D]/70 transition-all hover:bg-white/20 cursor-pointer group">
-                            <i
-                                class="fas fa-star text-[#FFD966] text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform inline-block"></i>
-                            <p class="text-white/90 text-xs sm:text-sm font-bold">Eksklusif</p>
-                        </div>
-                        <div
-                            class="bg-white/15 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border-2 border-[#C9A03D]/30 hover:border-[#C9A03D]/70 transition-all hover:bg-white/20 cursor-pointer group">
-                            <i
-                                class="fas fa-gem text-[#FFD966] text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform inline-block"></i>
-                            <p class="text-white/90 text-xs sm:text-sm font-bold">Premium</p>
-                        </div>
-                        <div
-                            class="bg-white/15 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border-2 border-[#C9A03D]/30 hover:border-[#C9A03D]/70 transition-all hover:bg-white/20 cursor-pointer group">
-                            <i
-                                class="fas fa-crown text-[#FFD966] text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform inline-block"></i>
-                            <p class="text-white/90 text-xs sm:text-sm font-bold">Terbatas</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Partnership & Collaboration Section -->
-            <div class="bg-white px-4 sm:px-6 py-12 sm:py-16 relative overflow-hidden">
-                <!-- Decorative elements -->
-                <div class="absolute top-0 left-0 w-32 h-32 bg-[#018FD7] opacity-3 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 right-0 w-40 h-40 bg-[#C9A03D] opacity-3 rounded-full blur-3xl"></div>
-
-                <div class="relative z-10">
-                    <div class="text-center mb-8 sm:mb-10">
-                        <h3 class="font-display text-2xl sm:text-3xl font-bold text-[#016aa3] mb-2">Kolaborasi Strategis
-                        </h3>
-                        <p class="text-[#016aa3]/70 text-xs sm:text-sm">Partnership dalam Inovasi dan Pengembangan
-                            Talenta</p>
-                        <div
-                            class="w-20 h-1.5 bg-gradient-to-r from-[#018FD7] to-[#C9A03D] rounded-full mx-auto mt-4 shadow-md">
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-4">
-                        <!-- Metamedia Logo -->
-                        <div class="flex flex-col items-center group">
-                            <div
-                                class="bg-white p-4 rounded-2xl border-2 border-[#018FD7]/20 hover:border-[#018FD7]/60 transition-all shadow-md hover:shadow-lg group-hover:scale-105 mb-3">
-                                <img src="{{ asset('storage/logo.png') }}" alt="Universitas Metamedia"
-                                    class="w-24 h-24 object-contain">
-                            </div>
-                            <p class="text-[#016aa3] text-xs sm:text-sm font-bold text-center">Universitas<br>Metamedia
-                            </p>
-                        </div>
-
-                        <!-- Connector -->
-                        <div class="hidden sm:flex flex-col items-center gap-3">
-                            <div class="w-10 h-[2px] bg-gradient-to-r from-[#C9A03D] to-[#018FD7] rounded-full"></div>
-                            <i class="fas fa-handshake text-[#C9A03D] text-2xl"></i>
-                            <div class="w-10 h-[2px] bg-gradient-to-r from-[#C9A03D] to-[#018FD7] rounded-full"></div>
-                        </div>
-
-                        <!-- ENBI Logo -->
-                        <div class="flex flex-col items-center group">
-                            <div
-                                class="bg-white p-4 rounded-2xl border-2 border-[#018FD7]/20 hover:border-[#018FD7]/60 transition-all shadow-md hover:shadow-lg group-hover:scale-105 mb-3">
-                                <img src="{{ asset('storage/enbi.webp') }}" alt="ENBI Group"
-                                    class="w-24 h-24 object-contain">
-                            </div>
-                            <p class="text-[#016aa3] text-xs sm:text-sm font-bold text-center">ENBI<br>Group</p>
-                        </div>
-                    </div>
-
-                    <p class="text-[#016aa3]/70 text-xs sm:text-sm text-center mt-6 sm:mt-8">Bersama membangun ekosistem
-                        karir yang berkelanjutan dan inovatif</p>
                 </div>
             </div>
 
@@ -908,7 +714,7 @@
                     </div>
                 </div>
             </div>
-            <!-- RSVP Form elegan dengan blink efek tombol -->
+            <!-- RSVP Form elegan dengan logika 2 tahap -->
             <section
                 class="py-10 sm:py-16 px-4 sm:px-6 bg-gradient-to-b from-[#018FD7] to-[#016aa3] relative overflow-hidden"
                 id="rsvpForm">
@@ -925,11 +731,13 @@
                             konfirmasi kehadiran Anda</p>
                     </div>
 
-                    <!-- Form Container -->
+                    <!-- Stage 1: Basic Info Form -->
                     <div class="bg-white/15 backdrop-blur-md rounded-3xl p-6 sm:p-8 border-2 border-white/20 shadow-2xl"
-                        id="formContainer">
-                        <form id="invitationForm" class="space-y-5 sm:space-y-6">
+                        id="stage1Container">
+                        <form id="invitationFormStage1" class="space-y-5 sm:space-y-6">
                             @csrf
+                            <input type="hidden" name="stage" value="1">
+
                             <!-- Form Fields Section -->
                             <div class="space-y-5">
                                 <!-- Nama Mahasiswa -->
@@ -949,52 +757,55 @@
 
                                 <!-- Status Dropdown -->
                                 <div class="group">
-                                    <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Status
-                                        <span class="text-red-400">*</span></label>
+                                    <label
+                                        class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Status<span
+                                            class="text-red-400">*</span></label>
                                     <div class="relative">
                                         <i
                                             class="fas fa-graduation-cap absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
-                                        <select name="status" required
+                                        <select name="status" required id="statusSelect"
                                             class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 appearance-none cursor-pointer group-focus-within:border-[#FFD966]"
                                             style="background-image: url('data:image/svg+xml;utf8,<svg fill=\'rgba(255,255,255,0.6)\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 24px; padding-right: 40px;">
                                             <option value="" disabled selected style="background-color: #016aa3;">Pilih
                                                 Status</option>
-                                            <option value="mahasiswa" style="background-color: #016aa3;">Mahasiswa</option>
+                                            <option value="mahasiswa" style="background-color: #016aa3;">Mahasiswa
+                                            </option>
                                             <option value="alumni" style="background-color: #016aa3;">Alumni</option>
-                                            <option value="ortu" style="background-color: #016aa3;">Orang Tua/Wali</option>
                                         </select>
                                     </div>
                                     <p class="text-red-300 text-xs mt-2 hidden error-status"></p>
                                 </div>
-                                <!-- WhatsApp Mahasiswa -->
+
+                                <!-- WhatsApp -->
                                 <div class="group">
                                     <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nomor
                                         WhatsApp <span class="text-red-400">*</span></label>
                                     <div class="relative">
                                         <i
                                             class="fab fa-whatsapp absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
-                                        <input type="text" name="wa_mhs" required
-                                            class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 group-focus-within:border-[#FFD966]"
-                                            placeholder="628xxxxxxxxxx atau format lainnya">
+                                        <span class="absolute left-12 top-3.5 text-white/70 text-sm sm:text-base font-semibold pointer-events-none">+62</span>
+                                        <input type="text" name="wa_mhs" id="waMhsInput" required
+                                            class="w-full pl-24 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 group-focus-within:border-[#FFD966]"
+                                            placeholder="8xxxxxxxxxx" maxlength="12">
                                     </div>
                                     <p class="text-white/70 text-xs sm:text-sm mt-2">Nomor WhatsApp untuk komunikasi
-                                        terkait acara</p>
+                                        terkait acara (10-12 digit, contoh: 62812345678901)</p>
                                     <p class="text-red-300 text-xs mt-1 hidden error-wa_mhs"></p>
                                 </div>
                             </div>
 
                             <!-- Error Alert -->
-                            <div id="errorAlert"
+                            <div id="errorAlert1"
                                 class="bg-red-400/25 border-2 border-red-400/50 text-red-300 px-4 py-3 rounded-xl text-xs sm:text-sm hidden flex items-center gap-2">
                                 <i class="fas fa-exclamation-circle flex-shrink-0"></i>
-                                <span id="errorMessage" class="flex-1"></span>
+                                <span id="errorMessage1" class="flex-1"></span>
                             </div>
 
                             <!-- Buttons -->
                             <div class="flex flex-col sm:flex-row gap-3 pt-4">
-                                <button type="submit" id="submitBtn"
+                                <button type="submit" id="submitBtn1"
                                     class="flex-1 px-6 py-3.5 sm:py-4 bg-gradient-to-r from-[#FFD966] via-[#E8C468] to-[#C9A03D] text-[#016aa3] font-bold text-base sm:text-lg rounded-2xl hover:shadow-2xl hover:shadow-[#FFD966]/50 hover:scale-105 transition-all active:scale-95 duration-300 flex items-center justify-center gap-2">
-                                    <i class="fas fa-paper-plane"></i><span>Kirim Konfirmasi</span>
+                                    <i class="fas fa-arrow-right"></i><span id="submitBtnText1">Lanjutkan</span>
                                 </button>
                                 <button type="reset"
                                     class="flex-1 px-6 py-3.5 sm:py-4 bg-white/20 text-white font-bold text-base sm:text-lg rounded-2xl border-2 border-white/40 hover:bg-white/30 hover:border-white/60 transition-all active:scale-95 duration-300 flex items-center justify-center gap-2">
@@ -1004,7 +815,91 @@
                         </form>
                     </div>
 
-                    <!-- Loading Spinner - Hidden by default -->
+                    <!-- Stage 2: Parent Info Form (Only for Mahasiswa) -->
+                    <div class="bg-white/15 backdrop-blur-md rounded-3xl p-6 sm:p-8 border-2 border-white/20 shadow-2xl hidden"
+                        id="stage2Container">
+                        <form id="invitationFormStage2" class="space-y-5 sm:space-y-6">
+                            @csrf
+                            <input type="hidden" name="stage" value="2">
+                            <input type="hidden" name="nama_mhs" id="stage2NamaMhs">
+                            <input type="hidden" name="wa_mhs" id="stage2WaMhs">
+                            <input type="hidden" name="status" value="mahasiswa">
+
+                            <!-- Header untuk tahap 2 -->
+                            <div class="mb-6">
+                                <h3 class="text-white font-bold text-lg sm:text-xl mb-2">Data Orang Tua/Wali</h3>
+                                <p class="text-white/70 text-sm">Silakan isi informasi orang tua atau wali</p>
+                            </div>
+
+                            <!-- Form Fields Section -->
+                            <div class="space-y-5">
+                                <!-- Nama Orang Tua 1 (Wajib) -->
+                                <div class="group">
+                                    <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nama
+                                        Orang Tua/Wali <span class="text-red-400">*</span></label>
+                                    <div class="relative">
+                                        <i
+                                            class="fas fa-user-tie absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
+                                        <input type="text" name="nama_ortu_1" id="namaOortu1" disabled
+                                            class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 opacity-50 cursor-not-allowed focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 group-focus-within:border-[#FFD966]"
+                                            placeholder="Masukkan nama orang tua/wali">
+                                    </div>
+                                    <!-- Checkbox untuk Nama Orang Tua 1 -->
+                                    <div class="flex items-center gap-2 mt-3 ml-1">
+                                        <input type="checkbox" id="checkboxOrtu1" 
+                                            class="w-4 h-4 cursor-pointer accent-[#FFD966]">
+                                        <label for="checkboxOrtu1" class="text-white/70 text-xs sm:text-sm cursor-pointer">
+                                            ✓ Isi form orang tua 1
+                                        </label>
+                                    </div>
+                                    <p class="text-red-300 text-xs mt-2 hidden error-nama_ortu_1"></p>
+                                </div>
+
+                                <!-- Nama Orang Tua 2 (Opsional) -->
+                                <div class="group">
+                                    <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">Nama
+                                        Orang Tua/Wali Kedua <span class="text-gray-400">(Opsional)</span></label>
+                                    <div class="relative">
+                                        <i
+                                            class="fas fa-user-tie absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
+                                        <input type="text" name="nama_ortu_2" id="namaOrtu2" disabled
+                                            class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 opacity-50 cursor-not-allowed focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 group-focus-within:border-[#FFD966]"
+                                            placeholder="Masukkan nama orang tua/wali">
+                                    </div>
+                                    <!-- Checkbox untuk Nama Orang Tua 2 -->
+                                    <div class="flex items-center gap-2 mt-3 ml-1">
+                                        <input type="checkbox" id="checkboxOrtu2" 
+                                            class="w-4 h-4 cursor-pointer accent-[#FFD966]">
+                                        <label for="checkboxOrtu2" class="text-white/70 text-xs sm:text-sm cursor-pointer">
+                                            ✓ Isi form orang tua 2
+                                        </label>
+                                    </div>
+                                    <p class="text-red-300 text-xs mt-2 hidden error-nama_ortu_2"></p>
+                                </div>
+                            </div>
+
+                            <!-- Error Alert -->
+                            <div id="errorAlert2"
+                                class="bg-red-400/25 border-2 border-red-400/50 text-red-300 px-4 py-3 rounded-xl text-xs sm:text-sm hidden flex items-center gap-2">
+                                <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+                                <span id="errorMessage2" class="flex-1"></span>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                                <button type="submit" id="submitBtn2"
+                                    class="flex-1 px-6 py-3.5 sm:py-4 bg-gradient-to-r from-[#FFD966] via-[#E8C468] to-[#C9A03D] text-[#016aa3] font-bold text-base sm:text-lg rounded-2xl hover:shadow-2xl hover:shadow-[#FFD966]/50 hover:scale-105 transition-all active:scale-95 duration-300 flex items-center justify-center gap-2">
+                                    <i class="fas fa-paper-plane"></i><span>Generate Barcode</span>
+                                </button>
+                                <button type="button" id="backBtn2"
+                                    class="flex-1 px-6 py-3.5 sm:py-4 bg-white/20 text-white font-bold text-base sm:text-lg rounded-2xl border-2 border-white/40 hover:bg-white/30 hover:border-white/60 transition-all active:scale-95 duration-300 flex items-center justify-center gap-2">
+                                    <i class="fas fa-arrow-left"></i><span>Kembali</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Loading Spinner -->
                     <div id="loadingSpinner"
                         class="hidden bg-white/15 backdrop-blur-md rounded-3xl p-8 border-2 border-white/20 text-center shadow-2xl">
                         <div class="flex flex-col items-center justify-center">
@@ -1021,7 +916,7 @@
                         </div>
                     </div>
 
-                    <!-- Success & Barcode Display - Hidden by default -->
+                    <!-- Success & Barcode Display -->
                     <div id="successContainer" class="hidden space-y-6">
                         <!-- Success Message -->
                         <div
@@ -1085,6 +980,7 @@
             </footer>
         </div>
     </div>
+
     <script>
             // // Auto clear cache saat halaman dimuat
             // if (performance.navigation.type === 2) {
@@ -1146,168 +1042,345 @@
                 }
                 if (openBtn) openBtn.addEventListener('click', openInvitation);
 
-                // RSVP AJAX handler
-                const invitationForm = document.getElementById('invitationForm');
-                const formContainer = document.getElementById('formContainer');
+                // WhatsApp Input Handler - Format dan validasi
+                const waMhsInput = document.getElementById('waMhsInput');
+                if (waMhsInput) {
+                    waMhsInput.addEventListener('input', function(e) {
+                        // Hapus semua karakter yang bukan angka
+                        let value = this.value.replace(/\D/g, '');
+                        
+                        // Batasi hanya 12 digit (setelah +62)
+                        if (value.length > 12) {
+                            value = value.substring(0, 12);
+                        }
+                        
+                        this.value = value;
+                    });
+                    
+                    waMhsInput.addEventListener('blur', function(e) {
+                        // Ketika user keluar dari input, pastikan format benar
+                        let value = this.value.replace(/\D/g, '');
+                        if (value.length > 0 && value.length !== 12) {
+                            // Validasi harus tepat 12 digit
+                        }
+                        this.value = value;
+                    });
+                }
+
+                // RSVP AJAX handler - 2 TAHAP
+                const invitationFormStage1 = document.getElementById('invitationFormStage1');
+                const invitationFormStage2 = document.getElementById('invitationFormStage2');
+                const stage1Container = document.getElementById('stage1Container');
+                const stage2Container = document.getElementById('stage2Container');
                 const loadingSpinner = document.getElementById('loadingSpinner');
                 const successContainer = document.getElementById('successContainer');
-                const errorAlert = document.getElementById('errorAlert');
-                const submitBtn = document.getElementById('submitBtn');
+                const errorAlert1 = document.getElementById('errorAlert1');
+                const errorAlert2 = document.getElementById('errorAlert2');
+                const submitBtn1 = document.getElementById('submitBtn1');
+                const submitBtn2 = document.getElementById('submitBtn2');
+                const backBtn2 = document.getElementById('backBtn2');
 
-                if (invitationForm) {
-                    invitationForm.addEventListener('submit', async (e) => {
+                // STAGE 1 FORM
+                if (invitationFormStage1) {
+                    invitationFormStage1.addEventListener('submit', async (e) => {
                         e.preventDefault();
-
-                        // Clear previous errors
                         document.querySelectorAll('[class*="error-"]').forEach(el => {
                             el.classList.add('hidden');
-                            el.textContent = '';
                         });
-                        errorAlert.classList.add('hidden');
+                        errorAlert1.classList.add('hidden');
 
-                        // Get form data
-                        const formData = new FormData(invitationForm);
+                        const formData = new FormData(invitationFormStage1);
+                        let waMhsValue = formData.get('wa_mhs')?.trim();
+                        
+                        // Format WhatsApp: hapus +62 jika ada, kemudian tambahkan +62 di depan
+                        if (waMhsValue) {
+                            waMhsValue = waMhsValue.replace(/^\+?62/, '').replace(/\D/g, '');
+                            waMhsValue = '+62' + waMhsValue;
+                        }
+                        
+                        const jsonData = {
+                            stage: 1,
+                            nama_mhs: formData.get('nama_mhs'),
+                            wa_mhs: waMhsValue,
+                            status: formData.get('status'),
+                            _token: formData.get('_token')
+                        };
 
-                        // Validate phone number (just check if not empty)
-                        const wa_mhs = formData.get('wa_mhs');
-                        if (!wa_mhs || wa_mhs.trim() === '') {
-                            showFieldError('wa_mhs', 'Nomor WhatsApp tidak boleh kosong');
+                        if (!jsonData.nama_mhs?.trim()) {
+                            showFieldError('nama_mhs', 'Nama wajib diisi');
+                            return;
+                        }
+                        if (!jsonData.wa_mhs?.trim()) {
+                            showFieldError('wa_mhs', 'Nomor WhatsApp wajib diisi');
+                            return;
+                        }
+                        
+                        // Validasi panjang WhatsApp: harus +62 + 10 digit = 13 karakter
+                        if (jsonData.wa_mhs.length < 13 || jsonData.wa_mhs.length > 15 || !jsonData.wa_mhs.startsWith('+62')) {
+                            showFieldError('wa_mhs', 'Nomor WhatsApp harus 10-12 digit (format: +6281234567890)');
+                            return;
+                        }
+                        
+                        if (!jsonData.status) {
+                            showFieldError('status', 'Status wajib dipilih');
                             return;
                         }
 
-                        // Show loading state
-                        submitBtn.disabled = true;
-                        formContainer.classList.add('hidden');
+                        submitBtn1.disabled = true;
+                        stage1Container.classList.add('hidden');
                         loadingSpinner.classList.remove('hidden');
-                        successContainer.classList.add('hidden');
 
                         try {
-                            // Convert FormData to plain object for JSON serialization
-                            const jsonData = {
-                                nama_mhs: formData.get('nama_mhs'),
-                                wa_mhs: formData.get('wa_mhs'),
-                                status: formData.get('status')
-                            };
-
-                            // Get CSRF token
-                            const csrfToken = formData.get('_token');
-
-                            // Send AJAX request as JSON
-                            const storeUrl = window.location.origin + '/sinergi/store';
+                            const storeUrl = '/sinergi/store';
                             const response = await fetch(storeUrl, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'X-Requested-With': 'XMLHttpRequest',
-                                    'X-CSRF-TOKEN': csrfToken,
+                                    'X-CSRF-TOKEN': jsonData._token,
                                     'Accept': 'application/json'
                                 },
                                 body: JSON.stringify(jsonData)
                             });
 
-                            // Read response body as text first (can only read once)
-                            const responseText = await response.text();
-                            console.log('Response text:', responseText);
-
-                            // Try to parse as JSON
-                            let data;
-                            try {
-                                data = JSON.parse(responseText);
-                            } catch (parseError) {
-                                console.error('JSON Parse Error:', parseError);
-                                console.error('Response body:', responseText);
-                                throw new Error(`Response tidak valid (bukan JSON). Status: ${response.status}`);
-                            }
+                            const data = await response.json();
 
                             if (response.ok && data.success) {
-                                // Success - show QR code
-                                const qrImg = document.getElementById('qrCodeImage');
-                                if (qrImg) qrImg.src = data.qr_code_url;
+                                if (data.nextStage && jsonData.status === 'mahasiswa') {
+                                    // Populate stage 2 hidden fields
+                                    const stage2NamaMhs = document.getElementById('stage2NamaMhs');
+                                    const stage2WaMhs = document.getElementById('stage2WaMhs');
 
-                                // Store QR code data for download
-                                window.currentName = data.nama_mhs;
-                                window.currentQRData = data.qr_code_url;
-                                localStorage.setItem('invitationQrData', data.qr_code_url);
-                                
-                                // Convert QR image to dataURL for CORS-free download
-                                cacheQrData(data.qr_code_url).then(dataUrl => {
-                                    if (dataUrl) {
-                                        window.currentQRData = dataUrl;
-                                        localStorage.setItem('invitationQrData', dataUrl);
-                                    }
-                                }).catch(err => {
-                                    console.warn('QR data URL conversion failed, using API URL:', err);
-                                });
+                                    stage2NamaMhs.value = jsonData.nama_mhs;
+                                    stage2WaMhs.value = jsonData.wa_mhs;
 
-                                // Transition to success view
-                                loadingSpinner.classList.add('hidden');
-                                successContainer.classList.remove('hidden');
+                                    console.log('Stage 2 Hidden Fields Populated:', {
+                                        nama_mhs_value: stage2NamaMhs.value,
+                                        wa_mhs_value: stage2WaMhs.value,
+                                        nama_mhs_element: stage2NamaMhs.outerHTML,
+                                        wa_mhs_element: stage2WaMhs.outerHTML
+                                    });
 
-                                // Scroll to success section
-                                setTimeout(() => {
-                                    successContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }, 300);
+                                    loadingSpinner.classList.add('hidden');
+                                    stage2Container.classList.remove('hidden');
+
+                                    // Scroll ke stage 2
+                                    setTimeout(() => stage2Container.scrollIntoView({ behavior: 'smooth' }), 300);
+                                } else {
+                                    document.getElementById('qrCodeImage').src = data.qr_code_url;
+                                    window.currentName = data.nama_mhs;
+                                    window.currentQRData = data.qr_code_url;
+                                    cacheQrData(data.qr_code_url).catch(err => console.warn('QR cache failed'));
+                                    loadingSpinner.classList.add('hidden');
+                                    successContainer.classList.remove('hidden');
+                                    setTimeout(() => successContainer.scrollIntoView({ behavior: 'smooth' }), 300);
+                                }
                             } else {
-                                // Handle validation errors or other failures
-                                let errorMsg = 'Gagal mengirim data';
-                                
                                 if (data.errors) {
-                                    // Validation errors
                                     Object.keys(data.errors).forEach(field => {
                                         showFieldError(field, data.errors[field][0]);
                                     });
-                                    errorMsg = 'Periksa kembali data Anda';
-                                } else if (data.message) {
-                                    errorMsg = data.message;
                                 }
-                                
-                                showAlert(errorMsg);
-
-                                // Reset form view
+                                showAlert1(data.message || 'Gagal mengirim data');
                                 loadingSpinner.classList.add('hidden');
-                                formContainer.classList.remove('hidden');
+                                stage1Container.classList.remove('hidden');
                             }
                         } catch (error) {
-                            console.error('Submit error:', error);
-                            console.error('Error message:', error.message);
-                            console.error('Error stack:', error.stack);
-
-                            // Determine error message based on error type
-                            let errorMsg = 'Gagal mengirim data. ';
-                            if (error.message.includes('Failed to fetch')) {
-                                errorMsg += 'Periksa koneksi internet Anda.';
-                            } else if (error.message.includes('HTTP Error') || error.message.includes('Response tidak valid')) {
-                                errorMsg += 'Server error, silakan coba lagi nanti.';
-                            } else if (error.message.includes('JSON')) {
-                                errorMsg += 'Response server tidak valid.';
-                            } else {
-                                errorMsg += error.message || 'Silakan coba lagi.';
-                            }
-
-                            showAlert(errorMsg);
+                            console.error('Error:', error);
+                            showAlert1('Gagal mengirim data. Periksa koneksi internet.');
                             loadingSpinner.classList.add('hidden');
-                            formContainer.classList.remove('hidden');
+                            stage1Container.classList.remove('hidden');
                         } finally {
-                            submitBtn.disabled = false;
+                            submitBtn1.disabled = false;
                         }
                     });
                 }
 
-                // Helper function to show field error
-                function showFieldError(field, message) {
-                    const errorEl = document.querySelector(`.error-${field}`);
-                    if (errorEl) {
-                        errorEl.textContent = message;
-                        errorEl.classList.remove('hidden');
+                // STAGE 2 FORM
+                if (invitationFormStage2) {
+                    invitationFormStage2.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('[class*="error-"]').forEach(el => {
+                            el.classList.add('hidden');
+                        });
+                        errorAlert2.classList.add('hidden');
+
+                        const formData = new FormData(invitationFormStage2);
+
+                        // Debug: Log all form data
+                        console.log('=== STAGE 2 FORM SUBMISSION ===');
+                        console.log('FormData contents:');
+                        for (let [key, value] of formData.entries()) {
+                            console.log(`  ${key}: "${value}"`);
+                        }
+
+                        const jsonData = {
+                            stage: 2,
+                            nama_mhs: formData.get('nama_mhs'),
+                            wa_mhs: formData.get('wa_mhs'),
+                            status: formData.get('status'),
+                            nama_ortu_1: formData.get('nama_ortu_1'),
+                            nama_ortu_2: formData.get('nama_ortu_2') || null,
+                            _token: formData.get('_token')
+                        };
+
+                        // Debug log
+                        console.log('Parsed JSON Data:', {
+                            stage: jsonData.stage,
+                            nama_mhs: jsonData.nama_mhs,
+                            wa_mhs: jsonData.wa_mhs,
+                            status: jsonData.status,
+                            nama_ortu_1: jsonData.nama_ortu_1,
+                            nama_ortu_2: jsonData.nama_ortu_2,
+                            token_exists: !!jsonData._token
+                        });
+                        console.log('Full payload:', JSON.stringify(jsonData, null, 2));
+
+                        // Client-side validation
+                        if (!jsonData.nama_mhs?.trim()) {
+                            console.error('❌ Validation Error: nama_mhs is empty');
+                            showFieldError('nama_mhs', 'Nama mahasiswa tidak terisi. Silakan kembali ke tahap 1.');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                            return;
+                        }
+                        if (!jsonData.wa_mhs?.trim()) {
+                            console.error('❌ Validation Error: wa_mhs is empty');
+                            showFieldError('wa_mhs', 'Nomor WhatsApp tidak terisi. Silakan kembali ke tahap 1.');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                            return;
+                        }
+                        if (!jsonData.status?.trim()) {
+                            console.error('❌ Validation Error: status is empty');
+                            showFieldError('status', 'Status tidak terisi. Silakan kembali ke tahap 1.');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                            return;
+                        }
+                        
+                        // Validasi orang tua: Jika checkbox dicentang, nama harus diisi
+                        const checkboxOrtu1 = document.getElementById('checkboxOrtu1');
+                        if (checkboxOrtu1?.checked && !jsonData.nama_ortu_1?.trim()) {
+                            console.error('❌ Validation Error: checkbox orang tua 1 checked but nama_ortu_1 is empty');
+                            showFieldError('nama_ortu_1', 'Nama orang tua/wali harus diisi jika checkbox dicentang');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                            return;
+                        }
+
+                        console.log('✅ All validations passed, sending to server...');
+
+                        submitBtn2.disabled = true;
+                        stage2Container.classList.add('hidden');
+                        loadingSpinner.classList.remove('hidden');
+
+                        try {
+                            const storeUrl = '/sinergi/store';
+                            const response = await fetch(storeUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': jsonData._token,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify(jsonData)
+                            });
+
+                            const data = await response.json();
+                            console.log('Stage 2 Response:', { status: response.status, data: data });
+
+                            if (response.ok && data.success) {
+                                console.log('Stage 2 Success:', data);
+                                document.getElementById('qrCodeImage').src = data.qr_code_url;
+                                window.currentName = data.nama_mhs;
+                                window.currentQRData = data.qr_code_url;
+                                cacheQrData(data.qr_code_url).catch(err => console.warn('QR cache failed'));
+                                loadingSpinner.classList.add('hidden');
+                                successContainer.classList.remove('hidden');
+                                setTimeout(() => successContainer.scrollIntoView({ behavior: 'smooth' }), 300);
+                            } else {
+                                console.error('Stage 2 Validation Error:', data);
+                                if (data.errors) {
+                                    console.log('Field errors:', data.errors);
+                                    Object.keys(data.errors).forEach(field => {
+                                        console.log(`${field}: ${data.errors[field][0]}`);
+                                        showFieldError(field, data.errors[field][0]);
+                                    });
+                                }
+                                showAlert2(data.message || 'Validasi gagal. Lihat konsol untuk detail.');
+                                loadingSpinner.classList.add('hidden');
+                                stage2Container.classList.remove('hidden');
+                            }
+                        } catch (error) {
+                            console.error('Stage 2 Fetch Error:', error);
+                            showAlert2('Gagal mengirim data. Periksa koneksi internet.');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                        } finally {
+                            submitBtn2.disabled = false;
+                        }
+                    });
+
+                    backBtn2.addEventListener('click', () => {
+                        stage2Container.classList.add('hidden');
+                        stage1Container.classList.remove('hidden');
+                    });
+
+                    // CHECKBOX LOGIC UNTUK ORANG TUA
+                    const checkboxOrtu1 = document.getElementById('checkboxOrtu1');
+                    const checkboxOrtu2 = document.getElementById('checkboxOrtu2');
+                    const namaOrtu1 = document.getElementById('namaOortu1');
+                    const namaOrtu2 = document.getElementById('namaOrtu2');
+
+                    // Orang Tua 1 - Harus dicentang untuk bisa diisi (wajib)
+                    if (checkboxOrtu1 && namaOrtu1) {
+                        checkboxOrtu1.addEventListener('change', function() {
+                            if (this.checked) {
+                                namaOrtu1.disabled = false;
+                                namaOrtu1.classList.remove('opacity-50', 'cursor-not-allowed');
+                                namaOrtu1.required = true;
+                            } else {
+                                namaOrtu1.disabled = true;
+                                namaOrtu1.classList.add('opacity-50', 'cursor-not-allowed');
+                                namaOrtu1.required = false;
+                                namaOrtu1.value = '';
+                            }
+                        });
+                    }
+
+                    // Orang Tua 2 - Opsional, dicentang untuk bisa diisi
+                    if (checkboxOrtu2 && namaOrtu2) {
+                        checkboxOrtu2.addEventListener('change', function() {
+                            if (this.checked) {
+                                namaOrtu2.disabled = false;
+                                namaOrtu2.classList.remove('opacity-50', 'cursor-not-allowed');
+                            } else {
+                                namaOrtu2.disabled = true;
+                                namaOrtu2.classList.add('opacity-50', 'cursor-not-allowed');
+                                namaOrtu2.value = '';
+                            }
+                        });
                     }
                 }
 
-                // Helper function to show alert
-                function showAlert(message) {
-                    const errorMsg = document.getElementById('errorMessage');
-                    errorMsg.textContent = message;
-                    errorAlert.classList.remove('hidden');
-                    errorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                function showFieldError(field, message) {
+                    const errorEl = document.querySelector(`.error-${field}`);
+                    if (errorEl) {
+                        errorEl.classList.remove('hidden');
+                        errorEl.textContent = message;
+                    }
+                }
+
+                function showAlert1(message) {
+                    document.getElementById('errorMessage1').textContent = message;
+                    errorAlert1.classList.remove('hidden');
+                }
+
+                function showAlert2(message) {
+                    document.getElementById('errorMessage2').textContent = message;
+                    errorAlert2.classList.remove('hidden');
                 }
 
                 async function cacheQrData(url) {

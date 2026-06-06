@@ -17,63 +17,130 @@ class InvitationController extends Controller
     }
 
     /**
-     * Simpan data undangan
+     * Simpan data undangan dengan logika bertahap
      */
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'nama_mhs' => 'required|string|max:255',
-                'wa_mhs' => 'required|string|unique:invitation,wa_mhs',
-                'status' => 'required|in:mahasiswa,alumni,ortu',
-            ], [
-                'wa_mhs.unique' => 'Nomor WhatsApp ini sudah terdaftar sebelumnya.',
-                'status.in' => 'Status tidak valid. Pilih: mahasiswa, alumni, atau ortu.'
-            ]);
+            $stage = $request->input('stage', 1); // default stage 1
 
-            // Tambah status kehadiran default "belum_hadir"
-            $validated['attendance_status'] = 'belum_hadir';
+            // STAGE 1: Validasi nama, status, wa_mhs
+            if ($stage == 1) {
+                $validated = $request->validate([
+                    'nama_mhs' => 'required|string|max:255',
+                    'wa_mhs' => 'required|string|unique:invitation,wa_mhs|regex:/^\+62\d{10,12}$/',
+                    'status' => 'required|in:mahasiswa,alumni,ortu',
+                ], [
+                    'wa_mhs.unique' => 'Nomor WhatsApp ini sudah terdaftar sebelumnya.',
+                    'wa_mhs.regex' => 'Format WhatsApp harus +62 diikuti 10-12 digit (contoh: +62812345678901).',
+                    'status.in' => 'Status tidak valid. Pilih: mahasiswa, alumni, atau ortu.'
+                ]);
 
-            $invitation = Invitation::create($validated);
+                // PENTING: Simpan ke database untuk semua status (termasuk mahasiswa)
+                // Untuk mahasiswa: akan di-update di Stage 2 dengan nama_ortu_1 dan nama_ortu_2
+                $validated['attendance_status'] = 'belum_hadir';
+                $invitation = Invitation::create($validated);
 
-            // Generate QR code URL
-            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($invitation->wa_mhs);
+                // Jika status mahasiswa, return pesan untuk lanjut ke tahap 2 (input orang tua)
+                if ($validated['status'] == 'mahasiswa') {
+                    return response()->json([
+                        'success' => true,
+                        'stage' => 1,
+                        'nextStage' => true,
+                        'message' => 'Silakan isi data orang tua',
+                        'invitation_id' => $invitation->id,
+                        'nama_mhs' => $invitation->nama_mhs,
+                        'wa_mhs' => $invitation->wa_mhs,
+                        'status' => $invitation->status,
+                    ], 200);
+                }
+                
+                // Jika status alumni atau ortu, langsung generate barcode
+                // (record sudah dibuat di atas)
 
-            // Return JSON untuk AJAX requests
-            if ($request->wantsJson() || $request->expectsJson() || $request->header('Accept') === 'application/json') {
+                // Generate QR code URL
+                $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($invitation->wa_mhs);
+
                 return response()->json([
                     'success' => true,
-                    'message' => 'Data berhasil ditambahkan',
-                    'invitation_id' => $invitation->id,
+                    'stage' => 1,
+                    'nextStage' => false,
+                    'message' => 'Data berhasil disimpan!',
                     'qr_code_url' => $qrCodeUrl,
+                    'invitation_id' => $invitation->id,
                     'nama_mhs' => $invitation->nama_mhs,
                     'wa_mhs' => $invitation->wa_mhs,
                     'status' => $invitation->status,
-                    'attendance_status' => $invitation->attendance_status,
                     'data' => $invitation
                 ], 200);
             }
 
-            return redirect()->route('invitation.show', $invitation->id)
-                ->with('success', 'Data berhasil ditambahkan');
+            // STAGE 2: Validasi & simpan nama orang tua
+            if ($stage == 2) {
+                $validated = $request->validate([
+                    'nama_mhs' => 'required|string|max:255',
+                    'wa_mhs' => 'required|string|exists:invitation,wa_mhs',
+                    'status' => 'required|in:mahasiswa,alumni,ortu',
+                    'nama_ortu_1' => 'nullable|string|max:255',
+                    'nama_ortu_2' => 'nullable|string|max:255',
+                ], [
+                    'wa_mhs.exists' => 'Data mahasiswa tidak ditemukan. Silakan daftar di tahap 1 terlebih dahulu.',
+                    'status.in' => 'Status tidak valid.'
+                ]);
+
+                \Log::info('Stage 2 Validation Passed:', $validated);
+
+                // Cari dan update invitation berdasarkan wa_mhs
+                $invitation = Invitation::where('wa_mhs', $validated['wa_mhs'])->first();
+
+                if (!$invitation) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data mahasiswa tidak ditemukan'
+                    ], 404);
+                }
+
+                // Update dengan data orang tua
+                $invitation->update([
+                    'nama_ortu_1' => $validated['nama_ortu_1'],
+                    'nama_ortu_2' => $validated['nama_ortu_2'] ?? null,
+                ]);
+
+                \Log::info('Invitation updated with parent data:', [
+                    'invitation_id' => $invitation->id,
+                    'nama_ortu_1' => $validated['nama_ortu_1'],
+                    'nama_ortu_2' => $validated['nama_ortu_2'] ?? null
+                ]);
+
+                // Generate QR code URL
+                $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($invitation->wa_mhs);
+
+                return response()->json([
+                    'success' => true,
+                    'stage' => 2,
+                    'message' => 'Data orang tua berhasil disimpan!',
+                    'qr_code_url' => $qrCodeUrl,
+                    'invitation_id' => $invitation->id,
+                    'nama_mhs' => $invitation->nama_mhs,
+                    'wa_mhs' => $invitation->wa_mhs,
+                    'status' => $invitation->status,
+                    'nama_ortu_1' => $invitation->nama_ortu_1,
+                    'nama_ortu_2' => $invitation->nama_ortu_2,
+                ], 200);
+            }
+
         } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->wantsJson() || $request->expectsJson() || $request->header('Accept') === 'application/json') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal',
-                    'errors' => $e->errors()
-                ], 422);
-            }
-            throw $e;
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal Mendaftar ',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
-            if ($request->wantsJson() || $request->expectsJson() || $request->header('Accept') === 'application/json') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan server: ' . $e->getMessage(),
-                    'error_type' => class_basename($e)
-                ], 500);
-            }
-            throw $e;
+            \Log::error('Error storing invitation:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -219,6 +286,8 @@ class InvitationController extends Controller
                 'nama_mhs' => $invitation->nama_mhs,
                 'status' => $invitation->status,
                 'wa_mhs' => $invitation->wa_mhs,
+                'nama_ortu_1' => $invitation->nama_ortu_1,
+                'nama_ortu_2' => $invitation->nama_ortu_2,
             ]);
 
             // Update status kehadiran menjadi "hadir" di tabel invitation
@@ -247,7 +316,7 @@ class InvitationController extends Controller
     }
     public function undangan()
     {
-        return view('undangan');
+        return view('invitation');
     }
 
     /**
@@ -255,15 +324,21 @@ class InvitationController extends Controller
      */
     public function daftarHadir()
     {
-        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'created_at')->get()
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'nama_ortu_1', 'nama_ortu_2', 'created_at')->get()
             ->map(function($item) {
                 $item->statusKehadiran = $item->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir';
                 return $item;
             });
         
         // Map presence data
-        $presences = Presence::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'status', 'created_at')->get()->map(function($p){
+        $presences = Presence::with('invitation')
+            ->select('id', 'invitation_id', 'nama_mhs as nama', 'wa_mhs as email', 'status', 'nama_ortu_1', 'nama_ortu_2', 'created_at')
+            ->get()
+            ->map(function($p){
+            $p->nama_ortu_1 = $p->nama_ortu_1 ?: $p->invitation?->nama_ortu_1;
+            $p->nama_ortu_2 = $p->nama_ortu_2 ?: $p->invitation?->nama_ortu_2;
             $p->checkIn = $p->created_at->format('H:i').' WIB';
+            unset($p->invitation);
             return $p;
         });
 
@@ -325,7 +400,7 @@ class InvitationController extends Controller
      */
     public function exportPresenceExcel()
     {
-        $presences = Presence::all();
+        $presences = Presence::with('invitation')->get();
 
         // Prepare headers
         $headers = [
@@ -345,7 +420,8 @@ class InvitationController extends Controller
                 'No',
                 'Nama Lengkap',
                 'No. Telepon',
-                'Nama Orang Tua/Wali',
+                'Nama Orang Tua/Wali 1',
+                'Nama Orang Tua/Wali 2',
                 'Status',
                 'Waktu Check-in'
             ], ';');
@@ -356,7 +432,8 @@ class InvitationController extends Controller
                     $index + 1,
                     $presence->nama_mhs,
                     $presence->wa_mhs,
-                    $presence->nama_ortu,
+                    $presence->nama_ortu_1 ?: $presence->invitation?->nama_ortu_1,
+                    $presence->nama_ortu_2 ?: $presence->invitation?->nama_ortu_2,
                     ucfirst($presence->status),
                     $presence->created_at->format('d-m-Y H:i:s')
                 ], ';');
@@ -400,6 +477,8 @@ class InvitationController extends Controller
                         'nama_mhs' => $invitation->nama_mhs,
                         'status' => $invitation->status,
                         'wa_mhs' => $invitation->wa_mhs,
+                        'nama_ortu_1' => $invitation->nama_ortu_1,
+                        'nama_ortu_2' => $invitation->nama_ortu_2,
                     ]);
                 }
 

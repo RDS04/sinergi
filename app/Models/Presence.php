@@ -11,6 +11,8 @@ class Presence extends Model
         'nama_mhs',
         'status',
         'wa_mhs',
+        'nama_ortu_1',
+        'nama_ortu_2',
     ];
 
     public function invitation()
