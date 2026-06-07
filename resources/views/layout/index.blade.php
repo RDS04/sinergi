@@ -323,7 +323,7 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2025 <a href="#" style="color:#018FD7;">Metamedia Collaboration</a>.</strong>
+            <strong>Copyright &copy; 2026 <a href="#" style="color:#018FD7;">Metamedia Collaboration</a>.</strong>
             All rights reserved. 
             <div class="float-right d-none d-sm-inline-block">
                 <i class="fas fa-diamond" style="color:#C9A03D;"></i> <span class="gold-blink">Sinergi Keluarga Besar</span>
