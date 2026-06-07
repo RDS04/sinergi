@@ -87,7 +87,7 @@
                                 <li class="list-group-item d-flex justify-content-between"><span><i class="fas fa-user-plus text-success mr-2"></i> Peserta Baru Hari Ini</span><span class="badge badge-info">{{ $todayInvitations }}</span></li>
                                 <li class="list-group-item d-flex justify-content-between"><span><i class="fas fa-check-circle text-primary mr-2"></i> Check-in Hari Ini</span><span class="badge badge-success">{{ $todayPresences }}</span></li>
                                 <li class="list-group-item d-flex justify-content-between"><span><i class="fas fa-database text-warning mr-2"></i> Total Peserta</span><span class="badge badge-warning">{{ $totalInvitations }}</span></li>
-                                <li class="list-group-item d-flex justify-content-between"><span><i class="fas fa-calendar-check text-info mr-2"></i> Tanggal Acara</span><span class="badge badge-info">14 Juni 2025</span></li>
+                                <li class="list-group-item d-flex justify-content-between"><span><i class="fas fa-calendar-check text-info mr-2"></i> Tanggal Acara</span><span class="badge badge-info">19 Juni 2026</span></li>
                             </ul>
                         </div>
                     </div>
