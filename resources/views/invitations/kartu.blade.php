@@ -15,7 +15,7 @@
                 <div class="relative w-full overflow-hidden rounded-3xl bg-gray-200">
                     <img 
                         class="bg-image w-full h-auto block object-cover"
-                        src="{{ asset('storage/kartu undangan.png') }}" 
+                        src="{{ asset('storage/kartu_undangan.webp') }}" 
                         alt="Kartu Undangan" 
                         loading="lazy"
                         onerror="console.error('Gambar kartu gagal dimuat')"
@@ -23,8 +23,8 @@
                     
                     <!-- QR Code Overlay -->
                     <div class="qr-overlay absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                                w-[min(180px,60%)] aspect-square rounded-2xl bg-white/95 border-2 border-white/85
-                                flex items-center justify-center p-3 shadow-lg">
+                                w-[min(125px,42%)] sm:w-[min(180px,60%)] aspect-square rounded-xl sm:rounded-2xl bg-white/95 border-2 border-white/85
+                                flex items-center justify-center p-2 sm:p-3 shadow-lg">
                         <img 
                             id="qrCodeImage" 
                             class="qr-img w-full h-full object-contain rounded-xl"

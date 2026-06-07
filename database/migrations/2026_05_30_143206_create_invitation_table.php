@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('attendance_status', ['belum_hadir', 'hadir'])->default('belum_hadir');
             $table->string('nama_ortu_1')->nullable()->comment('Nama orang tua/wali (required for mahasiswa)');
             $table->string('nama_ortu_2')->nullable()->comment('Nama orang tua/wali kedua (optional)');
+            $table->text('alasan_ortu_tidak_ikut')->nullable()->comment('Alasan jika orang tua/wali tidak ikut hadir');
             $table->timestamps();
         });
     }

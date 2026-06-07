@@ -83,12 +83,19 @@ class InvitationController extends Controller
                     'status' => 'required|in:mahasiswa,alumni,ortu',
                     'nama_ortu_1' => 'nullable|string|max:255',
                     'nama_ortu_2' => 'nullable|string|max:255',
+                    'alasan_ortu_tidak_ikut' => 'nullable|required_without_all:nama_ortu_1,nama_ortu_2|string|max:500',
                 ], [
                     'wa_mhs.exists' => 'Data mahasiswa tidak ditemukan. Silakan daftar di tahap 1 terlebih dahulu.',
-                    'status.in' => 'Status tidak valid.'
+                    'status.in' => 'Status tidak valid.',
+                    'alasan_ortu_tidak_ikut.required_without_all' => 'Alasan orang tua/wali tidak ikut harus diisi jika kedua data orang tua/wali kosong.'
                 ]);
 
                 \Log::info('Stage 2 Validation Passed:', $validated);
+
+                $namaOrtu1 = trim($validated['nama_ortu_1'] ?? '');
+                $namaOrtu2 = trim($validated['nama_ortu_2'] ?? '');
+                $alasanOrtuTidakIkut = trim($validated['alasan_ortu_tidak_ikut'] ?? '');
+                $tidakAdaOrtuIkut = $namaOrtu1 === '' && $namaOrtu2 === '';
 
                 // Cari dan update invitation berdasarkan wa_mhs
                 $invitation = Invitation::where('wa_mhs', $validated['wa_mhs'])->first();
@@ -102,14 +109,16 @@ class InvitationController extends Controller
 
                 // Update dengan data orang tua
                 $invitation->update([
-                    'nama_ortu_1' => $validated['nama_ortu_1'],
-                    'nama_ortu_2' => $validated['nama_ortu_2'] ?? null,
+                    'nama_ortu_1' => $namaOrtu1 ?: null,
+                    'nama_ortu_2' => $namaOrtu2 ?: null,
+                    'alasan_ortu_tidak_ikut' => $tidakAdaOrtuIkut ? $alasanOrtuTidakIkut : null,
                 ]);
 
                 \Log::info('Invitation updated with parent data:', [
                     'invitation_id' => $invitation->id,
-                    'nama_ortu_1' => $validated['nama_ortu_1'],
-                    'nama_ortu_2' => $validated['nama_ortu_2'] ?? null
+                    'nama_ortu_1' => $namaOrtu1 ?: null,
+                    'nama_ortu_2' => $namaOrtu2 ?: null,
+                    'alasan_ortu_tidak_ikut' => $tidakAdaOrtuIkut ? $alasanOrtuTidakIkut : null,
                 ]);
 
                 // Generate QR code URL
@@ -126,6 +135,7 @@ class InvitationController extends Controller
                     'status' => $invitation->status,
                     'nama_ortu_1' => $invitation->nama_ortu_1,
                     'nama_ortu_2' => $invitation->nama_ortu_2,
+                    'alasan_ortu_tidak_ikut' => $invitation->alasan_ortu_tidak_ikut,
                 ], 200);
             }
 

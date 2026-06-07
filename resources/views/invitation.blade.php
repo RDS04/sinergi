@@ -577,7 +577,7 @@
                     <div class="max-w-4xl mx-auto">
                         <div class="group relative">
                             <div class="relative bg-white/15 backdrop-blur-md rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:border-[#FFD966]/60">
-                                <img src="{{ asset('storage/rowndown_acara.png') }}" alt="Rundown Acara Lengkap" 
+                                <img src="{{ asset('storage/Rondown_acara.png') }}" alt="Rundown Acara Lengkap" 
                                     class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
                             </div>
                         </div>
@@ -681,8 +681,7 @@
                                 <div class="flex-1">
                                     <p class="text-white/70 text-xs sm:text-sm uppercase tracking-wide font-semibold">
                                         Alamat</p>
-                                    <p class="text-white font-bold text-base sm:text-lg mt-1">Jl. Veteran, Padang,
-                                        Sumatera Barat</p>
+                                    <p class="text-white font-bold text-base sm:text-lg mt-1">Jl Gereja 34 25118 Padang Barat</p>
                                 </div>
                             </div>
                         </div>
@@ -700,7 +699,7 @@
                                     <p class="text-white/70 text-xs sm:text-sm uppercase tracking-wide font-semibold">
                                         Tanggal & Waktu</p>
                                     <p class="text-white font-bold text-base sm:text-lg mt-1">Sabtu, 19 Juni 2026</p>
-                                    <p class="text-[#FFD966] font-semibold text-sm mt-1">08.00 - 17.00 WIB</p>
+                                    <p class="text-[#FFD966] font-semibold text-sm mt-1">07.30 - 17.00 WIB</p>
                                 </div>
                             </div>
                         </div>
@@ -828,7 +827,7 @@
                             <!-- Header untuk tahap 2 -->
                             <div class="mb-6">
                                 <h3 class="text-white font-bold text-lg sm:text-xl mb-2">Data Orang Tua/Wali</h3>
-                                <p class="text-white/70 text-sm">Silakan isi informasi orang tua atau wali</p>
+                                <p class="text-white/70 text-sm">Silahkan mengisi data orangtua yang akan hadir dengan mengklik centang isi form. data dapat diisi maksimal untuk 2 orang. jika orangtuanya tidak ikut berikan alasan</p>
                             </div>
 
                             <!-- Form Fields Section -->
@@ -875,6 +874,21 @@
                                         </label>
                                     </div>
                                     <p class="text-red-300 text-xs mt-2 hidden error-nama_ortu_2"></p>
+                                </div>
+
+                                <!-- Alasan jika orang tua/wali tidak ikut -->
+                                <div class="group hidden" id="alasanOrtuContainer">
+                                    <label class="block text-white/95 text-sm sm:text-base font-semibold mb-2.5">
+                                        Alasan Orang Tua/Wali Tidak Ikut <span class="text-red-400">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <i
+                                            class="fas fa-comment-dots absolute left-4 top-3.5 text-[#FFD966] text-lg opacity-60"></i>
+                                        <textarea name="alasan_ortu_tidak_ikut" id="alasanOrtuTidakIkut" rows="3"
+                                            class="w-full pl-12 pr-4 py-3 sm:py-3.5 rounded-xl bg-white/20 border-2 border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-[#FFD966] focus:bg-white/25 transition-all duration-300 resize-none"
+                                            placeholder="Contoh: Orang tua/wali berhalangan hadir karena pekerjaan"></textarea>
+                                    </div>
+                                    <p class="text-red-300 text-xs mt-2 hidden error-alasan_ortu_tidak_ikut"></p>
                                 </div>
                             </div>
 
@@ -957,19 +971,11 @@
             <footer
                 class="bg-gradient-to-r from-[#016aa3] to-[#0A5B9F] px-4 sm:px-6 py-8 text-center border-t-2 border-white/10">
                 <div class="flex justify-center gap-4 sm:gap-6 mb-4">
-                    <a href="#"
+                    <a href="https://www.instagram.com/universitasmetamedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                         class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-[#FFD966]/20 text-white/80 hover:text-[#FFD966] transition-all duration-300">
                         <i class="fab fa-instagram text-lg"></i>
                     </a>
-                    <a href="#"
-                        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-[#FFD966]/20 text-white/80 hover:text-[#FFD966] transition-all duration-300">
-                        <i class="fab fa-linkedin-in text-lg"></i>
-                    </a>
-                    <a href="#"
-                        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-[#FFD966]/20 text-white/80 hover:text-[#FFD966] transition-all duration-300">
-                        <i class="fab fa-twitter text-lg"></i>
-                    </a>
-                    <a href="#"
+                    <a href="https://www.tiktok.com/@universitas.metamedia?_r=1&_t=ZS-970UZhEmfAu"
                         class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-[#FFD966]/20 text-white/80 hover:text-[#FFD966] transition-all duration-300">
                         <i class="fab fa-tiktok text-lg"></i>
                     </a>
@@ -1219,8 +1225,9 @@
                             nama_mhs: formData.get('nama_mhs'),
                             wa_mhs: formData.get('wa_mhs'),
                             status: formData.get('status'),
-                            nama_ortu_1: formData.get('nama_ortu_1'),
+                            nama_ortu_1: formData.get('nama_ortu_1') || null,
                             nama_ortu_2: formData.get('nama_ortu_2') || null,
+                            alasan_ortu_tidak_ikut: formData.get('alasan_ortu_tidak_ikut') || null,
                             _token: formData.get('_token')
                         };
 
@@ -1232,6 +1239,7 @@
                             status: jsonData.status,
                             nama_ortu_1: jsonData.nama_ortu_1,
                             nama_ortu_2: jsonData.nama_ortu_2,
+                            alasan_ortu_tidak_ikut: jsonData.alasan_ortu_tidak_ikut,
                             token_exists: !!jsonData._token
                         });
                         console.log('Full payload:', JSON.stringify(jsonData, null, 2));
@@ -1264,6 +1272,24 @@
                         if (checkboxOrtu1?.checked && !jsonData.nama_ortu_1?.trim()) {
                             console.error('❌ Validation Error: checkbox orang tua 1 checked but nama_ortu_1 is empty');
                             showFieldError('nama_ortu_1', 'Nama orang tua/wali harus diisi jika checkbox dicentang');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                            return;
+                        }
+
+                        const checkboxOrtu2 = document.getElementById('checkboxOrtu2');
+                        if (checkboxOrtu2?.checked && !jsonData.nama_ortu_2?.trim()) {
+                            console.error('Validation Error: checkbox orang tua 2 checked but nama_ortu_2 is empty');
+                            showFieldError('nama_ortu_2', 'Nama orang tua/wali kedua harus diisi jika checkbox dicentang');
+                            loadingSpinner.classList.add('hidden');
+                            stage2Container.classList.remove('hidden');
+                            return;
+                        }
+
+                        const tidakAdaOrtuIkut = !jsonData.nama_ortu_1?.trim() && !jsonData.nama_ortu_2?.trim();
+                        if (tidakAdaOrtuIkut && !jsonData.alasan_ortu_tidak_ikut?.trim()) {
+                            console.error('Validation Error: kedua orang tua/wali kosong dan alasan belum diisi');
+                            showFieldError('alasan_ortu_tidak_ikut', 'Alasan orang tua/wali tidak ikut harus diisi');
                             loadingSpinner.classList.add('hidden');
                             stage2Container.classList.remove('hidden');
                             return;
@@ -1333,6 +1359,23 @@
                     const checkboxOrtu2 = document.getElementById('checkboxOrtu2');
                     const namaOrtu1 = document.getElementById('namaOortu1');
                     const namaOrtu2 = document.getElementById('namaOrtu2');
+                    const alasanOrtuContainer = document.getElementById('alasanOrtuContainer');
+                    const alasanOrtuTidakIkut = document.getElementById('alasanOrtuTidakIkut');
+
+                    function updateAlasanOrtuVisibility() {
+                        const tidakAdaOrtuDipilih = !checkboxOrtu1?.checked && !checkboxOrtu2?.checked;
+                        const tidakAdaNamaOrtu = !namaOrtu1?.value.trim() && !namaOrtu2?.value.trim();
+                        const harusIsiAlasan = tidakAdaOrtuDipilih || tidakAdaNamaOrtu;
+
+                        if (!alasanOrtuContainer || !alasanOrtuTidakIkut) return;
+
+                        alasanOrtuContainer.classList.toggle('hidden', !harusIsiAlasan);
+                        alasanOrtuTidakIkut.required = harusIsiAlasan;
+
+                        if (!harusIsiAlasan) {
+                            alasanOrtuTidakIkut.value = '';
+                        }
+                    }
 
                     // Orang Tua 1 - Harus dicentang untuk bisa diisi (wajib)
                     if (checkboxOrtu1 && namaOrtu1) {
@@ -1347,7 +1390,9 @@
                                 namaOrtu1.required = false;
                                 namaOrtu1.value = '';
                             }
+                            updateAlasanOrtuVisibility();
                         });
+                        namaOrtu1.addEventListener('input', updateAlasanOrtuVisibility);
                     }
 
                     // Orang Tua 2 - Opsional, dicentang untuk bisa diisi
@@ -1361,8 +1406,12 @@
                                 namaOrtu2.classList.add('opacity-50', 'cursor-not-allowed');
                                 namaOrtu2.value = '';
                             }
+                            updateAlasanOrtuVisibility();
                         });
+                        namaOrtu2.addEventListener('input', updateAlasanOrtuVisibility);
                     }
+
+                    updateAlasanOrtuVisibility();
                 }
 
                 function showFieldError(field, message) {

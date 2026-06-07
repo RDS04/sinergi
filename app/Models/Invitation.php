@@ -14,5 +14,6 @@ class Invitation extends Model
         'attendance_status',
         'nama_ortu_1',
         'nama_ortu_2',
+        'alasan_ortu_tidak_ikut',
     ];
 }
