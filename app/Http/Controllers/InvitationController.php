@@ -232,6 +232,65 @@ class InvitationController extends Controller
     {
         return $this->findByWaMhs($request);
     }
+
+    /**
+     * Cari invitation dari halaman scan ketika barcode tidak tersedia.
+     */
+    public function searchInvitation(Request $request)
+    {
+        $validated = $request->validate([
+            'query' => 'required|string|min:2|max:255',
+        ], [
+            'query.required' => 'Masukkan nama atau nomor WhatsApp.',
+            'query.min' => 'Masukkan minimal 2 karakter.',
+        ]);
+
+        $keyword = trim($validated['query']);
+        $digits = preg_replace('/\D+/', '', $keyword);
+
+        $invitation = Invitation::query()
+            ->when($digits, function ($query) use ($digits) {
+                $waCandidates = [$digits];
+
+                if (str_starts_with($digits, '0')) {
+                    $waCandidates[] = '62' . substr($digits, 1);
+                    $waCandidates[] = '+62' . substr($digits, 1);
+                }
+
+                if (str_starts_with($digits, '62')) {
+                    $waCandidates[] = '+' . $digits;
+                }
+
+                $query->where(function ($subQuery) use ($waCandidates, $digits) {
+                    foreach (array_unique($waCandidates) as $candidate) {
+                        $subQuery->orWhere('wa_mhs', $candidate);
+                    }
+
+                    $subQuery->orWhere('wa_mhs', 'like', '%' . $digits . '%');
+                });
+            })
+            ->when(! $digits, function ($query) use ($keyword) {
+                $query->where('nama_mhs', 'like', '%' . $keyword . '%');
+            })
+            ->when($digits, function ($query) use ($keyword) {
+                $query->orWhere('nama_mhs', 'like', '%' . $keyword . '%');
+            })
+            ->orderByRaw('CASE WHEN nama_mhs = ? THEN 0 ELSE 1 END', [$keyword])
+            ->orderBy('nama_mhs')
+            ->first();
+
+        if (! $invitation) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan. Coba cek lagi nama atau nomor WhatsApp.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $invitation,
+        ]);
+    }
     
     /**
      * Catat kehadiran berdasarkan nomor WhatsApp mahasiswa
@@ -334,7 +393,7 @@ class InvitationController extends Controller
      */
     public function daftarHadir()
     {
-        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'nama_ortu_1', 'nama_ortu_2', 'created_at')->get()
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'nama_ortu_1', 'nama_ortu_2', 'alasan_ortu_tidak_ikut', 'created_at')->get()
             ->map(function($item) {
                 $item->statusKehadiran = $item->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir';
                 return $item;

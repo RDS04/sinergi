@@ -130,6 +130,18 @@
         .gold-dot {
             animation: pulseGold 1.5s infinite;
         }
+        .reason-cell {
+            width: 220px;
+            max-width: 220px;
+        }
+        .reason-text {
+            display: block;
+            width: 220px;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
         @keyframes pulseGold {
             0% { opacity: 0.5; transform: scale(0.8);}
             100% { opacity: 1; transform: scale(1.2);}
@@ -228,6 +240,7 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kategori</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerOrangTua1" style="display:none;">Orang Tua 1</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerOrangTua2" style="display:none;">Orang Tua 2</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerAlasanOrtu" style="display:none;">Alasan Ortu Tidak Hadir</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kehadiran</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -276,7 +289,8 @@
                         item.kontak.toString().toLowerCase().includes(q) || 
                         item.status.toLowerCase().includes(q) ||
                         (item.nama_ortu_1 && item.nama_ortu_1.toLowerCase().includes(q)) ||
-                        (item.nama_ortu_2 && item.nama_ortu_2.toLowerCase().includes(q))
+                        (item.nama_ortu_2 && item.nama_ortu_2.toLowerCase().includes(q)) ||
+                        (item.alasan_ortu_tidak_ikut && item.alasan_ortu_tidak_ikut.toLowerCase().includes(q))
                     );
                 }
             } else {
@@ -323,6 +337,7 @@
             
             document.getElementById("headerOrangTua1").style.display = "table-cell";
             document.getElementById("headerOrangTua2").style.display = "table-cell";
+            document.getElementById("headerAlasanOrtu").style.display = activeTab === "undangan" ? "table-cell" : "none";
 
             if (paginatedData.length === 0) {
                 tbody.innerHTML = '';
@@ -353,6 +368,9 @@
                     // Format nama orang tua 1 dan 2 terpisah
                     const namaOrangTua1 = item.nama_ortu_1 ? escapeHtml(item.nama_ortu_1) : '<span class="text-gray-400">-</span>';
                     const namaOrangTua2 = item.nama_ortu_2 ? escapeHtml(item.nama_ortu_2) : '<span class="text-gray-400">-</span>';
+                    const alasanOrtu = item.alasan_ortu_tidak_ikut
+                        ? `<span class="reason-text" title="${escapeAttribute(item.alasan_ortu_tidak_ikut)}">${escapeHtml(truncateText(item.alasan_ortu_tidak_ikut, 45))}</span>`
+                        : '<span class="text-gray-400">-</span>';
                     
                     // Status kehadiran badge
                     const statusBadge = item.statusKehadiran === "Hadir" 
@@ -369,6 +387,7 @@
                         <td class="px-6 py-4">${statusKategori}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua1}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua2}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 reason-cell">${alasanOrtu}</td>
                         <td class="px-6 py-4">${statusBadge}</td>
                         <td class="px-6 py-4 text-center">${actionBtn}</td>
                     </tr>`;
@@ -466,16 +485,9 @@
             }
             let csvRows = [];
             if (activeTab === "undangan") {
-                csvRows.push(["No", "Nama Lengkap", "No. Telepon", "Status", "Orang Tua", "Status Kehadiran"]);
+                csvRows.push(["No", "Nama Lengkap", "No. Telepon", "Status", "Orang Tua 1", "Orang Tua 2", "Alasan Ortu Tidak Hadir", "Status Kehadiran"]);
                 data.forEach((item, idx) => {
-                    let namaOrtu = '';
-                    if (item.nama_ortu_1 || item.nama_ortu_2) {
-                        let ortu = [];
-                        if (item.nama_ortu_1) ortu.push(item.nama_ortu_1);
-                        if (item.nama_ortu_2) ortu.push(item.nama_ortu_2);
-                        namaOrtu = ortu.join(', ');
-                    }
-                    csvRows.push([idx+1, item.nama, item.kontak, item.status, namaOrtu, item.statusKehadiran]);
+                    csvRows.push([idx+1, item.nama, item.kontak, item.status, item.nama_ortu_1 || '', item.nama_ortu_2 || '', item.alasan_ortu_tidak_ikut || '', item.statusKehadiran]);
                 });
             } else {
                 csvRows.push(["No", "Nama Lengkap", "No. Telepon", "Status", "Orang Tua 1", "Orang Tua 2", "Check-in Time"]);
@@ -519,6 +531,16 @@
                 if(m === '>') return '&gt;';
                 return m;
             });
+        }
+
+        function escapeAttribute(str) {
+            if(!str) return '';
+            return escapeHtml(str).replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function truncateText(str, maxLength = 45) {
+            if(!str) return '';
+            return str.length > maxLength ? `${str.slice(0, maxLength)}...` : str;
         }
 
         // Event listeners

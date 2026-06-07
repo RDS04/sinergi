@@ -4,77 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Scan QR Code</title>
+    <title>Scan QR Kehadiran</title>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
             min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #17211b;
+            background:
+                linear-gradient(135deg, rgba(11, 36, 27, 0.74), rgba(30, 57, 47, 0.42)),
+                url("{{ asset('storage/bg_scan.png') }}") center / cover fixed no-repeat,
+                #eaf0e7;
         }
 
-        .container {
-            max-width: 1200px;
+        button,
+        input {
+            font: inherit;
+        }
+
+        .page {
+            width: min(1120px, calc(100% - 32px));
+            min-height: 100vh;
             margin: 0 auto;
+            padding: 28px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
         }
 
         .header h1 {
-            font-size: 24px;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: clamp(28px, 4vw, 46px);
+            line-height: 1.05;
+            font-weight: 800;
+            letter-spacing: 0;
         }
 
         .header p {
-            font-size: 14px;
-            color: #888;
+            width: min(650px, 100%);
+            margin-top: 10px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.88);
         }
 
         .content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+            gap: 18px;
+            align-items: stretch;
         }
 
-        /* Camera Section */
-        .camera-section {
-            background: white;
-            padding: 20px;
+        .panel {
+            border: 1px solid rgba(255, 255, 255, 0.48);
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 24px 70px rgba(12, 28, 20, 0.25);
+            backdrop-filter: blur(16px);
+        }
+
+        .scanner-panel,
+        .data-panel {
+            padding: 18px;
+        }
+
+        .panel-title {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .panel-title h2 {
+            font-size: 17px;
+            font-weight: 800;
+            color: #18261d;
+        }
+
+        .badge {
+            flex: 0 0 auto;
+            border-radius: 999px;
+            padding: 6px 10px;
+            background: #e8f4ec;
+            color: #1d6b3b;
+            font-size: 12px;
+            font-weight: 800;
         }
 
         .camera-container {
             position: relative;
             width: 100%;
-            max-width: 300px;
-            background: #000;
-            border-radius: 4px;
+            max-width: 430px;
+            margin: 0 auto;
             overflow: hidden;
             aspect-ratio: 1;
-            margin: 0 auto;
+            border-radius: 8px;
+            background: #101410;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
         }
 
         #video {
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
         }
 
         #canvas {
@@ -83,157 +128,153 @@
 
         .scanner-overlay {
             position: absolute;
+            inset: 15%;
+            border: 2px solid rgba(255, 255, 255, 0.92);
+            border-radius: 8px;
+            box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.22);
+        }
+
+        .scanner-overlay::after {
+            content: "";
+            position: absolute;
+            left: 12px;
+            right: 12px;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            border: 2px solid #0f0;
-            border-radius: 6px;
-            z-index: 10;
+            height: 2px;
+            background: #4ade80;
+            box-shadow: 0 0 18px #4ade80;
         }
 
-        .controls {
-            display: flex;
+        .controls,
+        .form-actions,
+        .search-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
+            margin-top: 14px;
         }
 
-        .btn-control {
-            flex: 1;
-            padding: 10px 16px;
-            font-size: 13px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: white;
-            color: #333;
+        .form-actions {
+            grid-template-columns: 1fr auto;
+        }
+
+        .search-actions {
+            grid-template-columns: 1fr auto;
+            margin-top: 10px;
+        }
+
+        .btn {
+            min-height: 42px;
+            border: 0;
+            border-radius: 6px;
+            padding: 10px 14px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 800;
+            transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
         }
 
-        .btn-control:hover {
-            background-color: #f5f5f5;
-            border-color: #999;
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: #1f7a45;
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(31, 122, 69, 0.22);
+        }
+
+        .btn-dark {
+            background: #142019;
+            color: #fff;
+        }
+
+        .btn-soft {
+            border: 1px solid #d4ddd5;
+            background: #f7faf7;
+            color: #25362a;
         }
 
         .status-text {
+            margin-top: 12px;
+            min-height: 42px;
+            border-radius: 6px;
+            padding: 11px 12px;
+            background: rgba(20, 32, 25, 0.07);
+            color: #445046;
             font-size: 13px;
-            color: #666;
+            line-height: 1.45;
             text-align: center;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
         }
 
         .status-text.success {
-            color: #0b7d22;
-            background-color: #d9edda;
+            background: #e1f5e8;
+            color: #166534;
         }
 
         .status-text.error {
-            color: #b91d13;
-            background-color: #f8d7da;
+            background: #fee2e2;
+            color: #991b1b;
         }
 
-        /* Form Section */
-        .form-section {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: block;
+        .search-box {
+            margin-bottom: 18px;
+            border-bottom: 1px solid #dde5de;
+            padding-bottom: 18px;
         }
 
-        .form-section h2 {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 600;
+        .search-box p {
+            margin: 5px 0 12px;
+            color: #5b665f;
+            font-size: 13px;
+            line-height: 1.55;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
-            font-size: 13px;
-            color: #555;
             margin-bottom: 6px;
-            font-weight: 500;
+            color: #344239;
+            font-size: 12px;
+            font-weight: 800;
         }
 
-        .form-group input,
-        .form-group textarea {
+        .form-group input {
             width: 100%;
+            min-height: 42px;
+            border: 1px solid #d4ddd5;
+            border-radius: 6px;
             padding: 10px 12px;
-            font-size: 13px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            background-color: #fafafa;
+            background: #fbfdfb;
+            color: #17211b;
+            font-size: 14px;
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 60px;
+        .form-group input:focus {
+            outline: 3px solid rgba(31, 122, 69, 0.16);
+            border-color: #1f7a45;
+            background: #fff;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #333;
-            background-color: white;
+        .form-group input[readonly] {
+            background: #f3f6f3;
+            color: #4f5d54;
         }
 
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 10px 16px;
-            font-size: 13px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        .btn-submit {
-            background-color: #333;
-            color: white;
-        }
-
-        .btn-submit:hover {
-            background-color: #000;
-        }
-
-        .btn-cancel {
-            background-color: #e0e0e0;
-            color: #333;
-        }
-
-        .btn-cancel:hover {
-            background-color: #d0d0d0;
-        }
-
-        /* Loading */
         .loading-overlay {
-            display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
+            inset: 0;
+            z-index: 50;
+            display: none;
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            gap: 14px;
+            background: rgba(10, 18, 13, 0.62);
+            color: #fff;
         }
 
         .loading-overlay.show {
@@ -241,147 +282,86 @@
         }
 
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #333;
+            width: 42px;
+            height: 42px;
+            border: 4px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #fff;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            animation: spin 0.9s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            color: white;
-            font-size: 14px;
-        }
-
-        /* Toast Notification */
         .toast-container {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
+            top: 18px;
+            right: 18px;
+            z-index: 60;
+            display: grid;
             gap: 10px;
+            width: min(360px, calc(100% - 36px));
         }
 
         .toast {
-            background: white;
-            padding: 16px 24px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 320px;
-            animation: slideInRight 0.3s ease-out;
-            border-left: 4px solid #333;
+            border-left: 5px solid #1f7a45;
+            border-radius: 8px;
+            padding: 14px 16px;
+            background: #fff;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.22s ease-out;
         }
 
-        @keyframes slideInRight {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .toast.error {
+            border-left-color: #dc2626;
         }
 
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-        }
-
-        .toast.hide {
-            animation: slideOutRight 0.3s ease-out;
-        }
-
-        .toast-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .toast-content {
-            flex: 1;
+        .toast.warning {
+            border-left-color: #d97706;
         }
 
         .toast-title {
             font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 2px;
+            font-weight: 900;
+            color: #17211b;
         }
 
         .toast-message {
+            margin-top: 3px;
+            color: #56625b;
             font-size: 13px;
-            color: #666;
-            line-height: 1.4;
+            line-height: 1.45;
         }
 
-        .toast.success {
-            border-left-color: #0b7d22;
-            background-color: #d9edda;
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .toast.success .toast-icon {
-            color: #0b7d22;
-        }
-
-        .toast.success .toast-title {
-            color: #0b7d22;
-        }
-
-        .toast.error {
-            border-left-color: #b91d13;
-            background-color: #f8d7da;
-        }
-
-        .toast.error .toast-icon {
-            color: #b91d13;
-        }
-
-        .toast.error .toast-title {
-            color: #b91d13;
-        }
-
-        .toast.warning {
-            border-left-color: #ff9800;
-            background-color: #fff3cd;
-        }
-
-        .toast.warning .toast-icon {
-            color: #ff9800;
-        }
-
-        .toast.warning .toast-title {
-            color: #ff9800;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-                gap: 20px;
+        @media (max-width: 840px) {
+            body {
+                background-attachment: scroll;
             }
 
-            .header h1 {
-                font-size: 20px;
+            .page {
+                width: min(100% - 24px, 560px);
+                justify-content: flex-start;
+                padding: 22px 0;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .controls,
+            .form-actions,
+            .search-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -389,26 +369,66 @@
 <body>
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <div class="loading-text">Memproses...</div>
+        <div>Memproses...</div>
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <div class="container">
-        <div class="header">
-            <h1>Scan QR Code</h1>
-            <p>Arahkan kamera ke QR Code untuk mengisi form kehadiran</p>
-        </div>
+    <main class="page">
+        <header class="header">
+            <h1>Check Kehadiran</h1>
+            
+        </header>
 
-        <div class="content">
-            <!-- Form Section -->
-            <div class="form-section" id="formSection">
-                <h2>Data Kehadiran</h2>
+        <section class="content">
+            <div class="panel scanner-panel">
+                <div class="panel-title">
+                    <h2>Scan Barcode</h2>
+                    <span class="badge">Live Camera</span>
+                </div>
+
+                <div class="camera-container">
+                    <video id="video" playsinline muted></video>
+                    <canvas id="canvas"></canvas>
+                    <div class="scanner-overlay"></div>
+                </div>
+
+                <div class="controls">
+                    <button type="button" class="btn btn-primary" onclick="startScanning()">Mulai Scan</button>
+                    <button type="button" class="btn btn-soft" onclick="stopScanning()">Stop</button>
+                    <button type="button" class="btn btn-soft" onclick="window.history.back()">Kembali</button>
+                </div>
+
+                <div class="status-text" id="statusText">Tekan "Mulai Scan" untuk memulai.</div>
+            </div>
+
+            <div class="panel data-panel">
+                <div class="search-box">
+                    <div class="panel-title">
+                        <h2>Cari Manual</h2>
+                        <span class="badge">Tanpa QR</span>
+                    </div>
+                    <p>Input nama atau no. WhatsApp sesuai data undangan, lalu konfirmasi kehadiran setelah data tampil.</p>
+                    <form id="manualSearchForm">
+                        <div class="form-group">
+                            <label for="search_query">Nama / No. WhatsApp</label>
+                            <input type="search" id="search_query" name="query" placeholder="Contoh: Budi atau 081234567890" autocomplete="off">
+                        </div>
+                        <div class="search-actions">
+                            <button type="submit" class="btn btn-dark">Cari Data</button>
+                            <button type="button" class="btn btn-soft" onclick="clearSearch()">Bersihkan</button>
+                        </div>
+                    </form>
+                </div>
+
                 <form id="attendanceForm" method="POST" action="/record-presence">
                     @csrf
+                    <div class="panel-title">
+                        <h2>Data Kehadiran</h2>
+                    </div>
 
                     <div class="form-group">
-                        <label for="nama_mhs">Nama Mahasiswa</label>
+                        <label for="nama_mhs">Nama</label>
                         <input type="text" id="nama_mhs" name="nama_mhs" readonly>
                     </div>
 
@@ -416,8 +436,9 @@
                         <label for="status">Status</label>
                         <input type="text" id="status" name="status" readonly>
                     </div>
+
                     <div class="form-group">
-                        <label for="wa_mhs">No. WhatsApp Mahasiswa</label>
+                        <label for="wa_mhs">No. WhatsApp</label>
                         <input type="text" id="wa_mhs" name="wa_mhs" readonly>
                     </div>
 
@@ -427,89 +448,48 @@
                     </div>
 
                     <div class="form-group" id="parentSection2" style="display: none;">
-                        <label for="nama_ortu_2">Nama Orang Tua/Wali Kedua (Opsional)</label>
+                        <label for="nama_ortu_2">Nama Orang Tua/Wali Kedua</label>
                         <input type="text" id="nama_ortu_2" name="nama_ortu_2" readonly>
                     </div>
 
                     <input type="hidden" id="invitation_id" name="invitation_id">
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-submit">Konfirmasi Kehadiran</button>
-                        <button type="button" class="btn btn-cancel" onclick="resetForm()">Reset</button>
+                        <button type="submit" class="btn btn-primary">Konfirmasi Kehadiran</button>
+                        <button type="button" class="btn btn-soft" onclick="resetForm()">Reset</button>
                     </div>
                 </form>
             </div>
-
-            <!-- Camera Section -->
-            <div class="camera-section">
-                <div class="camera-container">
-                    <video id="video" playsinline muted></video>
-                    <canvas id="canvas"></canvas>
-                    <div class="scanner-overlay"></div>
-                </div>
-
-                <div class="controls">
-                    <button class="btn-control" onclick="startScanning()">Mulai Scan</button>
-                    <button class="btn-control" onclick="stopScanning()">Stop</button>
-                    <button class="btn-control" onclick="window.history.back()">Kembali</button>
-                </div>
-
-                <div class="status-text" id="statusText">Tekan "Mulai Scan" untuk memulai</div>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const statusText = document.getElementById('statusText');
-        const formSection = document.getElementById('formSection');
         const loadingOverlay = document.getElementById('loadingOverlay');
         const toastContainer = document.getElementById('toastContainer');
 
         let scanning = false;
         let lastScannedWa = null;
         let lastScanTime = 0;
-        let scannedToday = {}; // Track who has been scanned today
-        let isSubmitting = false; // Prevent multiple form submissions
+        let scannedToday = {};
+        let isSubmitting = false;
         let scanFrameId = null;
 
-        const basePath = window.location.pathname.startsWith('/sinergi') ? '/sinergi' : '';
-        const findInvitationUrl = `${basePath}/api/find-by-wa-ortu`;
-        const findInvitationFallbackUrl = `${basePath}/api/find-by-wa-mhs`;
-        const recordPresenceUrl = `${basePath}/record-presence`;
+        const findInvitationUrl = @json(route('find-by-wa-ortu'));
+        const searchInvitationUrl = @json(route('search-invitation'));
+        const recordPresenceUrl = @json(route('record-presence'));
 
-        // Toast notification function
-        function showToast(title, message, type = 'success', duration = 4000) {
+        function showToast(title, message, type = 'success', duration = 3600) {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
-            let icon = '✓';
-            if (type === 'error') icon = '✕';
-            if (type === 'warning') icon = '⚠';
-            
             toast.innerHTML = `
-                <div class="toast-icon">${icon}</div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
             `;
-            
             toastContainer.appendChild(toast);
-            
-            // Auto remove toast
-            setTimeout(() => {
-                toast.classList.add('hide');
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
-            
-            // Resume scanning after toast appears
-            setTimeout(() => {
-                if (!scanning) {
-                    startScanning();
-                }
-            }, 500);
+            setTimeout(() => toast.remove(), duration);
         }
 
         function updateStatus(message, type = 'normal') {
@@ -519,152 +499,11 @@
             if (type === 'error') statusText.classList.add('error');
         }
 
-        function startScanning() {
-            if (scanning) return;
-
-            // Check HTTPS requirement
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                const errorMsg = 'Website harus menggunakan HTTPS untuk akses kamera. Hubungi administrator.';
-                updateStatus('⚠ ' + errorMsg, 'error');
-                showToast('Keamanan Browser', errorMsg, 'error', 6000);
-                console.warn('Camera requires HTTPS - current protocol:', location.protocol);
-                return;
-            }
-
-            // Check if getUserMedia is supported
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                const errorMsg = 'Browser Anda tidak mendukung akses kamera. Gunakan Chrome, Firefox, atau Safari terbaru.';
-                updateStatus('❌ ' + errorMsg, 'error');
-                showToast('Browser Tidak Didukung', errorMsg, 'error');
-                return;
-            }
-
-            navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
-            }).then(stream => {
-                video.srcObject = stream;
-                
-                // Wait for video to be ready, then play
-                const playVideo = () => {
-                    video.play().catch(err => {
-                        console.error('Video play error:', err.name, err.message);
-                        // Retry playing after a short delay
-                        setTimeout(playVideo, 100);
-                    });
-                };
-                
-                // Video metadata loaded handler
-                const onCanPlay = () => {
-                    video.removeEventListener('canplay', onCanPlay);
-                    playVideo();
-                    scanning = true;
-                    updateStatus('✓ Kamera aktif - Arahkan ke QR Code', 'success');
-                    scanQR();
-                };
-                
-                if (video.readyState >= 2) {
-                    // Video is already ready
-                    playVideo();
-                    scanning = true;
-                    updateStatus('✓ Kamera aktif - Arahkan ke QR Code', 'success');
-                    scanQR();
-                } else {
-                    // Wait for video to be ready
-                    video.addEventListener('canplay', onCanPlay);
-                }
-            }).catch(err => {
-                console.error('Camera Error:', err.name, err.message);
-                let errorMsg = err.message;
-                
-                // Provide user-friendly error messages
-                if (err.name === 'NotAllowedError') {
-                    errorMsg = 'Izin kamera ditolak. Silakan beri izin di pengaturan browser.';
-                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    errorMsg = 'Kamera tidak ditemukan di perangkat ini.';
-                } else if (err.name === 'NotSecureError') {
-                    errorMsg = 'Koneksi tidak aman. Gunakan HTTPS untuk akses kamera.';
-                } else if (err.name === 'TypeError') {
-                    errorMsg = 'Error mengakses kamera. Periksa koneksi internet Anda.';
-                }
-                
-                updateStatus('❌ ' + errorMsg, 'error');
-                showToast('Error Kamera', errorMsg, 'error', 6000);
-            });
+        function showLoading(show) {
+            loadingOverlay.classList.toggle('show', show);
         }
 
-        function stopScanning() {
-            scanning = false;
-            
-            // Cancel animation frame if running
-            if (scanFrameId) {
-                cancelAnimationFrame(scanFrameId);
-                scanFrameId = null;
-            }
-            
-            if (video.srcObject) {
-                // Stop all tracks properly
-                video.srcObject.getTracks().forEach(track => {
-                    track.stop();
-                });
-                video.srcObject = null;
-            }
-            // Pause video element
-            if (!video.paused) {
-                video.pause();
-            }
-            updateStatus('Scan dihentikan');
-        }
-
-        function scanQR() {
-            if (!scanning) return;
-
-            const ctx = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            if (canvas.width > 0 && canvas.height > 0) {
-                ctx.drawImage(video, 0, 0);
-                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-                if (code) {
-                    const waMhs = code.data.trim();
-                    
-                    // Check if already scanned today - PREVENT DUPLICATE IMMEDIATELY
-                    if (scannedToday[waMhs]) {
-                        console.log('Already scanned today, showing alert');
-                        scanning = false;
-                        showToast('Sudah Mengisi Kehadiran ⚠', `Anda sudah mengisi form kehadiran. Tidak dapat scan dua kali!`, 'warning', 4000);
-                        // Resume scanning for next person
-                        setTimeout(() => startScanning(), 500);
-                        return;
-                    }
-                    
-                    // Prevent duplicate rapid scanning
-                    const currentTime = Date.now();
-                    if (lastScannedWa === waMhs && currentTime - lastScanTime < 3000) {
-                        console.log('Duplicate scan detected, ignoring');
-                        requestAnimationFrame(scanQR);
-                        return;
-                    }
-                    
-                    lastScannedWa = waMhs;
-                    lastScanTime = currentTime;
-                    
-                    // MARK AS SCANNED IMMEDIATELY before any async operation
-                    scannedToday[waMhs] = true;
-                    
-                    console.log('QR Code detected:', waMhs);
-                    fetchInvitationData(waMhs);
-                    scanning = false;
-                    return;
-                }
-            }
-
-            requestAnimationFrame(scanQR);
-        }
-
-        async function requestInvitationData(url, waMhs) {
+        async function postJson(url, payload) {
             const response = await fetch(url, {
                 method: 'POST',
                 credentials: 'same-origin',
@@ -674,158 +513,42 @@
                     'X-Requested-With': 'XMLHttpRequest',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify({ wa_mhs: waMhs })
+                body: JSON.stringify(payload)
             });
 
             const contentType = response.headers.get('content-type') || '';
-            const payload = contentType.includes('application/json')
+            const result = contentType.includes('application/json')
                 ? await response.json()
                 : { success: false, message: await response.text() };
 
             if (!response.ok) {
-                const message = response.status === 419
-                    ? 'Sesi halaman scan kedaluwarsa. Refresh halaman lalu coba scan lagi.'
-                    : (payload.message || `Server error (${response.status})`);
-
-                const error = new Error(message);
+                const error = new Error(result.message || `Server error (${response.status})`);
                 error.status = response.status;
+                error.payload = result;
                 throw error;
             }
 
-            return payload;
+            return result;
         }
 
-        async function fetchInvitationData(waMhs) {
-            showLoading(true);
-            updateStatus('Mengambil data...');
-
-            try {
-                let result;
-
-                try {
-                    result = await requestInvitationData(findInvitationUrl, waMhs);
-                } catch (err) {
-                    if (err.status !== 404) {
-                        throw err;
-                    }
-
-                    console.warn('Endpoint utama tidak ditemukan, mencoba endpoint lama:', findInvitationFallbackUrl);
-                    result = await requestInvitationData(findInvitationFallbackUrl, waMhs);
-                }
-
-                showLoading(false);
-                if (result.success) {
-                    populateForm(result.data);
-                    // scannedToday[waOrtu] is already TRUE from scanQR() - keep it
-                    updateStatus('Data ditemukan! Konfirmasi dalam 2 detik...', 'success');
-                    
-                    // Auto-submit setelah 2 detik
-                    setTimeout(() => {
-                        isSubmitting = false; // UNLOCK before submitting
-                        document.getElementById('attendanceForm').dispatchEvent(new Event('submit'));
-                    }, 2000);
-                } else {
-                    // Data not found - keep scannedToday[waOrtu] = true to prevent retry
-                    delete scannedToday[waMhs];
-                    isSubmitting = false; // Unlock if failed
-                    updateStatus(result.message || 'Data tidak ditemukan', 'error');
-                    showToast('Data Tidak Ditemukan', result.message || 'Silahkan daftarkan diri terlebih dahulu', 'error', 3000);
-                }
-            } catch (err) {
-                console.error('Find invitation error:', err);
-                showLoading(false);
-                // Error - keep scannedToday[waOrtu] = true to prevent retry
-                delete scannedToday[waMhs];
-                isSubmitting = false; // Unlock if error
-                updateStatus(err.message || 'Gagal mengambil data', 'error');
-                showToast('Gagal Mengambil Data', err.message || 'Silahkan coba lagi atau hubungi admin', 'error', 5000);
-            }
-        }
-
-        function populateForm(data) {
-            document.getElementById('nama_mhs').value = data.nama_mhs || '';
-            document.getElementById('status').value = data.status || '';
-            document.getElementById('wa_mhs').value = data.wa_mhs || '';
-            document.getElementById('invitation_id').value = data.id || '';
-            
-            // Populate parent data jika ada (untuk mahasiswa)
-            if (data.status === 'mahasiswa' && data.nama_ortu_1) {
-                document.getElementById('parentSection').style.display = 'block';
-                document.getElementById('nama_ortu_1').value = data.nama_ortu_1 || '';
-                
-                if (data.nama_ortu_2) {
-                    document.getElementById('parentSection2').style.display = 'block';
-                    document.getElementById('nama_ortu_2').value = data.nama_ortu_2 || '';
-                } else {
-                    document.getElementById('parentSection2').style.display = 'none';
-                    document.getElementById('nama_ortu_2').value = '';
-                }
-            } else {
-                // Hide parent sections untuk non-mahasiswa
-                document.getElementById('parentSection').style.display = 'none';
-                document.getElementById('parentSection2').style.display = 'none';
-                document.getElementById('nama_ortu_1').value = '';
-                document.getElementById('nama_ortu_2').value = '';
-            }
-        }
-
-        function resetForm() {
-            // Clear semua input fields
-            document.getElementById('nama_mhs').value = '';
-            document.getElementById('status').value = '';
-            document.getElementById('wa_mhs').value = '';
-            document.getElementById('invitation_id').value = '';
-            document.getElementById('nama_ortu_1').value = '';
-            document.getElementById('nama_ortu_2').value = '';
-            
-            // Hide parent sections
-            document.getElementById('parentSection').style.display = 'none';
-            document.getElementById('parentSection2').style.display = 'none';
-            
-            // Reset form state
-            document.getElementById('attendanceForm').reset();
-            formSection.classList.remove('show');
-            updateStatus('Tekan "Mulai Scan" untuk memulai');
-            lastScannedWa = null;
-            isSubmitting = false;
-            
-            // Resume scanning
-            startScanning();
-        }
-
-        function showLoading(show) {
-            if (show) {
-                loadingOverlay.classList.add('show');
-            } else {
-                loadingOverlay.classList.remove('show');
-            }
-        }
-
-        startScanning = async function() {
+        async function startScanning() {
             if (scanning) return;
 
             if (typeof jsQR !== 'function') {
-                const errorMsg = 'Library scanner gagal dimuat. Periksa koneksi internet atau CDN.';
-                updateStatus(errorMsg, 'error');
-                showToast('Scanner Error', errorMsg, 'error', 6000);
+                updateStatus('Library scanner gagal dimuat.', 'error');
+                showToast('Scanner Error', 'Periksa koneksi internet atau CDN jsQR.', 'error');
                 return;
             }
 
             if (!window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                const errorMsg = 'SSL/HTTPS belum valid, sehingga browser menolak akses kamera.';
-                updateStatus(errorMsg, 'error');
-                showToast('Keamanan Browser', errorMsg, 'error', 6000);
-                console.warn('Camera requires a secure context:', {
-                    protocol: location.protocol,
-                    isSecureContext: window.isSecureContext
-                });
+                updateStatus('Browser membutuhkan HTTPS untuk akses kamera.', 'error');
+                showToast('Akses Kamera Ditolak', 'Pastikan halaman dibuka dengan HTTPS.', 'error', 5200);
                 return;
             }
 
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                const errorMsg = 'Browser Anda tidak mendukung akses kamera. Gunakan Chrome, Firefox, atau Safari terbaru.';
-                updateStatus(errorMsg, 'error');
-                showToast('Browser Tidak Didukung', errorMsg, 'error');
+                updateStatus('Browser tidak mendukung akses kamera.', 'error');
+                showToast('Browser Tidak Didukung', 'Gunakan Chrome, Firefox, Safari, atau Edge terbaru.', 'error');
                 return;
             }
 
@@ -842,36 +565,22 @@
                 });
 
                 video.srcObject = stream;
-                video.setAttribute('playsinline', true);
                 await video.play();
-
                 scanning = true;
-                updateStatus('Kamera aktif - Arahkan ke QR Code', 'success');
-
-                if (scanFrameId) {
-                    cancelAnimationFrame(scanFrameId);
-                }
+                updateStatus('Kamera aktif. Arahkan ke QR Code.', 'success');
                 scanFrameId = requestAnimationFrame(scanQR);
             } catch (err) {
-                console.error('Camera Error:', err.name, err.message);
-                let errorMsg = err.message || 'Kamera tidak bisa diakses.';
+                let message = err.message || 'Kamera tidak bisa diakses.';
+                if (err.name === 'NotAllowedError') message = 'Izin kamera ditolak. Aktifkan izin kamera di browser.';
+                if (err.name === 'NotFoundError') message = 'Kamera tidak ditemukan di perangkat ini.';
+                if (err.name === 'NotReadableError') message = 'Kamera sedang digunakan aplikasi lain.';
 
-                if (err.name === 'NotAllowedError') {
-                    errorMsg = 'Izin kamera ditolak. Klik ikon di address bar browser lalu pilih Camera: Allow.';
-                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    errorMsg = 'Kamera tidak ditemukan di perangkat ini.';
-                } else if (err.name === 'NotReadableError') {
-                    errorMsg = 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi kamera lalu coba lagi.';
-                } else if (err.name === 'NotSecureError') {
-                    errorMsg = 'Koneksi tidak aman. Pastikan SSL/HTTPS domain sudah valid.';
-                }
-
-                updateStatus(errorMsg, 'error');
-                showToast('Error Kamera', errorMsg, 'error', 6000);
+                updateStatus(message, 'error');
+                showToast('Error Kamera', message, 'error', 5200);
             }
-        };
+        }
 
-        stopScanning = function() {
+        function stopScanning() {
             scanning = false;
 
             if (scanFrameId) {
@@ -884,10 +593,10 @@
                 video.srcObject = null;
             }
 
-            updateStatus('Scan dihentikan');
-        };
+            updateStatus('Scan dihentikan.');
+        }
 
-        scanQR = function() {
+        function scanQR() {
             if (!scanning) return;
 
             if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA || !video.videoWidth || !video.videoHeight) {
@@ -911,146 +620,172 @@
             }
 
             const waMhs = code.data.trim();
-
-            if (!waMhs) {
-                scanFrameId = requestAnimationFrame(scanQR);
-                return;
-            }
-
-            if (scannedToday[waMhs]) {
-                scanning = false;
-                showToast('Sudah Mengisi Kehadiran', 'Anda sudah mengisi form kehadiran. Tidak dapat scan dua kali!', 'warning', 4000);
-                setTimeout(() => startScanning(), 500);
-                return;
-            }
-
             const currentTime = Date.now();
-            if (lastScannedWa === waMhs && currentTime - lastScanTime < 3000) {
+
+            if (!waMhs || (lastScannedWa === waMhs && currentTime - lastScanTime < 3000)) {
                 scanFrameId = requestAnimationFrame(scanQR);
                 return;
             }
 
             lastScannedWa = waMhs;
             lastScanTime = currentTime;
-            scannedToday[waMhs] = true;
-            scanning = false;
+            stopScanning();
+            fetchInvitationData(waMhs, true);
+        }
 
-            if (scanFrameId) {
-                cancelAnimationFrame(scanFrameId);
-                scanFrameId = null;
-            }
-
-            console.log('QR Code detected:', waMhs);
-            fetchInvitationData(waMhs);
-        };
-
-        // Auto-start scanning on page load
-        window.addEventListener('load', function() {
-            setTimeout(startScanning, 500);
-        });
-
-        // Handle form submission
-        document.getElementById('attendanceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Prevent multiple submissions
-            if (isSubmitting) {
-                console.log('Already submitting, ignoring');
+        async function fetchInvitationData(waMhs, autoSubmit = false) {
+            if (scannedToday[waMhs]) {
+                showToast('Sudah Diproses', 'Data ini sudah diproses dari halaman scanner.', 'warning');
                 return;
             }
-            
-            console.log('Form submitted!');
+
             showLoading(true);
-            isSubmitting = true;
+            updateStatus('Mengambil data undangan...');
+
+            try {
+                const result = await postJson(findInvitationUrl, { wa_mhs: waMhs });
+                showLoading(false);
+
+                if (!result.success) {
+                    delete scannedToday[waMhs];
+                    updateStatus(result.message || 'Data tidak ditemukan.', 'error');
+                    showToast('Data Tidak Ditemukan', result.message || 'Coba cari manual dengan nama.', 'error');
+                    return;
+                }
+
+                populateForm(result.data);
+                updateStatus('Data ditemukan.', 'success');
+                showToast('Data Ditemukan', `${result.data.nama_mhs} siap dikonfirmasi.`);
+
+                if (autoSubmit) {
+                    scannedToday[waMhs] = true;
+                    setTimeout(() => {
+                        isSubmitting = false;
+                        document.getElementById('attendanceForm').dispatchEvent(new Event('submit'));
+                    }, 1200);
+                }
+            } catch (err) {
+                showLoading(false);
+                delete scannedToday[waMhs];
+                updateStatus(err.message || 'Gagal mengambil data.', 'error');
+                showToast('Gagal Mengambil Data', err.message || 'Silahkan coba lagi.', 'error');
+            }
+        }
+
+        function populateForm(data) {
+            document.getElementById('nama_mhs').value = data.nama_mhs || '';
+            document.getElementById('status').value = data.status || '';
+            document.getElementById('wa_mhs').value = data.wa_mhs || '';
+            document.getElementById('invitation_id').value = data.id || '';
+
+            const parentSection = document.getElementById('parentSection');
+            const parentSection2 = document.getElementById('parentSection2');
+            const parentName1 = document.getElementById('nama_ortu_1');
+            const parentName2 = document.getElementById('nama_ortu_2');
+
+            parentName1.value = data.nama_ortu_1 || '';
+            parentName2.value = data.nama_ortu_2 || '';
+            parentSection.style.display = data.nama_ortu_1 ? 'block' : 'none';
+            parentSection2.style.display = data.nama_ortu_2 ? 'block' : 'none';
+        }
+
+        function resetForm() {
+            document.getElementById('attendanceForm').reset();
+            document.getElementById('invitation_id').value = '';
+            document.getElementById('parentSection').style.display = 'none';
+            document.getElementById('parentSection2').style.display = 'none';
+            lastScannedWa = null;
+            isSubmitting = false;
+            updateStatus('Tekan "Mulai Scan" untuk memulai.');
+        }
+
+        function clearSearch() {
+            document.getElementById('search_query').value = '';
+            resetForm();
+        }
+
+        document.getElementById('manualSearchForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const query = document.getElementById('search_query').value.trim();
+            if (query.length < 2) {
+                showToast('Input Belum Lengkap', 'Masukkan minimal 2 karakter nama atau nomor WA.', 'warning');
+                return;
+            }
+
+            showLoading(true);
+            updateStatus('Mencari data undangan...');
+
+            try {
+                const result = await postJson(searchInvitationUrl, { query });
+                showLoading(false);
+                populateForm(result.data);
+                stopScanning();
+                updateStatus('Data ditemukan. Klik konfirmasi untuk mencatat kehadiran.', 'success');
+                showToast('Data Ditemukan', `${result.data.nama_mhs} siap dikonfirmasi.`);
+            } catch (err) {
+                showLoading(false);
+                updateStatus(err.message || 'Data tidak ditemukan.', 'error');
+                showToast('Data Tidak Ditemukan', err.message || 'Coba cek lagi nama atau nomor WA.', 'error');
+            }
+        });
+
+        document.getElementById('attendanceForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            if (isSubmitting) return;
 
             const formData = new FormData(this);
             const waMhs = formData.get('wa_mhs');
             const namaMhs = document.getElementById('nama_mhs').value;
 
-            console.log('Submitting presence with waMhs:', waMhs);
+            if (!waMhs || !formData.get('invitation_id')) {
+                showToast('Data Belum Dipilih', 'Scan QR atau cari data terlebih dahulu.', 'warning');
+                return;
+            }
 
-            fetch(recordPresenceUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
+            showLoading(true);
+            isSubmitting = true;
+
+            try {
+                const result = await postJson(recordPresenceUrl, {
                     wa_mhs: waMhs,
                     invitation_id: formData.get('invitation_id')
-                })
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
-            .then(result => {
-                console.log('Result:', result);
+                });
+
                 showLoading(false);
-                
-                // Check if already present (duplicate scan)
-                if (!result.success && result.data) {
-                    // Already scanned - don't save again
-                    updateStatus('Sudah tercatat kehadiran hari ini', 'error');
-                    // KEEP scannedToday[waMhs] = true to block further scans
-                    const scanTime = new Date(result.data.present_at).toLocaleTimeString('id-ID');
-                    showToast('Sudah Mengisi Kehadiran ⚠', `Anda sudah mengisi form kehadiran. Tidak dapat scan dua kali!`, 'warning', 5000);
-                    
-                    // Countdown before reset (2 seconds)
-                    let countdown = 2;
-                    const countdownInterval = setInterval(() => {
-                        if (countdown > 0) {
-                            updateStatus(`Form akan di-reset dalam ${countdown} detik...`, 'error');
-                            countdown--;
-                        } else {
-                            clearInterval(countdownInterval);
-                            isSubmitting = false;
-                            resetForm();
-                        }
-                    }, 1000);
-                } else if (result.success) {
-                    console.log('Success! Data saved to database');
-                    updateStatus('Kehadiran berhasil dicatat!', 'success');
-                    // KEEP scannedToday[waMhs] = true to block further scans
-                    showToast('Hadir ✓', `${namaMhs} - Status: HADIR`, 'success', 3000);
-                    
-                    // Countdown before reset (2 seconds)
-                    let countdown = 2;
-                    const countdownInterval = setInterval(() => {
-                        if (countdown > 0) {
-                            updateStatus(`Form akan di-reset dalam ${countdown} detik...`, 'success');
-                            countdown--;
-                        } else {
-                            clearInterval(countdownInterval);
-                            isSubmitting = false;
-                            resetForm();
-                        }
-                    }, 1000);
-                } else {
-                    updateStatus('Gagal mencatat kehadiran', 'error');
-                    showToast('Gagal', 'Gagal mencatat kehadiran. Silahkan coba lagi.', 'error', 3000);
-                    // KEEP scannedToday[waMhs] = true to block further scans
-                    isSubmitting = false; // Unlock
+
+                if (result.success) {
+                    scannedToday[waMhs] = true;
+                    updateStatus('Kehadiran berhasil dicatat.', 'success');
+                    showToast('Hadir', `${namaMhs} berhasil dicatat hadir.`);
+                    setTimeout(resetForm, 1800);
+                    return;
                 }
-            })
-            .catch(err => {
-                console.error('Fetch error:', err);
+
+                updateStatus(result.message || 'Gagal mencatat kehadiran.', 'error');
+                showToast('Gagal', result.message || 'Silahkan coba lagi.', 'error');
+                isSubmitting = false;
+            } catch (err) {
                 showLoading(false);
-                updateStatus('Gagal menyimpan kehadiran', 'error');
-                showToast('Terjadi Kesalahan', 'Gagal menyimpan kehadiran. Silahkan coba lagi.', 'error', 3000);
-                // KEEP scannedToday[waMhs] = true to block further scans
-                isSubmitting = false; // Unlock
-            });
+
+                if (err.payload && err.payload.data) {
+                    scannedToday[waMhs] = true;
+                    updateStatus('Sudah tercatat kehadiran hari ini.', 'error');
+                    showToast('Sudah Hadir', 'Data ini sudah tercatat hari ini.', 'warning');
+                    setTimeout(resetForm, 1800);
+                    return;
+                }
+
+                updateStatus(err.message || 'Gagal menyimpan kehadiran.', 'error');
+                showToast('Terjadi Kesalahan', err.message || 'Silahkan coba lagi.', 'error');
+                isSubmitting = false;
+            }
         });
 
-        // Cleanup camera when page unloads or user navigates away
-        window.addEventListener('beforeunload', function() {
-            stopScanning();
-        });
-
-        window.addEventListener('pagehide', function() {
-            stopScanning();
-        });
+        window.addEventListener('load', () => setTimeout(startScanning, 500));
+        window.addEventListener('beforeunload', stopScanning);
+        window.addEventListener('pagehide', stopScanning);
     </script>
 </body>
 </html>

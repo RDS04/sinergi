@@ -21,10 +21,11 @@ Route::controller(AuthController::class)->prefix('sinergi')->group(function () {
 // Invitation Routes
 Route::controller(InvitationController::class)->prefix('sinergi')->group(function () {
     // Sinergi Invitation Routes (dengan prefix /sinergi)
-    Route::get('/', 'index')->name('invitation.index');
+    Route::get('/Metamedia', 'index')->name('invitation.index');
     Route::post('/store', 'store')->name('invitation.store');
     Route::get('/scan-qr', 'scanQR')->name('scan-qr');
     Route::post('/record-presence', 'recordPresence')->name('record-presence');
+    Route::post('/api/search-invitation', 'searchInvitation')->name('search-invitation');
     Route::post('/api/find-by-wa-mhs', 'findByWaOrtu')->name('find-by-wa-mhs');
     Route::post('/api/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
     Route::get('/kartu', 'kartu')->name('kartu');
@@ -35,6 +36,7 @@ Route::controller(InvitationController::class)->group(function () {
     Route::get('/invitation/{invitation}', 'show')->name('invitation.show');
     Route::get('/scan-qr', 'scanQR');
     Route::post('/record-presence', 'recordPresence');
+    Route::post('/api/search-invitation', 'searchInvitation');
     Route::delete('/invitation/{id}', 'destroy')->name('invitation.destroy');
     Route::get('/undangan', 'undangan')->name('undangan');
     Route::get('/export-undangan', 'exportExcel')->name('export-undangan');
@@ -49,9 +51,11 @@ Route::controller(InvitationController::class)->prefix('api')->group(function ()
     Route::get('/invitation/{invitation}', 'getInvitationData');
     Route::post('/find-by-wa-mhs', 'findByWaOrtu')->name('scan.find-by-wa-mhs');
     Route::post('/find-by-wa-ortu', 'findByWaOrtu')->name('scan.find-by-wa-ortu');
+    Route::post('/search-invitation', 'searchInvitation')->name('scan.search-invitation');
 });
 
 Route::controller(InvitationController::class)->prefix('sinergi/api')->group(function () {
     Route::post('/find-by-wa-mhs', 'findByWaOrtu');
-    Route::post('/find-by-wa-ortu', 'findByWaOrtu');
+    Route::post('/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
+    Route::post('/search-invitation', 'searchInvitation')->name('search-invitation');
 });

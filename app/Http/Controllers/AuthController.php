@@ -76,7 +76,7 @@ class AuthController extends Controller
             return redirect()->route('login');
         }
 
-        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'nama_ortu_1', 'nama_ortu_2', 'created_at')->get()
+        $invitations = Invitation::select('id', 'nama_mhs as nama', 'wa_mhs as email', 'wa_mhs as kontak', 'status', 'attendance_status', 'nama_ortu_1', 'nama_ortu_2', 'alasan_ortu_tidak_ikut', 'created_at')->get()
             ->map(function ($item) {
                 $item->statusKehadiran = $item->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir';
 
