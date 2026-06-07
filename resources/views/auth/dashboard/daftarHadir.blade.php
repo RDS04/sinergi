@@ -162,7 +162,7 @@
             <div class="flex gap-2">
                 <div class="bg-white rounded-full px-4 py-2 shadow-sm flex items-center gap-2 text-sm">
                     <i class="fas fa-calendar-alt text-[#C9A03D]"></i>
-                    <span class="text-gray-600">14 Juni 2025</span>
+                    <span class="text-gray-600">19 Juni 2026</span>
                 </div>
                 <div class="bg-white rounded-full px-4 py-2 shadow-sm flex items-center gap-2 text-sm">
                     <i class="fas fa-users text-[#018FD7]"></i>
