@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Invitation;
 use App\Models\Presence;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InvitationController extends Controller
 {
@@ -579,6 +582,127 @@ class InvitationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat memperbarui status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function updateInvitation(Request $request, $id)
+    {
+        if (! Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda harus login terlebih dahulu',
+            ], 401);
+        }
+
+        $invitation = Invitation::find($id);
+
+        if (! $invitation) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data undangan tidak ditemukan',
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'nama_mhs' => 'required|string|max:255',
+            'wa_mhs' => 'required|string|regex:/^\+62\d{10,12}$/|unique:invitation,wa_mhs,' . $invitation->id,
+            'status' => 'required|in:mahasiswa,alumni,ortu',
+            'nama_ortu_1' => 'nullable|string|max:255',
+            'nama_ortu_2' => 'nullable|string|max:255',
+            'alasan_ortu_tidak_ikut' => 'nullable|string|max:500',
+        ], [
+            'wa_mhs.unique' => 'Nomor WhatsApp ini sudah digunakan data lain.',
+            'wa_mhs.regex' => 'Format WhatsApp harus +62 diikuti 10-12 digit.',
+            'status.in' => 'Status tidak valid.',
+        ]);
+
+        $namaOrtu1 = trim($validated['nama_ortu_1'] ?? '');
+        $namaOrtu2 = trim($validated['nama_ortu_2'] ?? '');
+        $alasanOrtuTidakIkut = trim($validated['alasan_ortu_tidak_ikut'] ?? '');
+
+        DB::beginTransaction();
+
+        try {
+            $invitation->update([
+                'nama_mhs' => $validated['nama_mhs'],
+                'wa_mhs' => $validated['wa_mhs'],
+                'status' => $validated['status'],
+                'nama_ortu_1' => $namaOrtu1 ?: null,
+                'nama_ortu_2' => $namaOrtu2 ?: null,
+                'alasan_ortu_tidak_ikut' => $alasanOrtuTidakIkut ?: null,
+            ]);
+
+            Presence::where('invitation_id', $invitation->id)->update([
+                'nama_mhs' => $invitation->nama_mhs,
+                'wa_mhs' => $invitation->wa_mhs,
+                'status' => $invitation->status,
+                'nama_ortu_1' => $invitation->nama_ortu_1,
+                'nama_ortu_2' => $invitation->nama_ortu_2,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data undangan berhasil diperbarui',
+                'data' => [
+                    'id' => $invitation->id,
+                    'nama' => $invitation->nama_mhs,
+                    'email' => $invitation->wa_mhs,
+                    'kontak' => $invitation->wa_mhs,
+                    'status' => $invitation->status,
+                    'attendance_status' => $invitation->attendance_status,
+                    'statusKehadiran' => $invitation->attendance_status === 'hadir' ? 'Hadir' : 'Belum Hadir',
+                    'nama_ortu_1' => $invitation->nama_ortu_1,
+                    'nama_ortu_2' => $invitation->nama_ortu_2,
+                    'alasan_ortu_tidak_ikut' => $invitation->alasan_ortu_tidak_ikut,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating invitation:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui data',
+            ], 500);
+        }
+    }
+
+    /**
+     * Hapus data undangan dari halaman daftar hadir admin.
+     */
+    public function destroyInvitation($id)
+    {
+        if (! Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda harus login terlebih dahulu',
+            ], 401);
+        }
+
+        $invitation = Invitation::find($id);
+
+        if (! $invitation) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data undangan tidak ditemukan',
+            ], 404);
+        }
+
+        try {
+            $invitation->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data undangan berhasil dihapus',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting invitation:', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus data',
             ], 500);
         }
     }

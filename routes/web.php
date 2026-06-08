@@ -15,6 +15,7 @@ Route::controller(AuthController::class)->prefix('sinergi')->group(function () {
     Route::get('/daftar-hadir', 'daftarHadir')->name('daftar-hadir');
     Route::get('/dashboard', 'dashboard')->name('dashboard');
     Route::post('/invitation/{id}/mark-attendance', 'markAttendanceManual')->name('mark-attendance');
+    
 });
 
 
@@ -29,6 +30,8 @@ Route::controller(InvitationController::class)->prefix('sinergi')->group(functio
     Route::post('/api/find-by-wa-mhs', 'findByWaOrtu')->name('find-by-wa-mhs');
     Route::post('/api/find-by-wa-ortu', 'findByWaOrtu')->name('find-by-wa-ortu');
     Route::get('/kartu', 'kartu')->name('kartu');
+    Route::put('/invitation/{id}', 'updateInvitation')->name('dashboard.invitation.update');
+    Route::delete('/invitation/{id}', 'destroyInvitation')->name('dashboard.invitation.destroy');
 });
 
 // Other invitation routes (tanpa prefix)

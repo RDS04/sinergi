@@ -96,19 +96,32 @@
             box-shadow: 0 5px 15px rgba(201,160,61,0.4);
         }
         .badge-hadir {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 104px;
             background: #10b981;
             color: white;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 30px;
             font-size: 11px;
             font-weight: 600;
+            white-space: nowrap;
         }
         .badge-belum {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 118px;
             background: #f59e0b;
             color: white;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 30px;
             font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
         }
         .badge-undangan {
             background: #018FD7;
@@ -140,6 +153,35 @@
             max-width: 220px;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .attendance-cell {
+            width: 150px;
+            min-width: 150px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .action-cell {
+            width: 330px;
+            min-width: 330px;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .action-group {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: nowrap;
+            width: max-content;
+            min-width: 100%;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 30px;
             white-space: nowrap;
         }
         @keyframes pulseGold {
@@ -241,8 +283,8 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerOrangTua1" style="display:none;">Orang Tua 1</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerOrangTua2" style="display:none;">Orang Tua 2</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider" id="headerAlasanOrtu" style="display:none;">Alasan Ortu Tidak Hadir</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Status Kehadiran</th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider">Aksi</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold text-[#018FD7] uppercase tracking-wider attendance-cell">Status Kehadiran</th>
+                            <th class="px-6 py-4 text-right text-xs font-semibold text-[#018FD7] uppercase tracking-wider action-cell">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-100 bg-white">
@@ -266,6 +308,59 @@
         </div>
     </div>
 
+    <!-- Modal Edit Undangan -->
+    <div id="editInvitationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b">
+                <h2 class="text-lg font-bold text-[#018FD7] flex items-center gap-2">
+                    <i class="fas fa-pen-to-square text-[#C9A03D]"></i> Edit Data Undangan
+                </h2>
+                <button type="button" id="closeEditModal" class="w-9 h-9 rounded-full hover:bg-gray-100 text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editInvitationForm" class="p-6 space-y-4">
+                <input type="hidden" id="editInvitationId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="editNama" class="block text-xs font-semibold text-gray-500 mb-1">Nama Lengkap</label>
+                        <input type="text" id="editNama" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-[#018FD7] focus:outline-none" required>
+                    </div>
+                    <div>
+                        <label for="editKontak" class="block text-xs font-semibold text-gray-500 mb-1">No. Telepon</label>
+                        <input type="text" id="editKontak" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-[#018FD7] focus:outline-none" placeholder="+6281234567890" required>
+                    </div>
+                    <div>
+                        <label for="editStatus" class="block text-xs font-semibold text-gray-500 mb-1">Status Kategori</label>
+                        <select id="editStatus" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-[#018FD7] focus:outline-none" required>
+                            <option value="mahasiswa">Mahasiswa</option>
+                            <option value="alumni">Alumni</option>
+                            <option value="ortu">Orang Tua</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="editOrtu1" class="block text-xs font-semibold text-gray-500 mb-1">Orang Tua 1</label>
+                        <input type="text" id="editOrtu1" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-[#018FD7] focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="editOrtu2" class="block text-xs font-semibold text-gray-500 mb-1">Orang Tua 2</label>
+                        <input type="text" id="editOrtu2" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-[#018FD7] focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="editAlasanOrtu" class="block text-xs font-semibold text-gray-500 mb-1">Alasan Ortu Tidak Hadir</label>
+                        <textarea id="editAlasanOrtu" rows="3" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-[#018FD7] focus:outline-none"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" id="cancelEditInvitation" class="px-4 py-2 rounded-full border border-gray-300 text-sm font-semibold text-gray-600 hover:bg-gray-50">Batal</button>
+                    <button type="submit" id="saveEditInvitation" class="px-5 py-2 rounded-full btn-gold text-sm font-bold flex items-center gap-2">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Use server-provided data when available
         const undanganData = {!! isset($invitations) ? json_encode($invitations) : '[]' !!};
@@ -276,6 +371,24 @@
         let currentPage = 1;
         let rowsPerPage = 100;
         let searchQuery = "";
+
+        async function parseJsonResponse(response) {
+            const contentType = response.headers.get('content-type') || '';
+
+            if (contentType.includes('application/json')) {
+                const data = await response.json();
+                if (!response.ok) {
+                    const firstError = data.errors ? Object.values(data.errors).flat()[0] : data.message;
+                    throw new Error(firstError || 'Request gagal diproses');
+                }
+                return data;
+            }
+
+            const text = await response.text();
+            const titleMatch = text.match(/<title>(.*?)<\/title>/i);
+            const title = titleMatch ? titleMatch[1].trim() : '';
+            throw new Error(title || `Server mengembalikan response non-JSON (${response.status})`);
+        }
 
         // Mendapatkan data berdasarkan tab dan filter
         function getFilteredData() {
@@ -374,11 +487,16 @@
                     
                     // Status kehadiran badge
                     const statusBadge = item.statusKehadiran === "Hadir" 
-                        ? '<span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> Hadir</span>' 
-                        : '<span class="badge-belum"><i class="fas fa-clock mr-1"></i> Belum Hadir</span>';
-                    const actionBtn = item.statusKehadiran === "Hadir" 
-                        ? `<button class="text-gray-400 text-xs cursor-default" disabled title="Sudah Hadir"><i class="fas fa-check-double"></i> Hadir</button>`
-                        : `<button onclick="markHadir(${item.id})" class="text-[#018FD7] hover:text-[#C9A03D] transition text-xs font-medium px-2 py-1 rounded-full border border-[#018FD7]/30" title="Tandai Hadir"><i class="fas fa-check-circle mr-1"></i> Tandai Hadir</button>`;
+                        ? '<span class="badge-hadir"><i class="fas fa-check-circle"></i> Hadir</span>' 
+                        : '<span class="badge-belum"><i class="fas fa-clock"></i> Belum Hadir</span>';
+                    const attendanceBtn = item.statusKehadiran === "Hadir" 
+                        ? `<button class="action-btn text-gray-400 text-xs cursor-default px-3 py-1 rounded-full border border-gray-200" disabled title="Sudah Hadir"><i class="fas fa-check-double"></i> Hadir</button>`
+                        : `<button onclick="markHadir(${item.id})" class="action-btn text-[#018FD7] hover:text-[#C9A03D] transition text-xs font-medium px-3 py-1 rounded-full border border-[#018FD7]/30" title="Tandai Hadir"><i class="fas fa-check-circle"></i> Tandai Hadir</button>`;
+                    const actionBtn = `<div class="action-group">
+                        ${attendanceBtn}
+                        <button onclick="openEditInvitation(${item.id})" class="action-btn text-[#C9A03D] hover:text-[#018FD7] transition text-xs font-medium px-3 py-1 rounded-full border border-[#C9A03D]/40" title="Edit"><i class="fas fa-pen"></i> Edit</button>
+                        <button onclick="deleteInvitation(${item.id})" class="action-btn text-red-500 hover:text-red-700 transition text-xs font-medium px-3 py-1 rounded-full border border-red-200" title="Hapus"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>`;
                     
                     html += `<tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4 text-sm text-gray-600">${nomor}</td>
@@ -388,8 +506,8 @@
                         <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua1}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua2}</td>
                         <td class="px-6 py-4 text-sm text-gray-700 reason-cell">${alasanOrtu}</td>
-                        <td class="px-6 py-4">${statusBadge}</td>
-                        <td class="px-6 py-4 text-center">${actionBtn}</td>
+                        <td class="px-6 py-4 attendance-cell">${statusBadge}</td>
+                        <td class="px-6 py-4 action-cell">${actionBtn}</td>
                     </tr>`;
                 } else {
                     // Daftar Kehadiran view - Display scanned data
@@ -412,9 +530,11 @@
                         <td class="px-6 py-4">${statusKategori}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua1}</td>
                         <td class="px-6 py-4 text-sm text-gray-700">${namaOrangTua2}</td>
-                        <td class="px-6 py-4"><span class="badge-hadir"><i class="fas fa-check-circle mr-1"></i> ${escapeHtml(item.checkIn)}</span></td>
-                        <td class="px-6 py-4 text-center">
-                            <button class="text-[#C9A03D] hover:text-[#018FD7] transition" title="Detail"><i class="fas fa-receipt"></i></button>
+                        <td class="px-6 py-4 attendance-cell"><span class="badge-hadir"><i class="fas fa-check-circle"></i> ${escapeHtml(item.checkIn)}</span></td>
+                        <td class="px-6 py-4 action-cell">
+                            <div class="action-group">
+                                <button class="action-btn text-[#C9A03D] hover:text-[#018FD7] transition text-xs font-medium px-3 py-1 rounded-full border border-[#C9A03D]/40" title="Detail"><i class="fas fa-receipt"></i> Detail</button>
+                            </div>
                         </td>
                     </tr>`;
                 }
@@ -451,6 +571,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
                 },
                 body: JSON.stringify({})
@@ -473,6 +594,123 @@
                 showToast('Terjadi kesalahan koneksi', true);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
+            });
+        };
+
+        window.openEditInvitation = function(id) {
+            const invitation = undanganData.find(item => item.id === id);
+            if (!invitation) {
+                showToast("Data tidak ditemukan", true);
+                return;
+            }
+
+            document.getElementById("editInvitationId").value = invitation.id;
+            document.getElementById("editNama").value = invitation.nama || "";
+            document.getElementById("editKontak").value = invitation.kontak || "";
+            document.getElementById("editStatus").value = invitation.status || "mahasiswa";
+            document.getElementById("editOrtu1").value = invitation.nama_ortu_1 || "";
+            document.getElementById("editOrtu2").value = invitation.nama_ortu_2 || "";
+            document.getElementById("editAlasanOrtu").value = invitation.alasan_ortu_tidak_ikut || "";
+            document.getElementById("editInvitationModal").classList.remove("hidden");
+            document.getElementById("editInvitationModal").classList.add("flex");
+        };
+
+        function closeEditInvitationModal() {
+            document.getElementById("editInvitationModal").classList.add("hidden");
+            document.getElementById("editInvitationModal").classList.remove("flex");
+            document.getElementById("editInvitationForm").reset();
+        }
+
+        document.getElementById("closeEditModal").addEventListener("click", closeEditInvitationModal);
+        document.getElementById("cancelEditInvitation").addEventListener("click", closeEditInvitationModal);
+        document.getElementById("editInvitationModal").addEventListener("click", (event) => {
+            if (event.target.id === "editInvitationModal") {
+                closeEditInvitationModal();
+            }
+        });
+
+        document.getElementById("editInvitationForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const id = document.getElementById("editInvitationId").value;
+            const saveBtn = document.getElementById("saveEditInvitation");
+            const originalText = saveBtn.innerHTML;
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+            fetch(`/sinergi/invitation/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                body: JSON.stringify({
+                    nama_mhs: document.getElementById("editNama").value,
+                    wa_mhs: document.getElementById("editKontak").value,
+                    status: document.getElementById("editStatus").value,
+                    nama_ortu_1: document.getElementById("editOrtu1").value,
+                    nama_ortu_2: document.getElementById("editOrtu2").value,
+                    alasan_ortu_tidak_ikut: document.getElementById("editAlasanOrtu").value
+                })
+            })
+            .then(parseJsonResponse)
+            .then(data => {
+                const index = undanganData.findIndex(item => item.id == id);
+                if (index !== -1) {
+                    undanganData[index] = { ...undanganData[index], ...data.data };
+                }
+
+                closeEditInvitationModal();
+                renderTable();
+                showToast(data.message || "Data undangan berhasil diperbarui", false);
+            })
+            .catch(error => {
+                showToast(error.message || "Terjadi kesalahan saat memperbarui data", true);
+            })
+            .finally(() => {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            });
+        });
+
+        window.deleteInvitation = function(id) {
+            const invitation = undanganData.find(item => item.id === id);
+            if (!invitation) {
+                showToast("Data tidak ditemukan", true);
+                return;
+            }
+
+            if (!confirm(`Hapus data undangan "${invitation.nama}"?`)) {
+                return;
+            }
+
+            fetch(`/sinergi/invitation/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                }
+            })
+            .then(parseJsonResponse)
+            .then(data => {
+                const index = undanganData.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    undanganData.splice(index, 1);
+                }
+
+                for (let i = daftarKehadiran.length - 1; i >= 0; i--) {
+                    if (daftarKehadiran[i].invitation_id === id) {
+                        daftarKehadiran.splice(i, 1);
+                    }
+                }
+
+                renderTable();
+                showToast(data.message || "Data undangan berhasil dihapus", false);
+            })
+            .catch(error => {
+                showToast(error.message || "Terjadi kesalahan saat menghapus data", true);
             });
         };
 
