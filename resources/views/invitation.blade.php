@@ -1057,7 +1057,7 @@
                         
                         // Batasi hanya 12 digit (setelah +62)
                         if (value.length > 12) {
-                            value = value.substring(0, 12);
+                            value = value.substring(0, 12); 
                         }
                         
                         this.value = value;

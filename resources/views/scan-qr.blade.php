@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -291,7 +292,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .toast-container {
@@ -335,8 +338,15 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @media (max-width: 840px) {
@@ -366,6 +376,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
@@ -377,7 +388,7 @@
     <main class="page">
         <header class="header">
             <h1>Check Kehadiran</h1>
-            
+
         </header>
 
         <section class="content">
@@ -408,11 +419,13 @@
                         <h2>Cari Manual</h2>
                         <span class="badge">Tanpa QR</span>
                     </div>
-                    <p>Input nama atau no. WhatsApp sesuai data undangan, lalu konfirmasi kehadiran setelah data tampil.</p>
+                    <p>Input nama atau no. WhatsApp sesuai data undangan, lalu konfirmasi kehadiran setelah data tampil.
+                    </p>
                     <form id="manualSearchForm">
                         <div class="form-group">
                             <label for="search_query">Nama / No. WhatsApp</label>
-                            <input type="search" id="search_query" name="query" placeholder="Contoh: Budi atau 081234567890" autocomplete="off">
+                            <input type="search" id="search_query" name="query"
+                                placeholder="Contoh: Budi atau 081234567890" autocomplete="off">
                         </div>
                         <div class="search-actions">
                             <button type="submit" class="btn btn-dark">Cari Data</button>
@@ -629,8 +642,12 @@
 
             lastScannedWa = waMhs;
             lastScanTime = currentTime;
-            stopScanning();
+
+            // Kamera tetap hidup
             fetchInvitationData(waMhs, true);
+
+            // lanjut scan lagi
+            scanFrameId = requestAnimationFrame(scanQR);
         }
 
         async function fetchInvitationData(waMhs, autoSubmit = false) {
@@ -788,4 +805,5 @@
         window.addEventListener('pagehide', stopScanning);
     </script>
 </body>
+
 </html>
